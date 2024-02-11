@@ -1,15 +1,12 @@
-# Snowball Game
+# Brackeys Game Jam 2024
 
-A snowball game for INFOMAIGT course assignment at Utrecht University 2023 - 2024. [The game is avilable on itch.io](https://huienlin.itch.io/snowball-game).
-
-![Fight](readme_assets/fight.gif)
-![Fight](readme_assets/sniper.gif)
+A project born in [Breackeys Game jam 2024](https://itch.io/jam/brackeys-11) :).
 
 > Do not push any commits to the `main` and `develop` branches directly. Instead, you should create a new branch and a pull request for merging.
 
 # Unity Version
 
-**2022.3.8f1**
+**2022.3.15f1**
 
 > Should always keep the same version with your team.
 
@@ -530,10 +527,6 @@ public class IconButton : WDButton
 
 [UniTask](https://github.com/Cysharp/UniTask) - Provides an efficient allocation free async/await integration for Unity
 
-[Odin Inspector](https://odininspector.com/) - Very powerful Editor plugins, supporting Dictionary serialization
-
-[ProceduralUIImage](https://assetstore.unity.com/packages/tools/gui/procedural-ui-image-52200) - Useful fast UI development tool
-
 ## Custom Plugins
 
 ### Common Patterns
@@ -568,7 +561,3 @@ public class SceneLoader : MonoBehaviour
 ```
 
 ![Scene Property Drawer](readme_assets/scene_property_drawer.png)
-
-## TODO
-
-- [ ] Input manager intergrate with new Unity input system
