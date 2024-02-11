@@ -9,6 +9,20 @@ namespace Game.Gameplay
     {
         public PlanRuntimeState planRuntimeState;
 
+        private State _planningState;
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Mouse0))
+            {
+                Vector3 mousePos = Input.mousePosition;
+                Vector3 worldPos = Camera.main.ScreenToWorldPoint(mousePos);
+                if (_planningState == State.Idle)
+                {
+                    AddMovePlan(worldPos);
+                }
+            }
+        }
+
 
         public void AddMovePlan(Vector3 destination)
         {
@@ -30,6 +44,13 @@ namespace Game.Gameplay
                     destination = destination
                 }
             );
+        }
+
+        public enum State
+        {
+            Idle,
+            MoveDestinationSelected,
+            AttackSelected
         }
     }
 }
