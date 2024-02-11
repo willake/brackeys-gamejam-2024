@@ -197,6 +197,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9d361c64f528a4499323eef16abe764, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gamePhaseTab: {fileID: 9156353360396968370}
+  gamePhaseState: {fileID: 11400000, guid: f47d0c941c247174e9e1d1dff7046d84, type: 2}
 --- !u!1001 &7390847472342785474
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -299,3 +301,14 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 8173853700728918339, guid: 063a65919fd724547bf8f49218e25673, type: 3}
   m_PrefabInstance: {fileID: 7390847472342785474}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9156353360396968370 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1837598666534141040, guid: 063a65919fd724547bf8f49218e25673, type: 3}
+  m_PrefabInstance: {fileID: 7390847472342785474}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb4ce8760b715f849a7825d27a9a8bbe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

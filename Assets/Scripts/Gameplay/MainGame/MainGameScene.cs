@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Game.UI;
 using Cysharp.Threading.Tasks;
+using Game.RuntimeStates;
+using UniRx;
 
 namespace Game.Gameplay
 {
@@ -12,10 +14,17 @@ namespace Game.Gameplay
 
         [Header("References")]
         public LevelLoader levelLoader;
+        public GamePhaseState phaseState;
 
         private void Awake()
         {
             GameManager.instance.gameScene = this;
+
+            phaseState
+                .OnValueChanged
+                .ObserveOnMainThread()
+                .Subscribe(phase => ChangeGamePhase(phase))
+                .AddTo(this);
         }
 
         private async void Start()
@@ -38,17 +47,20 @@ namespace Game.Gameplay
             // TODO Setup everything
 
             // Set EnterLocationMode as default
-            EnterEchoLocationPhase();
+            phaseState.SetValue(GamePhase.EchoLocation);
         }
 
-        public void EnterEchoLocationPhase()
+        public void ChangeGamePhase(GamePhase phase)
         {
-            // TODO: change game state to echo location mode
-        }
-
-        public void EnterPlanningPhase()
-        {
-            // TODO: change game state to planning mode
+            switch (phase)
+            {
+                case GamePhase.EchoLocation:
+                    Debug.Log("Enter EchoLocation Phase");
+                    break;
+                case GamePhase.Planning:
+                    Debug.Log("Enter Planning Phase");
+                    break;
+            }
         }
 
         private async UniTask OnGameStart()

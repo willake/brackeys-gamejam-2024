@@ -36,36 +36,33 @@ namespace Game.UI
             btnEcho
                 .OnClickObservable
                 .ObserveOnMainThread()
-                .Subscribe(_ => SelectEchoLocationPhase())
+                .Subscribe(_ => _onPhaseSelect.Invoke(GamePhase.EchoLocation))
                 .AddTo(this);
 
             btnPlan
                 .OnClickObservable
                 .ObserveOnMainThread()
-                .Subscribe(_ => SelectPlanningPhase())
+                .Subscribe(_ => _onPhaseSelect.Invoke(GamePhase.Planning))
                 .AddTo(this);
-
-            SelectEchoLocationPhase();
         }
 
-        private void SelectEchoLocationPhase()
+        public void SetPhaseState(GamePhase phase)
         {
-            _onPhaseSelect.Invoke(GamePhase.EchoLocation);
-            backgroundBtnEcho.color = backgroundEnabled;
-            backgroundBtnPlan.color = backgroundDisabled;
-            btnEcho.SetTextColor(textEnabled);
-            btnPlan.SetTextColor(textDisabled);
-            _phase = GamePhase.EchoLocation;
-        }
-
-        private void SelectPlanningPhase()
-        {
-            _onPhaseSelect.Invoke(GamePhase.Planning);
-            backgroundBtnEcho.color = backgroundDisabled;
-            backgroundBtnPlan.color = backgroundEnabled;
-            btnEcho.SetTextColor(textDisabled);
-            btnPlan.SetTextColor(textEnabled);
-            _phase = GamePhase.Planning;
+            switch (phase)
+            {
+                case GamePhase.EchoLocation:
+                    backgroundBtnEcho.color = backgroundEnabled;
+                    backgroundBtnPlan.color = backgroundDisabled;
+                    btnEcho.SetTextColor(textEnabled);
+                    btnPlan.SetTextColor(textDisabled);
+                    break;
+                case GamePhase.Planning:
+                    backgroundBtnEcho.color = backgroundDisabled;
+                    backgroundBtnPlan.color = backgroundEnabled;
+                    btnEcho.SetTextColor(textDisabled);
+                    btnPlan.SetTextColor(textEnabled);
+                    break;
+            }
         }
 
         public class OnPhaseSelectEvent : UnityEvent<GamePhase>

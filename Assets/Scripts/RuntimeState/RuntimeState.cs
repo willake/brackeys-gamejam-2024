@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Game.RuntimeStates
 {
-    public class RuntimeState<T>
+    public class RuntimeState<T> : ScriptableObject
     {
         // public T value;
         [SerializeField]
@@ -15,7 +15,7 @@ namespace Game.RuntimeStates
             get => _value.AsObservable();
         }
 
-        void SetValue(T v)
+        public void SetValue(T v)
         {
             _value.Value = v;
         }
