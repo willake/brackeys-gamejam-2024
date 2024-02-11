@@ -153,6 +153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levelLoader: {fileID: 1865955073}
+  phaseState: {fileID: 11400000, guid: f47d0c941c247174e9e1d1dff7046d84, type: 2}
 --- !u!4 &789512049
 Transform:
   m_ObjectHideFlags: 0
