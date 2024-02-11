@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Game.UI;
+using Cysharp.Threading.Tasks;
 
 namespace Game.Gameplay
 {
@@ -9,13 +10,25 @@ namespace Game.Gameplay
     {
         private GameHUDPanel _gameHUDPanel;
 
+        [Header("References")]
+        public LevelLoader levelLoader;
+
         private void Awake()
         {
             GameManager.instance.gameScene = this;
         }
 
-        private void Start()
+        private async void Start()
         {
+            if (GameManager.instance)
+            {
+                await levelLoader.LoadLevel(GameManager.instance.levelToLoad);
+            }
+            else
+            {
+                await levelLoader.LoadLevel(AvailableLevel.Test);
+            }
+
             // TODO Show intro like "Game Start" 
 
             // Show Game HUD, it contains a button to switch between Echo Locating and Planning Mode
@@ -33,6 +46,12 @@ namespace Game.Gameplay
         public void EnterPlanningMode()
         {
             // TODO: change game state to planning mode
+        }
+
+        public async UniTask NavigateToMenu()
+        {
+            await levelLoader.UnloadCurrentLevel();
+            GameManager.instance.SwitchScene(AvailableScene.Menu);
         }
     }
 }
