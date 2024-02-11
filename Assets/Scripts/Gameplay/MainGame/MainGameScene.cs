@@ -30,9 +30,12 @@ namespace Game.Gameplay
             }
 
             // TODO Show intro like "Game Start" 
+            await OnGameStart();
 
             // Show Game HUD, it contains a button to switch between Echo Locating and Planning Mode
             _gameHUDPanel = UIManager.instance.OpenUI(AvailableUI.GameHUDPanel) as GameHUDPanel;
+
+            // TODO Setup everything
 
             // Set EnterLocationMode as default
             EnterEchoLocationMode();
@@ -46,6 +49,16 @@ namespace Game.Gameplay
         public void EnterPlanningMode()
         {
             // TODO: change game state to planning mode
+        }
+
+        private async UniTask OnGameStart()
+        {
+            await UniTask.CompletedTask;
+        }
+
+        private async UniTask OnGameEnd()
+        {
+            await UniTask.CompletedTask;
         }
 
         public async UniTask NavigateToMenu()
