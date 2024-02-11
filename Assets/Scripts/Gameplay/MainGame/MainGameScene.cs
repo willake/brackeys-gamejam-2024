@@ -38,15 +38,15 @@ namespace Game.Gameplay
             // TODO Setup everything
 
             // Set EnterLocationMode as default
-            EnterEchoLocationMode();
+            EnterEchoLocationPhase();
         }
 
-        public void EnterEchoLocationMode()
+        public void EnterEchoLocationPhase()
         {
             // TODO: change game state to echo location mode
         }
 
-        public void EnterPlanningMode()
+        public void EnterPlanningPhase()
         {
             // TODO: change game state to planning mode
         }
