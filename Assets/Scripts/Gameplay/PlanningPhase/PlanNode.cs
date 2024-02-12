@@ -14,6 +14,6 @@ namespace Game.Gameplay
     public struct PlanNode
     {
         public PlanNodeType nodeType;
-        public Vector3 destination;
+        public Vector2 destination;
     }
 }

@@ -13,6 +13,7 @@ namespace Game.Gameplay
         private GameHUDPanel _gameHUDPanel;
 
         [Header("References")]
+        public PlanningController planningController;
         public LevelLoader levelLoader;
         public GamePhaseState phaseState;
 
@@ -43,6 +44,7 @@ namespace Game.Gameplay
 
             // Show Game HUD, it contains a button to switch between Echo Locating and Planning Mode
             _gameHUDPanel = UIManager.instance.OpenUI(AvailableUI.GameHUDPanel) as GameHUDPanel;
+            planningController.planningPanel = UIManager.instance.OpenUI(AvailableUI.PlanningPanel) as PlanningPanel;
 
             // TODO Setup everything
 
@@ -56,9 +58,11 @@ namespace Game.Gameplay
             {
                 case GamePhase.EchoLocation:
                     Debug.Log("Enter EchoLocation Phase");
+                    planningController.canPlan = false;
                     break;
                 case GamePhase.Planning:
                     Debug.Log("Enter Planning Phase");
+                    planningController.canPlan = true;
                     break;
             }
         }
