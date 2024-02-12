@@ -123,6 +123,54 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &190824153
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 190824155}
+  - component: {fileID: 190824154}
+  m_Layer: 0
+  m_Name: PlanningController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &190824154
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 190824153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d4443aef210d054f8692026edd78e7a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planRuntimeState: {fileID: 11400000, guid: 550614af0b4bf294c93c8538688097f3, type: 2}
+  planningPanel: {fileID: 0}
+  canPlan: 0
+  maxSteps: 3
+--- !u!4 &190824155
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 190824153}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &789512047
 GameObject:
   m_ObjectHideFlags: 0
@@ -152,6 +200,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 614f704f5280b2f4ea9d73e8036e60b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  planningController: {fileID: 190824154}
   levelLoader: {fileID: 1865955073}
   phaseState: {fileID: 11400000, guid: f47d0c941c247174e9e1d1dff7046d84, type: 2}
 --- !u!4 &789512049
@@ -219,3 +268,4 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 789512049}
+  - {fileID: 190824155}

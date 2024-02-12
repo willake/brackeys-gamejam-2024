@@ -13,9 +13,15 @@ namespace Game.UI
     {
         public override AvailableUI Type => AvailableUI.PlanningPanel;
 
+        [Header("References")]
+        public PlanningActionList planningActionList;
+
         private void Start()
         {
-
+            planningActionList.onSelectActionObservable
+                .ObserveOnMainThread()
+                .Subscribe(_ => planningActionList.gameObject.SetActive(false))
+                .AddTo(this);
         }
 
         public override WDButton[] GetSelectableButtons()
@@ -30,10 +36,12 @@ namespace Game.UI
 
         public override void Open()
         {
+            OpenAsync().Forget();
         }
 
         public override async UniTask OpenAsync()
         {
+            planningActionList.gameObject.SetActive(false);
             await UniTask.CompletedTask;
         }
 
@@ -49,12 +57,16 @@ namespace Game.UI
         public async UniTask OpenActionList(Vector2 mousePosition)
         {
             await UniTask.CompletedTask;
+            planningActionList.gameObject.SetActive(true);
+            RectTransform listTransform = planningActionList.GetComponent<RectTransform>();
+            listTransform.anchoredPosition = mousePosition + (Vector2.up * 10) - (Vector2.right * listTransform.sizeDelta.x / 2);
         }
 
-        public async UniTask WaitForSelectAction()
+        public async UniTask<PlanActionType> WaitForSelectAction()
         {
-            await UniTask.CompletedTask;
-            // await UniTask<PlanActionType>.;
+            PlanActionType actionType = await planningActionList.onSelectActionObservable;
+            planningActionList.gameObject.SetActive(false);
+            return actionType;
         }
     }
 }
