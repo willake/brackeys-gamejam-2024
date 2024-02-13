@@ -18,10 +18,10 @@ namespace Game.UI
 
         private void Start()
         {
-            planningActionList.onSelectActionObservable
-                .ObserveOnMainThread()
-                .Subscribe(_ => planningActionList.gameObject.SetActive(false))
-                .AddTo(this);
+            // planningActionList.onSelectActionObservable
+            //     .ObserveOnMainThread()
+            //     .Subscribe(_ => planningActionList.gameObject.SetActive(false))
+            //     .AddTo(this);
         }
 
         public override WDButton[] GetSelectableButtons()
@@ -54,25 +54,15 @@ namespace Game.UI
             await UniTask.CompletedTask;
         }
 
-        public async UniTask OpenActionList(Vector2 mousePosition)
+        public void SetActionListVisible(bool isVisible)
         {
-            await UniTask.CompletedTask;
-            planningActionList.gameObject.SetActive(true);
-            RectTransform listTransform = planningActionList.GetComponent<RectTransform>();
-            listTransform.anchoredPosition = mousePosition + (Vector2.up * 10) - (Vector2.right * listTransform.sizeDelta.x / 2);
+            planningActionList.gameObject.SetActive(isVisible);
         }
 
-        public async UniTask CloseActionList()
+        public void HighlightAction(int idx)
         {
-            await UniTask.CompletedTask;
-            planningActionList.gameObject.SetActive(false);
-        }
-
-        public async UniTask<PlanActionType> WaitForSelectAction()
-        {
-            PlanActionType actionType = await planningActionList.onSelectActionObservable;
-            planningActionList.gameObject.SetActive(false);
-            return actionType;
+            planningActionList.Highlight(idx);
+            Debug.Log($"Highlight {idx}");
         }
     }
 }

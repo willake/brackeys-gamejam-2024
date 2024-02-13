@@ -50,19 +50,15 @@ namespace Game.Gameplay
             planRuntimeState.moveplans.Clear();
             planRuntimeState.actionPlans.Clear();
 
-            planningPanel.planningActionList
-                .onSelectActionObservable
-                .Where(_ => _currentState == PlanningStates.PlanAttackActionState)
-                .ObserveOnMainThread()
-                .Subscribe(HandleSelectAction)
-                .AddTo(this);
-
             attackPositionIndicator.gameObject.SetActive(false);
             attackDirectionIndicator.gameObject.SetActive(false);
             _actionDirectionPoses = new Vector3[2];
 
             _plannedMoves = 0;
             _plannedActions = 0;
+
+            planningPanel.planningActionList.Setup(maxActions);
+            planningPanel.SetActionListVisible(false);
 
             SetState(PlanningStates.PlanMoveState);
         }
@@ -106,7 +102,7 @@ namespace Game.Gameplay
             }
             else if (_currentState.canPlanAttackPosition)
             {
-                SetState(PlanningStates.PlanAttackActionState);
+                SetState(PlanningStates.PlanAttackDirectionState);
             }
             else if (_currentState.canPlanAttackDirection)
             {
@@ -116,13 +112,7 @@ namespace Game.Gameplay
 
         private void HandleRightClick()
         {
-        }
-
-        private void HandleSelectAction(PlanActionType actionType)
-        {
-            _actionType = actionType;
-
-            SetState(PlanningStates.PlanAttackDirectionState);
+            // TODO implement undo feature
         }
 
         private void UpdateAttackPositionIndicator(Vector2 mouseWorldPos)
@@ -179,33 +169,42 @@ namespace Game.Gameplay
         private void SetState(IPlanningState state)
         {
             // handle exit state
-            if (_currentState == PlanningStates.PlanAttackActionState)
-            {
-                planningPanel.CloseActionList().Forget();
-            }
-            else if (_currentState == PlanningStates.PlanAttackPositionState)
-            {
-                // attackPositionIndicator.gameObject.SetActive(false);
-            }
-            else if (_currentState == PlanningStates.PlanAttackDirectionState)
-            {
-                attackDirectionIndicator.gameObject.SetActive(false);
-            }
+            OnExitState(_currentState, state);
 
             _currentState = state;
             Debug.Log($"Enter State: {_currentState.name}");
 
             // handle enter state
-            if (state == PlanningStates.PlanAttackActionState)
+            OnEnterState(state);
+        }
+
+        private void OnExitState(IPlanningState prev, IPlanningState next)
+        {
+            if (prev == PlanningStates.PlanMoveState &&
+                next == PlanningStates.PlanAttackPositionState)
             {
-                // get the move destination, open the action list above it
-                // PlanNode last = planRuntimeState.Value.Last();
-                Vector2 screenPos = Camera.main.WorldToScreenPoint(_actionPosition);
-                planningPanel.OpenActionList(_actionPosition).Forget();
+                planningPanel.SetActionListVisible(true);
             }
-            else if (state == PlanningStates.PlanAttackPositionState)
+            else if (prev == PlanningStates.PlanAttackDirectionState &&
+                    next != PlanningStates.PlanAttackPositionState)
+            {
+                attackPositionIndicator.gameObject.SetActive(false);
+                attackDirectionIndicator.gameObject.SetActive(false);
+                planningPanel.SetActionListVisible(false);
+            }
+
+            if (prev == PlanningStates.PlanAttackDirectionState)
+            {
+                attackDirectionIndicator.gameObject.SetActive(false);
+            }
+        }
+
+        private void OnEnterState(IPlanningState state)
+        {
+            if (state == PlanningStates.PlanAttackPositionState)
             {
                 attackPositionIndicator.gameObject.SetActive(true);
+                planningPanel.HighlightAction(_plannedActions);
             }
             else if (state == PlanningStates.PlanAttackDirectionState)
             {
@@ -214,7 +213,7 @@ namespace Game.Gameplay
             }
         }
 
-        public void AddMovePlan(Vector2 destination)
+        private void AddMovePlan(Vector2 destination)
         {
             planRuntimeState.moveplans.Add(
                 new MovePlanNode()
@@ -228,10 +227,9 @@ namespace Game.Gameplay
             _plannedMoves += 1;
 
             if (_plannedMoves >= maxMoves) SetState(PlanningStates.PlanAttackPositionState);
-            else SetState(PlanningStates.PlanMoveState);
         }
 
-        public void AddActionPlan(PlanActionType actionType, Vector2 destination)
+        private void AddActionPlan(PlanActionType actionType, Vector2 destination)
         {
             Vector2 direction = (destination - _actionPosition).normalized;
             planRuntimeState.actionPlans.Add(
@@ -248,18 +246,6 @@ namespace Game.Gameplay
             if (_plannedActions >= maxActions) SetState(PlanningStates.IdleState);
             else SetState(PlanningStates.PlanAttackPositionState);
         }
-
-        // private bool IsLieOnSegment(Vector2 p, Vector2 a, Vector2 b)
-        // {
-        //     Vector2 AP = p - a;
-        //     Vector2 AB = b - a;
-        //     float length = AB.magnitude;
-        //     float cross = AP.x * AB.y - AP.y * AB.x;
-        //     float dot = Vector2.Dot(AP, AB);
-
-        //     if (cross > 0) return false;
-
-        // }
     }
 
     public enum PlanActionType

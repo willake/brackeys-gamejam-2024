@@ -11,30 +11,36 @@ namespace Game.UI
     public class PlanningActionList : MonoBehaviour
     {
         [Header("References")]
-        public WDButton btnAttack;
-        public WDButton btnIdle;
+        public GameObject prefabItem;
 
-        public OnSelectActionEvent onSelectActionEvent = new OnSelectActionEvent();
-        public IObservable<PlanActionType> onSelectActionObservable
+        private PlanningActionItem[] items;
+        public void Setup(int count)
         {
-            get => onSelectActionEvent.AsObservable();
+            if (items != null && items.Length > 0)
+            {
+                foreach (var item in items)
+                {
+                    // bad for performance, will fix it if this project goes further
+                    Destroy(item.gameObject);
+                }
+            }
+            items = new PlanningActionItem[count];
+            for (int i = 0; i < count; i++)
+            {
+                GameObject itemObj = Instantiate(prefabItem, transform);
+                itemObj.name = $"Action {i}";
+                items[i] = itemObj.GetComponent<PlanningActionItem>();
+            }
         }
 
-        private void Start()
+        public void Highlight(int idx)
         {
-            btnAttack
-                .OnClickObservable
-                .ObserveOnMainThread()
-                .Subscribe(_ => onSelectActionEvent.Invoke(PlanActionType.Attack))
-                .AddTo(this);
+            if (idx >= items.Length) return;
 
-            btnIdle
-                .OnClickObservable
-                .ObserveOnMainThread()
-                .Subscribe(_ => onSelectActionEvent.Invoke(PlanActionType.Idle))
-                .AddTo(this);
+            for (int i = 0; i < items.Length; i++)
+            {
+                items[i].SetEnabled(i == idx);
+            }
         }
-
-        public class OnSelectActionEvent : UnityEvent<PlanActionType> { }
     }
 }
