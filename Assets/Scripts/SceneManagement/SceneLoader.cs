@@ -58,6 +58,8 @@ namespace Game
                     return ResourceManager.instance.sceneResources.menu.GetSceneNameByPath();
                 case AvailableScene.MainGame:
                     return ResourceManager.instance.sceneResources.game.GetSceneNameByPath();
+                case AvailableScene.EchoLocationTest:
+                    return ResourceManager.instance.sceneResources.echoLocation.GetSceneNameByPath();
             }
         }
 
