@@ -20,6 +20,7 @@ namespace Game.Gameplay
         public PlanningPanel planningPanel;
         public GameObject[] destinations;
         public LineRenderer[] paths;
+        public LineRenderer[] attackDirections;
         public LineRenderer direction;
         public Vector3[] directionPoses;
 
@@ -62,6 +63,10 @@ namespace Game.Gameplay
             {
                 path.gameObject.SetActive(false);
             }
+            foreach (var attackDirection in attackDirections)
+            {
+                attackDirection.gameObject.SetActive(false);
+            }
 
             direction.gameObject.SetActive(false);
             directionPoses = new Vector3[2];
@@ -72,7 +77,7 @@ namespace Game.Gameplay
         }
         private void Update()
         {
-            if (canPlan == false) return;
+            if (canPlan == false || _currentState == null) return;
             if (Input.GetKeyDown(KeyCode.Mouse0))
             {
                 Vector3 mousePos = Input.mousePosition;
@@ -87,27 +92,27 @@ namespace Game.Gameplay
 
             if (_currentState.canPlanAttackDirection)
             {
+                _actionPosition.z = 0;
                 Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                mouseWorldPos.z = 0;
                 Vector3 d = mouseWorldPos - _actionPosition;
                 directionPoses[0] = _actionPosition;
                 directionPoses[1] = _actionPosition + d.normalized;
-                directionPoses[0].z = 0;
-                directionPoses[1].z = 0;
                 direction.SetPositions(directionPoses);
             }
         }
 
         private void HandleLeftClick(Vector3 mousePos, Vector3 mouseWorldPos)
         {
-            _lastMousePos = mousePos;
-            _lastMouseWorldPos = mouseWorldPos;
             if (_currentState.canPlanMove)
             {
+                _lastMousePos = mousePos;
+                _lastMouseWorldPos = mouseWorldPos;
                 AddMovePlan(mouseWorldPos);
             }
             else if (_currentState.canPlanAttackDirection)
             {
-                AddActionPlan(PlanActionType.Attack, Vector2.zero);
+                AddActionPlan(PlanActionType.Attack, mouseWorldPos);
             }
         }
 
@@ -226,7 +231,7 @@ namespace Game.Gameplay
             for (int i = 0; i < planNodes.Length; i++)
             {
                 PlanNodeType nodeType = planNodes[i].nodeType;
-                Vector3 destination = planNodes[i].destination;
+                Vector2 destination = planNodes[i].destination;
 
                 if (nodeType == PlanNodeType.Move)
                 {
@@ -242,6 +247,14 @@ namespace Game.Gameplay
 
                     lastDestination = destination;
                     movePlanIdx += 1;
+                }
+                else if (nodeType == PlanNodeType.Attack)
+                {
+                    attackDirections[attackPlanIdx].gameObject.SetActive(true);
+                    var line = attackDirections[attackPlanIdx];
+                    Vector2 d = destination - lastDestination;
+                    line.SetPositions(new Vector3[] { lastDestination, lastDestination + d.normalized });
+                    attackPlanIdx += 1;
                 }
             }
         }
