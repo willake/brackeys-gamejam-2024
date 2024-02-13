@@ -15,5 +15,9 @@ namespace Game
         [SerializeField]
         [Scene]
         public string game;
+        [FormerlySerializedAs("EchoLocation")]
+        [SerializeField]
+        [Scene]
+        public string echoLocation;
     }
 }
