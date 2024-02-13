@@ -12,6 +12,7 @@ using UniRx;
 using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 
 namespace Game.Gameplay
 {
@@ -65,6 +66,8 @@ namespace Game.Gameplay
         private void Update()
         {
             if (canPlan == false || _currentState == null) return;
+
+            if (EventSystem.current.IsPointerOverGameObject()) return;
             if (Input.GetKeyDown(KeyCode.Mouse0))
             {
                 Vector3 mousePos = Input.mousePosition;
