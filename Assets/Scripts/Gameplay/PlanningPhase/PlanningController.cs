@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Codice.CM.WorkspaceServer.DataStore;
 using Cysharp.Threading.Tasks;
 using Game.RuntimeStates;
@@ -8,6 +9,7 @@ using Game.UI;
 using UniRx;
 using UnityEditorInternal;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Game.Gameplay
 {
@@ -18,30 +20,36 @@ namespace Game.Gameplay
         public PlanningPanel planningPanel;
         public GameObject[] destinations;
         public LineRenderer[] paths;
+        public LineRenderer direction;
+        public Vector3[] directionPoses;
 
-        private PlanState _planningState;
+        private Vector3 _lastMousePos;
+        private Vector3 _lastMouseWorldPos;
+        private PlanActionType _selectedActionType = PlanActionType.Idle;
+        private Vector3 _actionPosition;
+        private IPlanningState _currentState;
+        private int _planningIdx = 0;
         private int _plannedSteps = 0;
+
+        private UnityEvent _onMouseClick = new UnityEvent();
+        private CancellationTokenSource _cts = new CancellationTokenSource();
 
         [Header("Settings")]
         public bool canPlan = false;
         public int maxSteps = 3;
-        private Vector3 _lastMousePos;
-        private Vector3 _lastMouseWorldPos;
-
         public void Init()
         {
-            _planningState = PlanState.PlanMove;
             planRuntimeState.Value.Clear();
 
             planningPanel.planningActionList
                 .onSelectActionObservable
-                .Where(_ => _planningState == PlanState.PlanAction)
+                .Where(_ => _currentState == PlanningStates.PlanAttackState)
                 .ObserveOnMainThread()
-                .Subscribe(actionType => AddActionPlan(actionType, Vector2.zero))
+                .Subscribe(HandleActionSelect)
                 .AddTo(this);
 
-            planRuntimeState.Value
-                .ObserveCountChanged()
+            planRuntimeState
+                .onChangedObservable
                 .ObserveOnMainThread()
                 .Subscribe(_ => PresentPlan(planRuntimeState.Value.ToArray()))
                 .AddTo(this);
@@ -54,43 +62,125 @@ namespace Game.Gameplay
             {
                 path.gameObject.SetActive(false);
             }
-        }
 
+            direction.gameObject.SetActive(false);
+            directionPoses = new Vector3[2];
+
+            _planningIdx = -1;
+
+            RequestNextPlanNode();
+        }
         private void Update()
         {
-            if (canPlan && Input.GetKeyDown(KeyCode.Mouse0))
+            if (canPlan == false) return;
+            if (Input.GetKeyDown(KeyCode.Mouse0))
             {
                 Vector3 mousePos = Input.mousePosition;
                 Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(mousePos);
                 Debug.Log($"mouse click at {mousePos}, with world pos {mouseWorldPos}");
-                HandleClick(mousePos, mouseWorldPos);
+                HandleLeftClick(mousePos, mouseWorldPos);
+            }
+            else if (Input.GetKeyDown(KeyCode.Mouse1))
+            {
+                HandleRightClick();
+            }
+
+            if (_currentState.canPlanAttackDirection)
+            {
+                Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                Vector3 d = mouseWorldPos - _actionPosition;
+                directionPoses[0] = _actionPosition;
+                directionPoses[1] = _actionPosition + d.normalized;
+                directionPoses[0].z = 0;
+                directionPoses[1].z = 0;
+                direction.SetPositions(directionPoses);
             }
         }
 
-        private void HandleClick(Vector3 mousePos, Vector3 mouseWorldPos)
+        private void HandleLeftClick(Vector3 mousePos, Vector3 mouseWorldPos)
         {
             _lastMousePos = mousePos;
             _lastMouseWorldPos = mouseWorldPos;
-            if (_planningState == PlanState.PlanMove)
+            if (_currentState.canPlanMove)
             {
                 AddMovePlan(mouseWorldPos);
             }
+            else if (_currentState.canPlanAttackDirection)
+            {
+                AddActionPlan(PlanActionType.Attack, Vector2.zero);
+            }
         }
 
-        private void ChangeState(PlanState state)
+        private void HandleRightClick()
+        {
+            RequestPrevPlanNode();
+        }
+
+        private void HandleActionSelect(PlanActionType actionType)
+        {
+            _selectedActionType = actionType;
+
+            if (actionType == PlanActionType.Idle)
+            {
+                AddActionPlan(PlanActionType.Idle, Vector2.zero);
+            }
+            else
+            {
+                SetState(PlanningStates.PlanAttackDirectionState);
+            }
+        }
+
+        private void SetState(IPlanningState state)
         {
             // handle exit state
+            if (_currentState == PlanningStates.PlanAttackState)
+            {
+                planningPanel.CloseActionList().Forget();
+            }
+            else if (_currentState == PlanningStates.PlanAttackDirectionState)
+            {
+                direction.gameObject.SetActive(false);
+            }
 
-            _planningState = state;
+            _currentState = state;
 
             // handle enter state
-            if (state == PlanState.PlanAction)
+            if (state == PlanningStates.PlanAttackState)
             {
                 // get the move destination, open the action list above it
                 // PlanNode last = planRuntimeState.Value.Last();
                 planningPanel.OpenActionList(_lastMousePos).Forget();
             }
+            else if (state == PlanningStates.PlanAttackDirectionState)
+            {
+                // show direction selecting
+                direction.gameObject.SetActive(true);
+            }
+        }
 
+        private void RequestPrevPlanNode()
+        {
+            if (_planningIdx <= 0) return;
+
+            planRuntimeState.Value.RemoveAt(_planningIdx);
+            _planningIdx -= 1;
+
+            if (_planningIdx % 2 == 0) SetState(PlanningStates.PlanMoveState);
+            else SetState(PlanningStates.PlanAttackState);
+        }
+
+        private void RequestNextPlanNode()
+        {
+            if (_planningIdx >= maxSteps * 2 - 1)
+            {
+                SetState(PlanningStates.IdleState);
+                return;
+            }
+
+            _planningIdx += 1;
+
+            if (_planningIdx % 2 == 0) SetState(PlanningStates.PlanMoveState);
+            else SetState(PlanningStates.PlanAttackState);
         }
 
         public void AddMovePlan(Vector2 destination)
@@ -102,8 +192,9 @@ namespace Game.Gameplay
                     destination = destination
                 }
             );
+            _actionPosition = destination;
             Debug.Log("Add a move plan");
-            ChangeState(PlanState.PlanAction);
+            RequestNextPlanNode();
         }
 
         public void AddActionPlan(PlanActionType actionType, Vector2 destination)
@@ -124,20 +215,11 @@ namespace Game.Gameplay
                 Debug.Log("Add an idle plan");
             }
 
-            _plannedSteps += 1;
-            if (_plannedSteps >= maxSteps)
-            {
-                ChangeState(PlanState.End);
-            }
-            else
-            {
-                ChangeState(PlanState.PlanMove);
-            }
+            RequestNextPlanNode();
         }
 
         public void PresentPlan(PlanNode[] planNodes)
         {
-            Debug.Log("Update plan");
             int movePlanIdx = 0;
             int attackPlanIdx = 0;
             Vector2 lastDestination = Vector2.zero;
@@ -162,13 +244,6 @@ namespace Game.Gameplay
                     movePlanIdx += 1;
                 }
             }
-        }
-
-        public enum PlanState
-        {
-            PlanMove,
-            PlanAction,
-            End
         }
     }
 

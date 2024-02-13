@@ -62,6 +62,12 @@ namespace Game.UI
             listTransform.anchoredPosition = mousePosition + (Vector2.up * 10) - (Vector2.right * listTransform.sizeDelta.x / 2);
         }
 
+        public async UniTask CloseActionList()
+        {
+            await UniTask.CompletedTask;
+            planningActionList.gameObject.SetActive(false);
+        }
+
         public async UniTask<PlanActionType> WaitForSelectAction()
         {
             PlanActionType actionType = await planningActionList.onSelectActionObservable;

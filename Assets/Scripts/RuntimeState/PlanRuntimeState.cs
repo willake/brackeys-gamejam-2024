@@ -9,5 +9,11 @@ namespace Game.RuntimeStates
     public class PlanRuntimeState : ScriptableObject
     {
         public ReactiveCollection<PlanNode> Value;
+
+        public IObservable<Unit> onChangedObservable
+        {
+            get => Value.ObserveCountChanged().AsUnitObservable()
+                .Merge(Value.ObserveReplace().AsUnitObservable());
+        }
     }
 }
