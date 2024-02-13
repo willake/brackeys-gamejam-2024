@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5f73888fd0cf6543a2f10992ac5e80a, type: 3}
   m_Name: Scene Resources
   m_EditorClassIdentifier: 
-  Menu: Assets/StaticAssets/Scenes/Menu.unity
-  Game: Assets/StaticAssets/Scenes/MainGame.unity
+  menu: Assets/StaticAssets/Scenes/Menu.unity
+  game: Assets/StaticAssets/Scenes/MainGame.unity
+  echoLocation: Assets/StaticAssets/Scenes/EchoLocationTest.unity
