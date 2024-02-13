@@ -8,12 +8,15 @@ namespace Game.RuntimeStates
     [CreateAssetMenu(fileName = "PlanRuntimeState", menuName = "MyGame/RuntimeStates/PlanRuntimeState", order = 0)]
     public class PlanRuntimeState : ScriptableObject
     {
-        public ReactiveCollection<PlanNode> Value;
+        public ReactiveCollection<MovePlanNode> moveplans;
+        public ReactiveCollection<ActionPlanNode> actionPlans;
 
         public IObservable<Unit> onChangedObservable
         {
-            get => Value.ObserveCountChanged().AsUnitObservable()
-                .Merge(Value.ObserveReplace().AsUnitObservable());
+            get => moveplans.ObserveCountChanged().AsUnitObservable()
+                .Merge(moveplans.ObserveReplace().AsUnitObservable())
+                .Merge(actionPlans.ObserveCountChanged().AsUnitObservable())
+                .Merge(actionPlans.ObserveReplace().AsUnitObservable());
         }
     }
 }

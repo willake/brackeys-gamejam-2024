@@ -45,7 +45,7 @@ namespace Game.Gameplay
             // Show Game HUD, it contains a button to switch between Echo Locating and Planning Mode
             _gameHUDPanel = UIManager.instance.OpenUI(AvailableUI.GameHUDPanel) as GameHUDPanel;
             planningController.planningPanel = UIManager.instance.OpenUI(AvailableUI.PlanningPanel) as PlanningPanel;
-            planningController.Init();
+            planningController.Init(new Vector2(0, -1));
 
             // TODO Setup everything
 

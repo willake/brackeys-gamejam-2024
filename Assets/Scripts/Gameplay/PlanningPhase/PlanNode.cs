@@ -11,9 +11,17 @@ namespace Game.Gameplay
         Attack
     }
     [System.Serializable]
-    public struct PlanNode
+    public struct MovePlanNode
     {
-        public PlanNodeType nodeType;
+        public Vector2 start;
         public Vector2 destination;
+    }
+
+    [System.Serializable]
+    public struct ActionPlanNode
+    {
+        public int pathIdx;
+        public Vector2 attackPosition;
+        public Vector2 direction;
     }
 }
