@@ -7,6 +7,7 @@ namespace Game.Gameplay
     {
         [Header("References")]
         public Transform startPoint;
+        public Character[] enemies;
 
         private void Start()
         {
