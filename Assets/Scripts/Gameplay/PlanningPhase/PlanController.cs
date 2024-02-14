@@ -19,14 +19,11 @@ namespace Game.Gameplay
     public class PlanController : MonoBehaviour
     {
         [Header("References")]
-        public PlanPresenter planPresenter;
         public PlanRuntimeState planRuntimeState;
         public PlanningPanel planningPanel;
         public GameObject attackPositionIndicator;
         public LineRenderer attackDirectionIndicator;
 
-        private Vector3 _lastMousePos;
-        private Vector3 _lastMouseWorldPos;
         private IPlanningState _currentState;
 
         // move plan related
@@ -100,8 +97,6 @@ namespace Game.Gameplay
         {
             if (_currentState.canPlanMove)
             {
-                _lastMousePos = mousePos;
-                _lastMouseWorldPos = mouseWorldPos;
                 AddMovePlan(mouseWorldPos);
             }
             else if (_currentState.canPlanAttackPosition)

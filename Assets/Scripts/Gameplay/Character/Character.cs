@@ -70,6 +70,7 @@ namespace Game.Gameplay
                 if (distanceToDestination < 0.01f)
                 {
                     isMoving = false;
+                    GetCharacterAnimator().SetMoveSpeed(0, 0, 0);
                     _onArriveDestination.Invoke();
                 }
             }

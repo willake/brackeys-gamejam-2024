@@ -11,6 +11,7 @@ namespace Game.Gameplay
     {
         [Header("References")]
         public PlanRuntimeState planRuntimeState;
+        public GameObject root;
         public GameObject[] movementDestinations;
         public LineRenderer[] movementPaths;
         public GameObject[] attackPositions;
@@ -25,11 +26,6 @@ namespace Game.Gameplay
                     planRuntimeState.moveplans.ToArray(), planRuntimeState.actionPlans.ToArray()))
                 .AddTo(this);
 
-            Hide();
-        }
-
-        private void Hide()
-        {
             foreach (var point in movementDestinations)
             {
                 point.gameObject.SetActive(false);
@@ -46,6 +42,11 @@ namespace Game.Gameplay
             {
                 attackDirection.gameObject.SetActive(false);
             }
+        }
+
+        public void SetVisisble(bool visible)
+        {
+            root.gameObject.SetActive(visible);
         }
 
         private void PresentPlan(MovePlanNode[] movePlans, ActionPlanNode[] actionPlans)

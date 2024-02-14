@@ -17,6 +17,7 @@ namespace Game.Gameplay
         [Header("References")]
         public GameObject prefabPlayer;
         public PlanController planController;
+        public PlanPresenter planPresenter;
         public PlanPerformer planPerformer;
         public LevelLoader levelLoader;
         public GamePhaseState phaseState;
@@ -94,10 +95,12 @@ namespace Game.Gameplay
                 case GamePhase.EchoLocation:
                     Debug.Log("Enter EchoLocation Phase");
                     planController.canPlan = false;
+                    planPresenter.SetVisisble(false);
                     break;
                 case GamePhase.Planning:
                     Debug.Log("Enter Planning Phase");
                     planController.canPlan = true;
+                    planPresenter.SetVisisble(true);
                     break;
             }
         }
