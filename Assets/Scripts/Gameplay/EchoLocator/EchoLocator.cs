@@ -17,11 +17,17 @@ public class EchoLocator : MonoBehaviour
     [SerializeField]
     private LineRenderer _lineRenderer;
     [SerializeField]
+    private GameObject _trailPrefab;
+    [SerializeField]
+    private LineRenderer[] _trailRenderer;
+    [SerializeField]
     private float _angle = -90;
     [SerializeField]
     private Transform _door;
     [SerializeField]
     private int _maxBounce;
+    [SerializeField]
+    private int _shotNumber;
     [SerializeField]
     private Material lineMat;
     [SerializeField]
@@ -29,12 +35,13 @@ public class EchoLocator : MonoBehaviour
     [SerializeField]
     private GameObject _pointLightParent;
 
-    private float _positionParam = 0.0f;
+    private float _positionParam;
 
     private Transform[] _lightPoints;
     private Vector2[] _bouncePoints;
     private float[] _distances;
-    private float _pathLength = 0.0f;
+    private float _pathLength;
+    private int _currentShot;
     private bool _shot;
     private bool _ended;
 
@@ -105,36 +112,68 @@ public class EchoLocator : MonoBehaviour
 
     }
 
-    private Vector2 traceSoundRay(float t)
+    private void traceSoundRay(float t)
     {
-        float targetLength = t * _pathLength;
-        float startLength = 0;
-        float endLength = _distances[0];
+        float frontParam = Mathf.Min(t, 1.0f);
+        float trailParam = Mathf.Max(t - 0.2f, 0.0f);
+
+        float targetLength = frontParam * _pathLength;
+        float trailLength = trailParam * _pathLength;
+
+        float segmentStart = 0;
+        float segmentEnd = _distances[0];
+
         int segmentID = 0;
 
-        while (targetLength > endLength)
+        while (trailLength > 0 && trailLength > segmentEnd)
         {
-            startLength += _distances[segmentID];
-            endLength += _distances[++segmentID];
+            segmentStart += _distances[segmentID];
+            segmentEnd += _distances[++segmentID];
         }
-        startLength /= _pathLength;
-        endLength /= _pathLength;
+        segmentStart /= _pathLength;
+        segmentEnd /= _pathLength;
 
-        if(_lineRenderer.positionCount <= segmentID +1)
+        Vector2 startTrailSegment;
+        Vector2 endTrailSegment = _bouncePoints[segmentID];
+        if (segmentID == 0)
+            startTrailSegment = rayOrigin();
+        else
+            startTrailSegment = _bouncePoints[segmentID - 1];
+
+        Vector2 pos = startTrailSegment + (endTrailSegment - startTrailSegment) * ((trailParam - segmentStart) / (segmentEnd - segmentStart));
+
+        for(int i = 0; i <= segmentID; i++)
+            _lineRenderer.SetPosition(i, pos);
+
+        if (_trailRenderer[_currentShot].positionCount <= segmentID + 1)
+            _trailRenderer[_currentShot].positionCount = segmentID + 2;
+        _trailRenderer[_currentShot].SetPosition(segmentID + 1, pos);
+
+        segmentStart = 0;
+        segmentEnd = _distances[0];
+        segmentID = 0;
+
+        while (targetLength > segmentEnd)
+        {
+            segmentStart += _distances[segmentID];
+            segmentEnd += _distances[++segmentID];
+        }
+        segmentStart /= _pathLength;
+        segmentEnd /= _pathLength;
+
+        if (_lineRenderer.positionCount <= segmentID + 1)
             _lineRenderer.positionCount = segmentID + 2;
 
         Vector2 startPos;
+        Vector2 endPos = _bouncePoints[segmentID];
         if (segmentID == 0)
             startPos = rayOrigin();
         else
             startPos = _bouncePoints[segmentID - 1];
 
-        Vector2 endPos = _bouncePoints[segmentID];
-
-        Vector2 pos = startPos + (endPos - startPos) * ((t - startLength) / (endLength - startLength));
+        pos = startPos + (endPos - startPos) * ((frontParam - segmentStart) / (segmentEnd - segmentStart));
         _lineRenderer.SetPosition(segmentID + 1, pos);
-        _lightPoints[segmentID + 1].position = new Vector3(pos.x, pos.y, -1.5f);
-        return pos;
+        _lightPoints[(_currentShot) * (_maxBounce + 2) + segmentID + 1].position = new Vector3(pos.x, pos.y, -1.5f);
     }
 
     // Start is called before the first frame update
@@ -142,14 +181,23 @@ public class EchoLocator : MonoBehaviour
     {
         _shot = false;
         _ended = false;
+        _currentShot = 0;
+        _pathLength = 0.0f;
+        _positionParam = 0.0f;
+
+        _trailRenderer = new LineRenderer[_shotNumber];
+        for(int i = 0; i < _shotNumber; i++)
+            _trailRenderer[i] = Instantiate(_trailPrefab, transform).GetComponent<LineRenderer>();
 
         _lineRenderer.positionCount = 2;
+        _trailRenderer[0].positionCount = 1;
+        _trailRenderer[0].SetPosition(0, rayOrigin() );
 
-        _lightPoints = new Transform[_maxBounce + 2];
+        _lightPoints = new Transform[(_maxBounce + 2) * _shotNumber];
         _bouncePoints = new Vector2[_maxBounce + 1];
         _distances = new float[_maxBounce + 1];
 
-        for (int i = 0; i < _maxBounce + 2; i++)
+        for (int i = 0; i < (_maxBounce + 2) * _shotNumber; i++)
         {
             _lightPoints[i] = Instantiate(_pointLightPrefab, _pointLightParent.transform).transform;
             _lightPoints[i].position = rayOrigin();
@@ -163,7 +211,7 @@ public class EchoLocator : MonoBehaviour
     void Update()
     {
 
-        if (!_shot)
+        if (!_shot & _currentShot < _shotNumber)
         {
             updateAngle(Camera.main.ScreenToWorldPoint(Input.mousePosition));
             updateDir();
@@ -174,15 +222,31 @@ public class EchoLocator : MonoBehaviour
 
         if (_shot & !_ended)
         {
-            _positionParam += Time.deltaTime * 0.33f;
+            _positionParam += Time.deltaTime * 0.2f;
 
-            if(_positionParam > 1.0f)
+            if(_positionParam > 1.2f)
             {
-                _positionParam = 1.0f;
-                _ended = true;
+                _positionParam = 0.0f;
+                _pathLength = 0.0f;
+                _lineRenderer.positionCount = 0;
+                _ended = false;
+                _shot = false;
+                _currentShot++;
+
+                if (_currentShot < _shotNumber)
+                {
+                    _trailRenderer[_currentShot].positionCount = 1;
+                    _trailRenderer[_currentShot].SetPosition(0, rayOrigin());
+                    _lineRenderer.positionCount = 2;
+                    _lineRenderer.SetPosition(0, rayOrigin());
+                }
+
+            } else
+            {
+                traceSoundRay(_positionParam);
             }
-            traceSoundRay(_positionParam);
         }
+
             
 
     }
