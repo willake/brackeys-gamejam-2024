@@ -63,7 +63,7 @@ namespace Game.Gameplay
             if (isMoving)
             {
                 float step = speed * Time.deltaTime;
-                Vector2.MoveTowards(transform.position, _destination, step);
+                transform.position = Vector2.MoveTowards(transform.position, _destination, step);
 
                 float distanceToDestination = Vector2.Distance(transform.position, _destination);
 
