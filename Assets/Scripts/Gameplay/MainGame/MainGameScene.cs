@@ -11,8 +11,10 @@ namespace Game.Gameplay
     public class MainGameScene : GameScene
     {
         private GameHUDPanel _gameHUDPanel;
+        private Level _level;
 
         [Header("References")]
+        public GameObject prefabPlayer;
         public PlanningController planningController;
         public LevelLoader levelLoader;
         public GamePhaseState phaseState;
@@ -38,6 +40,14 @@ namespace Game.Gameplay
             {
                 await levelLoader.LoadLevel(AvailableLevel.Test);
             }
+        }
+
+        public async UniTask StartLevel(Level level)
+        {
+            _level = level;
+
+            // spawn character
+            GeneratePlayer(level.transform, level.startPoint.position);
 
             // TODO Show intro like "Game Start" 
             await OnGameStart();
@@ -45,12 +55,19 @@ namespace Game.Gameplay
             // Show Game HUD, it contains a button to switch between Echo Locating and Planning Mode
             _gameHUDPanel = UIManager.instance.OpenUI(AvailableUI.GameHUDPanel) as GameHUDPanel;
             planningController.planningPanel = UIManager.instance.OpenUI(AvailableUI.PlanningPanel) as PlanningPanel;
-            planningController.Init(new Vector2(0, -1));
+            planningController.Init(level.startPoint.position);
 
             // TODO Setup everything
 
             // Set EnterLocationMode as default
             phaseState.SetValue(GamePhase.EchoLocation);
+        }
+
+        public void GeneratePlayer(Transform parent, Vector3 position)
+        {
+            GameObject playerObj = Instantiate(prefabPlayer, parent);
+            playerObj.name = "NinjaPlayer";
+            playerObj.transform.position = position;
         }
 
         public void ChangeGamePhase(GamePhase phase)

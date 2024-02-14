@@ -45,7 +45,7 @@ namespace Game.Gameplay
         public int maxMoves = 3;
         public int maxActions = 3;
 
-        public void Init(Vector2 startPoint)
+        public void Init(Vector3 startPoint)
         {
             _startPoint = startPoint;
             planRuntimeState.moveplans.Clear();

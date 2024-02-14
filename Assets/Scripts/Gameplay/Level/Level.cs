@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace Game.Gameplay
@@ -6,5 +7,11 @@ namespace Game.Gameplay
     {
         [Header("References")]
         public Transform startPoint;
+
+        private void Start()
+        {
+            MainGameScene gameScene = GameManager.instance.gameScene as MainGameScene;
+            gameScene.StartLevel(this).Forget();
+        }
     }
 }
