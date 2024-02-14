@@ -16,6 +16,7 @@ namespace Game.Gameplay
 
         [Header("References")]
         public GameObject prefabPlayer;
+        public EchoLocator echoLocator;
         public PlanController planController;
         public PlanPresenter planPresenter;
         public PlanPerformer planPerformer;
@@ -51,6 +52,9 @@ namespace Game.Gameplay
 
             // spawn character
             _player = GeneratePlayer(level.transform, level.startPoint.position);
+
+            echoLocator._door = _player.transform;
+            echoLocator.Init();
 
             // TODO Show intro like "Game Start" 
             await OnGameStart();
