@@ -10,8 +10,12 @@ namespace Game.Gameplay
     {
         public PlanRuntimeState planRuntimeState;
 
+        private bool _isPlaying = false;
+        public bool IsPlaying { get => _isPlaying; }
+
         public async void PerformPlan(Character character)
         {
+            _isPlaying = false;
             // extract the plan
             List<PerformerPlanNode> plans =
                 ExtractPlans(planRuntimeState.moveplans.ToArray(), planRuntimeState.actionPlans.ToArray());
@@ -28,6 +32,7 @@ namespace Game.Gameplay
                     await character.AttackAsync(plan.v1);
                 }
             }
+            _isPlaying = true;
         }
 
         private List<PerformerPlanNode> ExtractPlans(MovePlanNode[] movePlans, ActionPlanNode[] actionPlans)
