@@ -16,7 +16,7 @@ using UnityEngine.EventSystems;
 
 namespace Game.Gameplay
 {
-    public class PlanningController : MonoBehaviour
+    public class PlanController : MonoBehaviour
     {
         [Header("References")]
         public PlanRuntimeState planRuntimeState;
@@ -24,8 +24,6 @@ namespace Game.Gameplay
         public GameObject attackPositionIndicator;
         public LineRenderer attackDirectionIndicator;
 
-        private Vector3 _lastMousePos;
-        private Vector3 _lastMouseWorldPos;
         private IPlanningState _currentState;
 
         // move plan related
@@ -99,8 +97,6 @@ namespace Game.Gameplay
         {
             if (_currentState.canPlanMove)
             {
-                _lastMousePos = mousePos;
-                _lastMouseWorldPos = mouseWorldPos;
                 AddMovePlan(mouseWorldPos);
             }
             else if (_currentState.canPlanAttackPosition)

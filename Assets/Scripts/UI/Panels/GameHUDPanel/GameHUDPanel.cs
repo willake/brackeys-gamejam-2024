@@ -6,6 +6,7 @@ using UnityEngine;
 using Game.Gameplay;
 using UnityEngine.UI;
 using Game.RuntimeStates;
+using UnityEngine.Events;
 
 namespace Game.UI
 {
@@ -14,8 +15,12 @@ namespace Game.UI
         public override AvailableUI Type => AvailableUI.GameHUDPanel;
 
         [Header("References")]
+        public PlanRuntimeState planRuntimeState;
         public GamePhaseTab gamePhaseTab;
         public GamePhaseState gamePhaseState;
+        public WDButton btnPerformPlan;
+
+        public UnityEvent onPerformPlanClickEvent = new();
 
         private void Start()
         {
@@ -29,6 +34,18 @@ namespace Game.UI
                 .OnValueChanged
                 .ObserveOnMainThread()
                 .Subscribe(phase => gamePhaseTab.SetPhaseState(phase))
+                .AddTo(this);
+
+            btnPerformPlan
+                .OnClickObservable
+                .ObserveOnMainThread()
+                .Subscribe(_ => onPerformPlanClickEvent.Invoke())
+                .AddTo(this);
+
+            planRuntimeState
+                .onChangedObservable
+                .ObserveOnMainThread()
+                .Subscribe(_ => ShowPerformButton(planRuntimeState.moveplans.Count > 0))
                 .AddTo(this);
         }
 
@@ -58,6 +75,16 @@ namespace Game.UI
         public override async UniTask CloseAsync()
         {
             await UniTask.CompletedTask;
+        }
+
+        public void ShowPerformButton(bool shouldShow)
+        {
+            btnPerformPlan.gameObject.SetActive(shouldShow);
+        }
+
+        private void OnDestroy()
+        {
+            onPerformPlanClickEvent.RemoveAllListeners();
         }
     }
 }

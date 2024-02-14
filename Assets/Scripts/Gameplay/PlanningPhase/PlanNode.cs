@@ -24,4 +24,12 @@ namespace Game.Gameplay
         public Vector2 attackPosition;
         public Vector2 direction;
     }
+
+    [System.Serializable]
+    public struct PerformerPlanNode
+    {
+        public PlanNodeType nodeType;
+        public Vector2 v0;
+        public Vector2 v1;
+    }
 }

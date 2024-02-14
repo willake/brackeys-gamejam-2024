@@ -12,10 +12,13 @@ namespace Game.Gameplay
     {
         private GameHUDPanel _gameHUDPanel;
         private Level _level;
+        private Character _player;
 
         [Header("References")]
         public GameObject prefabPlayer;
-        public PlanningController planningController;
+        public PlanController planController;
+        public PlanPresenter planPresenter;
+        public PlanPerformer planPerformer;
         public LevelLoader levelLoader;
         public GamePhaseState phaseState;
 
@@ -47,15 +50,28 @@ namespace Game.Gameplay
             _level = level;
 
             // spawn character
-            GeneratePlayer(level.transform, level.startPoint.position);
+            _player = GeneratePlayer(level.transform, level.startPoint.position);
 
             // TODO Show intro like "Game Start" 
             await OnGameStart();
 
             // Show Game HUD, it contains a button to switch between Echo Locating and Planning Mode
             _gameHUDPanel = UIManager.instance.OpenUI(AvailableUI.GameHUDPanel) as GameHUDPanel;
-            planningController.planningPanel = UIManager.instance.OpenUI(AvailableUI.PlanningPanel) as PlanningPanel;
-            planningController.Init(level.startPoint.position);
+            planController.planningPanel = UIManager.instance.OpenUI(AvailableUI.PlanningPanel) as PlanningPanel;
+
+            _gameHUDPanel.onPerformPlanClickEvent.AddListener(PerformPlan);
+
+            Reset();
+        }
+
+        public void PerformPlan()
+        {
+            planPerformer.PerformPlan(_player);
+        }
+
+        private void Reset()
+        {
+            planController.Init(_level.startPoint.position);
 
             // TODO Setup everything
 
@@ -63,11 +79,13 @@ namespace Game.Gameplay
             phaseState.SetValue(GamePhase.EchoLocation);
         }
 
-        public void GeneratePlayer(Transform parent, Vector3 position)
+        private Character GeneratePlayer(Transform parent, Vector3 position)
         {
             GameObject playerObj = Instantiate(prefabPlayer, parent);
             playerObj.name = "NinjaPlayer";
             playerObj.transform.position = position;
+
+            return playerObj.GetComponent<Character>();
         }
 
         public void ChangeGamePhase(GamePhase phase)
@@ -76,11 +94,13 @@ namespace Game.Gameplay
             {
                 case GamePhase.EchoLocation:
                     Debug.Log("Enter EchoLocation Phase");
-                    planningController.canPlan = false;
+                    planController.canPlan = false;
+                    planPresenter.SetVisisble(false);
                     break;
                 case GamePhase.Planning:
                     Debug.Log("Enter Planning Phase");
-                    planningController.canPlan = true;
+                    planController.canPlan = true;
+                    planPresenter.SetVisisble(true);
                     break;
             }
         }
