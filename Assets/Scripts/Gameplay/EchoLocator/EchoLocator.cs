@@ -90,16 +90,18 @@ public class EchoLocator : MonoBehaviour
 
     public bool bounce(int bounceID, Vector2 origin, Vector2 direction, out Vector2 newOrigin, out Vector2 newDir)
     {
-        RaycastHit hit;
+        // RaycastHit hit;
 
-        if (Physics.Raycast(origin, direction, out hit, Mathf.Infinity))
+        RaycastHit2D hit = Physics2D.Raycast(origin, direction);
+        if (hit.collider != null)
         {
             if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Obstacles") || hit.collider.gameObject.layer == LayerMask.NameToLayer("Door"))
             {
                 Vector2 collisionPoint = origin + direction * hit.distance;
                 _distances[bounceID] = hit.distance;
                 _pathLength += hit.distance;
-                float colAngle = Vector3.SignedAngle(-direction, hit.normal, Vector3.forward);
+                Debug.Log($"hit.normal {hit.normal}");
+                float colAngle = Vector2.SignedAngle(-direction, hit.normal);
                 Vector2 colDir = Quaternion.Euler(0, 0, colAngle) * hit.normal;
 
                 newOrigin = collisionPoint;
