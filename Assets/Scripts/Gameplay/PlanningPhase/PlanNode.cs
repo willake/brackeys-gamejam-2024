@@ -10,6 +10,13 @@ namespace Game.Gameplay
         Move,
         Attack
     }
+
+    // might have different attack style
+    public enum PlanActionType
+    {
+        Attack,
+        Idle
+    }
     [System.Serializable]
     public struct MovePlanNode
     {

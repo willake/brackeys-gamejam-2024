@@ -5,6 +5,7 @@ using Game.UI;
 using Cysharp.Threading.Tasks;
 using Game.RuntimeStates;
 using UniRx;
+using UnityEngine.Events;
 
 namespace Game.Gameplay
 {
@@ -22,6 +23,8 @@ namespace Game.Gameplay
         public PlanPerformer planPerformer;
         public LevelLoader levelLoader;
         public GamePhaseState phaseState;
+
+        private LevelEndEvent _onLevelEnd = new();
 
         private void Awake()
         {
@@ -44,43 +47,43 @@ namespace Game.Gameplay
             {
                 await levelLoader.LoadLevel(AvailableLevel.Test);
             }
+
+            // show Game HUD, it contains a button to switch between Echo Locating and Planning phase
+            _gameHUDPanel = UIManager.instance.OpenUI(AvailableUI.GameHUDPanel) as GameHUDPanel;
+            planController.planningPanel = UIManager.instance.OpenUI(AvailableUI.PlanningPanel) as PlanningPanel;
+
+            _gameHUDPanel.onPerformPlanClickEvent.AsObservable().ObserveOnMainThread().Subscribe(_ => PerformPlan()).AddTo(this);
         }
 
-        public async UniTask StartLevel(Level level)
+        public async UniTask PlayLevel(Level level)
         {
             _level = level;
+
+            // delete player from previous level
+            if (_player) Destroy(_player.gameObject);
 
             // spawn character
             _player = GeneratePlayer(level.transform, level.startPoint.position);
 
             echoLocator._door = _player.transform;
             echoLocator.Init();
+            planController.Init(level.startPoint.position, level.maxMoves, level.maxActions);
 
             // TODO Show intro like "Game Start" 
             await OnGameStart();
 
-            // Show Game HUD, it contains a button to switch between Echo Locating and Planning Mode
-            _gameHUDPanel = UIManager.instance.OpenUI(AvailableUI.GameHUDPanel) as GameHUDPanel;
-            planController.planningPanel = UIManager.instance.OpenUI(AvailableUI.PlanningPanel) as PlanningPanel;
+            // set EnterLocationMode as default
+            phaseState.SetValue(GamePhase.EchoLocation);
 
-            _gameHUDPanel.onPerformPlanClickEvent.AddListener(PerformPlan);
+            // wait for game end
+            bool isWin = await _onLevelEnd.AsObservable().Take(1);
 
-            Reset();
+            await OnGameEnd(isWin);
         }
 
         public void PerformPlan()
         {
             planPerformer.PerformPlan(_player);
-        }
-
-        private void Reset()
-        {
-            planController.Init(_level.startPoint.position);
-
-            // TODO Setup everything
-
-            // Set EnterLocationMode as default
-            phaseState.SetValue(GamePhase.EchoLocation);
         }
 
         private Character GeneratePlayer(Transform parent, Vector3 position)
@@ -114,7 +117,7 @@ namespace Game.Gameplay
             await UniTask.CompletedTask;
         }
 
-        private async UniTask OnGameEnd()
+        private async UniTask OnGameEnd(bool isWin)
         {
             await UniTask.CompletedTask;
         }
@@ -124,5 +127,7 @@ namespace Game.Gameplay
             await levelLoader.UnloadCurrentLevel();
             GameManager.instance.SwitchScene(AvailableScene.Menu);
         }
+
+        public class LevelEndEvent : UnityEvent<bool> { }
     }
 }

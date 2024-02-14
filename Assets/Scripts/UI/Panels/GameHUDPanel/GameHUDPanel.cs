@@ -43,9 +43,9 @@ namespace Game.UI
                 .AddTo(this);
 
             planRuntimeState
-                .onChangedObservable
+                .isPlanFilled
                 .ObserveOnMainThread()
-                .Subscribe(_ => ShowPerformButton(planRuntimeState.moveplans.Count > 0))
+                .Subscribe(isPlanFilled => ShowPerformButton(isPlanFilled))
                 .AddTo(this);
         }
 
