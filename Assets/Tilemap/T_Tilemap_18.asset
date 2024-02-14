@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: T_Tilemap_18
   m_EditorClassIdentifier: 
   m_Sprite: {fileID: -1018177050, guid: 0f4cc7e1ffad56f4f950b49657ab0e49, type: 3}
-  m_Color: {r: 0.4016999, g: 0.43216145, b: 0.5566038, a: 1}
+  m_Color: {r: 0.5807227, g: 0.63438946, b: 0.8490566, a: 1}
   m_Transform:
     e00: 1
     e01: 0
