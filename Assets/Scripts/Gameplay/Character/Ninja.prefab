@@ -101,6 +101,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 1
+  isDead: 0
+  isMoving: 0
 --- !u!114 &-6837078435734401123
 MonoBehaviour:
   m_ObjectHideFlags: 0

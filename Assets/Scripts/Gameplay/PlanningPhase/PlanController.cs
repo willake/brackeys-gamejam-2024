@@ -16,9 +16,10 @@ using UnityEngine.EventSystems;
 
 namespace Game.Gameplay
 {
-    public class PlanningController : MonoBehaviour
+    public class PlanController : MonoBehaviour
     {
         [Header("References")]
+        public PlanPresenter planPresenter;
         public PlanRuntimeState planRuntimeState;
         public PlanningPanel planningPanel;
         public GameObject attackPositionIndicator;
