@@ -68,13 +68,13 @@ namespace Game.Gameplay
 
         IEnumerator CountdownAttackAnimation()
         {
-            yield return new WaitForSecondsRealtime(attackAnimationTime);
+            yield return new WaitForSeconds(attackAnimationTime);
             attackEndedEvent.Invoke();
         }
 
         IEnumerator CountdownDamageAnimation()
         {
-            yield return new WaitForSecondsRealtime(damageAnimationTime);
+            yield return new WaitForSeconds(damageAnimationTime);
             damageEndedEvent.Invoke();
         }
 
