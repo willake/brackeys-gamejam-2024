@@ -109,7 +109,7 @@ namespace Game.Gameplay
             AudioManager.instance?.PlaySFX(
                 audioClip.clip,
                 audioClip.volume,
-                Random.Range(0.6f, 1f)
+                1f
             );
         }
 
