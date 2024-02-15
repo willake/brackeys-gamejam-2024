@@ -1,11 +1,13 @@
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 namespace Game.Gameplay
 {
     public class Level : MonoBehaviour
     {
         [Header("References")]
+        public Light2D globalLight;
         public Character[] enemies;
         public Door doorEntrance;
         public Door doorExit;
@@ -20,6 +22,8 @@ namespace Game.Gameplay
         private void Start()
         {
             MainGameScene gameScene = GameManager.instance.gameScene as MainGameScene;
+
+            globalLight.intensity = 0;
             gameScene.PlayLevel(this).Forget();
         }
 

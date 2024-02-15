@@ -7963,6 +7963,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a94a33c677a77d48b943393e2a97fb9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  globalLight: {fileID: 592564979}
   enemies:
   - {fileID: 1455414510}
   - {fileID: 566885045}
