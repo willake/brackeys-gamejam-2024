@@ -6,8 +6,14 @@ namespace Game.Gameplay
     public class Level : MonoBehaviour
     {
         [Header("References")]
-        public Transform startPoint;
         public Character[] enemies;
+        public Door doorEntrance;
+        public Door doorExit;
+
+        [Header("Settings")]
+        public Transform spawnPoint;
+        public Transform doorFront;
+        public Transform echolocatorPoint;
         public int maxMoves = 3;
         public int maxActions = 3;
 
