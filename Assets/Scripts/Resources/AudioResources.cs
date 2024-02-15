@@ -24,6 +24,7 @@ namespace Game
         [Serializable]
         public class BackgroundAudios
         {
+            [FormerlySerializedAs("Ambient")] public WrappedAudioClip ambient;
         }
 
         [Serializable]

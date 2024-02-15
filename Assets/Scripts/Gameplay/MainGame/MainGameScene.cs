@@ -8,6 +8,7 @@ using UniRx;
 using UnityEngine.Events;
 using Game.Events;
 using System;
+using Game.Audios;
 
 namespace Game.Gameplay
 {
@@ -76,6 +77,9 @@ namespace Game.Gameplay
             gameRuntimeState.SetValue(GameState.Start);
             await OnGameStart();
 
+            WrappedAudioClip ambient = ResourceManager.instance.audioResources.backgroundAudios.ambient;
+            AudioManager.instance.PlayMusic(ambient.clip, ambient.volume);
+
             gameRuntimeState.SetValue(GameState.EchoLocation);
             // ninja talk
             EventManager.Publish(
@@ -113,6 +117,8 @@ namespace Game.Gameplay
             // show end game panel
             gameRuntimeState.SetValue(GameState.End);
             await OnGameEnd(isWin);
+
+            AudioManager.instance.PauseMusic();
         }
 
         private Character GeneratePlayer(Transform parent, Vector3 position)

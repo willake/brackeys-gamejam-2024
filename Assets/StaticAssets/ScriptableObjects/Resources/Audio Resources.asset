@@ -19,6 +19,10 @@ MonoBehaviour:
     buttonConfirm:
       clip: {fileID: 8300000, guid: 00cbb81606f76974984b5bf6652ad536, type: 3}
       volume: 1
+  backgroundAudios:
+    ambient:
+      clip: {fileID: 8300000, guid: 24736b1ea62783f4c8cfa42dc38ac198, type: 3}
+      volume: 0.2
   gameplayAudios:
     footstepsWood1:
       clip: {fileID: 8300000, guid: 1662629bc74b6a74c9bd7079cae382cf, type: 3}
