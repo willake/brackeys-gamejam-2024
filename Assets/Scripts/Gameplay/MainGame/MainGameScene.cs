@@ -70,7 +70,7 @@ namespace Game.Gameplay
 
             gameRuntimeState.SetValue(GameState.Plan);
             // wait for planning dowe
-            await planController.onPlanSet.AsObservable().Take(1);
+            await planController.Plan();
 
             gameRuntimeState.SetValue(GameState.Perform);
             // wait for perform
