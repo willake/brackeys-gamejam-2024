@@ -83,9 +83,22 @@ namespace Game.Gameplay
             await onPlanSet.AsObservable().Take(1);
         }
 
+        private bool IsInRoom(Vector2 mouseWorldPos)
+        {
+            Debug.DrawCircle(mouseWorldPos, 0.1f, 36, Color.red);
+            RaycastHit2D[] hits = Physics2D.CircleCastAll(mouseWorldPos, 0.1f, Vector2.zero, Mathf.Infinity, LayerMask.NameToLayer("Ground"));
+
+            if (hits.Length > 0)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         private void HandleLeftClick(Vector3 mousePos, Vector3 mouseWorldPos)
         {
-            if (_currentState.canPlanMove)
+            if (_currentState.canPlanMove && IsInRoom(mouseWorldPos))
             {
                 AddMovePlan(mouseWorldPos);
                 PlanNextMove();
