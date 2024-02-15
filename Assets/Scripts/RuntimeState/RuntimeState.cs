@@ -9,6 +9,7 @@ namespace Game.RuntimeStates
         // public T value;
         [SerializeField]
         private ReactiveProperty<T> _value;
+        public T Value { get => _value.Value; }
 
         public IObservable<T> OnValueChanged
         {

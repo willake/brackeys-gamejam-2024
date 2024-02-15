@@ -1,15 +1,7 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using Codice.CM.WorkspaceServer.DataStore;
-using Cysharp.Threading.Tasks;
-using DG.Tweening.Core;
 using Game.RuntimeStates;
 using Game.UI;
 using UniRx;
-using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -19,6 +11,7 @@ namespace Game.Gameplay
     public class PlanController : MonoBehaviour
     {
         [Header("References")]
+        public GameRuntimeState gameRuntimeState;
         public PlanRuntimeState planRuntimeState;
         public PlanningPanel planningPanel;
         public GameObject attackPositionIndicator;
@@ -40,15 +33,30 @@ namespace Game.Gameplay
 
         [Header("Settings")]
         public bool canPlan = false;
-        public int maxMoves = 3;
-        public int maxActions = 3;
+        private int _maxMoves = 3;
+        private int _maxActions = 3;
 
-        public void Init(Vector3 startPoint)
+        public UnityEvent onPlanSet = new();
+
+        private void Start()
+        {
+            gameRuntimeState
+                .OnValueChanged
+                .ObserveOnMainThread()
+                .Subscribe(state => canPlan = (state == GameState.Plan))
+                .AddTo(this);
+        }
+
+        public void Init(Vector3 startPoint, int maxMoves, int maxActions)
         {
             _startPoint = startPoint;
+
+            // init runtime state
             planRuntimeState.moveplans.Clear();
             planRuntimeState.actionPlans.Clear();
+            planRuntimeState.isPlanFilled.Value = false;
 
+            // init indicators
             attackPositionIndicator.gameObject.SetActive(false);
             attackDirectionIndicator.gameObject.SetActive(false);
             _actionDirectionPoses = new Vector3[2];
@@ -56,41 +64,13 @@ namespace Game.Gameplay
             _plannedMoves = 0;
             _plannedActions = 0;
 
+            _maxMoves = maxMoves;
+            _maxActions = maxActions;
+
             planningPanel.planningActionList.Setup(maxActions);
             planningPanel.SetActionListVisible(false);
 
             SetState(PlanningStates.PlanMoveState);
-        }
-        private void Update()
-        {
-            if (canPlan == false || _currentState == null) return;
-
-            if (EventSystem.current.IsPointerOverGameObject()) return;
-            if (Input.GetKeyDown(KeyCode.Mouse0))
-            {
-                Vector3 mousePos = Input.mousePosition;
-                Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(mousePos);
-                // Debug.Log($"mouse click at {mousePos}, with world pos {mouseWorldPos}");
-                HandleLeftClick(mousePos, mouseWorldPos);
-            }
-            else if (Input.GetKeyDown(KeyCode.Mouse1))
-            {
-                HandleRightClick();
-            }
-
-            if (_currentState.canPlanAttackPosition)
-            {
-                Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                mouseWorldPos.z = 0;
-                UpdateAttackPositionIndicator(mouseWorldPos);
-            }
-
-            if (_currentState.canPlanAttackDirection)
-            {
-                Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                mouseWorldPos.z = 0;
-                UpdateAttackDirectionIndicator(mouseWorldPos);
-            }
         }
 
         private void HandleLeftClick(Vector3 mousePos, Vector3 mouseWorldPos)
@@ -98,6 +78,7 @@ namespace Game.Gameplay
             if (_currentState.canPlanMove)
             {
                 AddMovePlan(mouseWorldPos);
+                PlanNextMove();
             }
             else if (_currentState.canPlanAttackPosition)
             {
@@ -106,6 +87,7 @@ namespace Game.Gameplay
             else if (_currentState.canPlanAttackDirection)
             {
                 AddActionPlan(PlanActionType.Attack, mouseWorldPos);
+                PlanNextAction();
             }
         }
 
@@ -171,7 +153,6 @@ namespace Game.Gameplay
             OnExitState(_currentState, state);
 
             _currentState = state;
-            Debug.Log($"Enter State: {_currentState.name}");
 
             // handle enter state
             OnEnterState(state);
@@ -221,11 +202,6 @@ namespace Game.Gameplay
                     destination = destination
                 }
             );
-            Debug.Log("Add a move plan");
-
-            _plannedMoves += 1;
-
-            if (_plannedMoves >= maxMoves) SetState(PlanningStates.PlanAttackPositionState);
         }
 
         private void AddActionPlan(PlanActionType actionType, Vector2 destination)
@@ -239,17 +215,56 @@ namespace Game.Gameplay
                     direction = direction
                 }
             );
-            Debug.Log("Add an attack plan");
+        }
 
+        private void PlanNextMove()
+        {
+            _plannedMoves += 1;
+            if (_plannedMoves >= _maxMoves) SetState(PlanningStates.PlanAttackPositionState);
+        }
+
+        private void PlanNextAction()
+        {
             _plannedActions += 1;
-            if (_plannedActions >= maxActions) SetState(PlanningStates.IdleState);
+            if (_plannedActions >= _maxActions)
+            {
+                SetState(PlanningStates.IdleState);
+                planRuntimeState.isPlanFilled.Value = true;
+                onPlanSet.Invoke();
+            }
             else SetState(PlanningStates.PlanAttackPositionState);
         }
-    }
 
-    public enum PlanActionType
-    {
-        Attack,
-        Idle
+        private void Update()
+        {
+            if (canPlan == false || _currentState == null) return;
+
+            if (EventSystem.current.IsPointerOverGameObject()) return;
+            if (Input.GetKeyDown(KeyCode.Mouse0))
+            {
+                Vector3 mousePos = Input.mousePosition;
+                Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(mousePos);
+                // Debug.Log($"mouse click at {mousePos}, with world pos {mouseWorldPos}");
+                HandleLeftClick(mousePos, mouseWorldPos);
+            }
+            else if (Input.GetKeyDown(KeyCode.Mouse1))
+            {
+                HandleRightClick();
+            }
+
+            if (_currentState.canPlanAttackPosition)
+            {
+                Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                mouseWorldPos.z = 0;
+                UpdateAttackPositionIndicator(mouseWorldPos);
+            }
+
+            if (_currentState.canPlanAttackDirection)
+            {
+                Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                mouseWorldPos.z = 0;
+                UpdateAttackDirectionIndicator(mouseWorldPos);
+            }
+        }
     }
 }

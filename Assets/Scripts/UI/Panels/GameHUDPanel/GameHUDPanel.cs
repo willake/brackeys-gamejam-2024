@@ -24,29 +24,37 @@ namespace Game.UI
 
         private void Start()
         {
-            gamePhaseTab
-                .OnPhaseSelectObservable
-                .ObserveOnMainThread()
-                .Subscribe(phase => gamePhaseState.SetValue(phase))
-                .AddTo(this);
+            // gamePhaseTab
+            //     .OnPhaseSelectObservable
+            //     .ObserveOnMainThread()
+            //     .Subscribe(phase => gamePhaseState.SetValue(phase))
+            //     .AddTo(this);
 
-            gamePhaseState
-                .OnValueChanged
-                .ObserveOnMainThread()
-                .Subscribe(phase => gamePhaseTab.SetPhaseState(phase))
-                .AddTo(this);
+            // gamePhaseState
+            //     .OnValueChanged
+            //     .ObserveOnMainThread()
+            //     .Subscribe(phase =>
+            //     {
+            //         gamePhaseTab.SetPhaseState(phase);
+            //         if (phase == GamePhase.Perform)
+            //         {
+            //             btnPerformPlan.gameObject.SetActive(false);
+            //             gamePhaseTab.gameObject.SetActive(false);
+            //         }
+            //     })
+            //     .AddTo(this);
 
-            btnPerformPlan
-                .OnClickObservable
-                .ObserveOnMainThread()
-                .Subscribe(_ => onPerformPlanClickEvent.Invoke())
-                .AddTo(this);
+            // btnPerformPlan
+            //     .OnClickObservable
+            //     .ObserveOnMainThread()
+            //     .Subscribe(_ => onPerformPlanClickEvent.Invoke())
+            //     .AddTo(this);
 
-            planRuntimeState
-                .onChangedObservable
-                .ObserveOnMainThread()
-                .Subscribe(_ => ShowPerformButton(planRuntimeState.moveplans.Count > 0))
-                .AddTo(this);
+            // planRuntimeState
+            //     .isPlanFilled
+            //     .ObserveOnMainThread()
+            //     .Subscribe(isPlanFilled => btnPerformPlan.gameObject.SetActive(isPlanFilled))
+            //     .AddTo(this);
         }
 
         public override WDButton[] GetSelectableButtons()
@@ -75,11 +83,6 @@ namespace Game.UI
         public override async UniTask CloseAsync()
         {
             await UniTask.CompletedTask;
-        }
-
-        public void ShowPerformButton(bool shouldShow)
-        {
-            btnPerformPlan.gameObject.SetActive(shouldShow);
         }
 
         private void OnDestroy()

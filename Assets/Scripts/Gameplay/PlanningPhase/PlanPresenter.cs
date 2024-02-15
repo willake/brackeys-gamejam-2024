@@ -10,6 +10,7 @@ namespace Game.Gameplay
     public class PlanPresenter : MonoBehaviour
     {
         [Header("References")]
+        public GameRuntimeState gameRuntimeState;
         public PlanRuntimeState planRuntimeState;
         public GameObject root;
         public GameObject[] movementDestinations;
@@ -25,6 +26,11 @@ namespace Game.Gameplay
                 .Subscribe(_ => PresentPlan(
                     planRuntimeState.moveplans.ToArray(), planRuntimeState.actionPlans.ToArray()))
                 .AddTo(this);
+
+            gameRuntimeState
+                .OnValueChanged
+                .ObserveOnMainThread()
+                .Subscribe(state => SetVisisble(state == GameState.Plan));
 
             foreach (var point in movementDestinations)
             {
@@ -46,7 +52,7 @@ namespace Game.Gameplay
 
         public void SetVisisble(bool visible)
         {
-            root.gameObject.SetActive(visible);
+            root.SetActive(visible);
         }
 
         private void PresentPlan(MovePlanNode[] movePlans, ActionPlanNode[] actionPlans)

@@ -5,6 +5,7 @@ using Game.UI;
 using Cysharp.Threading.Tasks;
 using Game.RuntimeStates;
 using UniRx;
+using UnityEngine.Events;
 
 namespace Game.Gameplay
 {
@@ -15,23 +16,18 @@ namespace Game.Gameplay
         private Character _player;
 
         [Header("References")]
+        public GameRuntimeState gameRuntimeState;
         public GameObject prefabPlayer;
         public EchoLocator echoLocator;
         public PlanController planController;
-        public PlanPresenter planPresenter;
         public PlanPerformer planPerformer;
         public LevelLoader levelLoader;
-        public GamePhaseState phaseState;
+
+        public GameState GameState { get => gameRuntimeState.Value; }
 
         private void Awake()
         {
             GameManager.instance.gameScene = this;
-
-            phaseState
-                .OnValueChanged
-                .ObserveOnMainThread()
-                .Subscribe(phase => ChangeGamePhase(phase))
-                .AddTo(this);
         }
 
         private async void Start()
@@ -44,43 +40,46 @@ namespace Game.Gameplay
             {
                 await levelLoader.LoadLevel(AvailableLevel.Test);
             }
+
+            // show Game HUD, it contains a button to switch between Echo Locating and Planning phase
+            _gameHUDPanel = UIManager.instance.OpenUI(AvailableUI.GameHUDPanel) as GameHUDPanel;
+            planController.planningPanel = UIManager.instance.OpenUI(AvailableUI.PlanningPanel) as PlanningPanel;
         }
 
-        public async UniTask StartLevel(Level level)
+        public async UniTask PlayLevel(Level level)
         {
             _level = level;
+
+            // delete player from previous level
+            if (_player) Destroy(_player.gameObject);
 
             // spawn character
             _player = GeneratePlayer(level.transform, level.startPoint.position);
 
             echoLocator.Door = _player.transform;
             echoLocator.Init();
+            planController.Init(level.startPoint.position, level.maxMoves, level.maxActions);
 
             // TODO Show intro like "Game Start" 
+            gameRuntimeState.SetValue(GameState.Start);
             await OnGameStart();
 
-            // Show Game HUD, it contains a button to switch between Echo Locating and Planning Mode
-            _gameHUDPanel = UIManager.instance.OpenUI(AvailableUI.GameHUDPanel) as GameHUDPanel;
-            planController.planningPanel = UIManager.instance.OpenUI(AvailableUI.PlanningPanel) as PlanningPanel;
+            gameRuntimeState.SetValue(GameState.EchoLocation);
+            // wait for echo location done
 
-            _gameHUDPanel.onPerformPlanClickEvent.AddListener(PerformPlan);
+            gameRuntimeState.SetValue(GameState.Plan);
+            await planController.onPlanSet.AsObservable().Take(1);
+            // wait for planning down
 
-            Reset();
-        }
+            gameRuntimeState.SetValue(GameState.Perform);
+            await planPerformer.PerformPlan(_player);
+            // wait for perform
 
-        public void PerformPlan()
-        {
-            planPerformer.PerformPlan(_player);
-        }
+            // wait for game end
+            bool isWin = _level.AreAllEnemiesDead();
 
-        private void Reset()
-        {
-            planController.Init(_level.startPoint.position);
-
-            // TODO Setup everything
-
-            // Set EnterLocationMode as default
-            phaseState.SetValue(GamePhase.EchoLocation);
+            gameRuntimeState.SetValue(GameState.End);
+            await OnGameEnd(isWin);
         }
 
         private Character GeneratePlayer(Transform parent, Vector3 position)
@@ -92,29 +91,12 @@ namespace Game.Gameplay
             return playerObj.GetComponent<Character>();
         }
 
-        public void ChangeGamePhase(GamePhase phase)
-        {
-            switch (phase)
-            {
-                case GamePhase.EchoLocation:
-                    Debug.Log("Enter EchoLocation Phase");
-                    planController.canPlan = false;
-                    planPresenter.SetVisisble(false);
-                    break;
-                case GamePhase.Planning:
-                    Debug.Log("Enter Planning Phase");
-                    planController.canPlan = true;
-                    planPresenter.SetVisisble(true);
-                    break;
-            }
-        }
-
         private async UniTask OnGameStart()
         {
             await UniTask.CompletedTask;
         }
 
-        private async UniTask OnGameEnd()
+        private async UniTask OnGameEnd(bool isWin)
         {
             await UniTask.CompletedTask;
         }
@@ -124,5 +106,7 @@ namespace Game.Gameplay
             await levelLoader.UnloadCurrentLevel();
             GameManager.instance.SwitchScene(AvailableScene.Menu);
         }
+
+        public class LevelEndEvent : UnityEvent<bool> { }
     }
 }
