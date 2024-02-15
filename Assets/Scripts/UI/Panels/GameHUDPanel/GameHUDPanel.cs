@@ -25,6 +25,7 @@ namespace Game.UI
         [Header("References")]
         public GameRuntimeState gameRuntimeState;
         public Dialogue dialogue;
+        public PhaseIndicator phaseIndicator;
 
         private Subscription _dialogueEventSubscription;
         private CanvasGroup _canvasGroup;
@@ -70,6 +71,8 @@ namespace Game.UI
                     {
                         GetCanvasGroup().alpha = 0;
                     }
+
+                    phaseIndicator.SetState(state);
                 })
                 .AddTo(this);
 
