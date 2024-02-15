@@ -326,7 +326,7 @@ GameObject:
   - component: {fileID: 7801865975717866615}
   - component: {fileID: 2464571486005273049}
   m_Layer: 5
-  m_Name: phase_indicator
+  m_Name: indicators
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -460,7 +460,7 @@ MonoBehaviour:
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
   borderWidth: 0
-  falloffDistance: 1
+  falloffDistance: 0
 --- !u!114 &7850437653235029210
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -719,7 +719,7 @@ MonoBehaviour:
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
   borderWidth: 0
-  falloffDistance: 1
+  falloffDistance: 0
 --- !u!114 &7803024664642053933
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -831,7 +831,7 @@ MonoBehaviour:
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
   borderWidth: 0
-  falloffDistance: 1
+  falloffDistance: 0
 --- !u!114 &9082935638672438128
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -874,6 +874,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 917671710017474042}
+  - component: {fileID: 4807119756993760150}
   m_Layer: 5
   m_Name: phase_indicator
   m_TagString: Untagged
@@ -903,3 +904,22 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 200, y: 60}
   m_Pivot: {x: 0.5, y: 1}
+--- !u!114 &4807119756993760150
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8908453533362545193}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92cdae0ab01316f4bb09632f55b9aab3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  indicators:
+  - {fileID: 6142389436048811006}
+  - {fileID: 8811197218693237002}
+  - {fileID: 7725695254983186254}
+  textTitle: {fileID: 6252990133990811117}
+  enabledColor: {r: 1, g: 1, b: 1, a: 1}
+  disabledColor: {r: 0.25490198, g: 0.25490198, b: 0.25490198, a: 1}
