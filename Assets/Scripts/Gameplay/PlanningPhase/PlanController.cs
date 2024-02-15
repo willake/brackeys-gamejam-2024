@@ -3,6 +3,7 @@ using Game.RuntimeStates;
 using Game.UI;
 using UniRx;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
 namespace Game.Gameplay
@@ -10,6 +11,7 @@ namespace Game.Gameplay
     public class PlanController : MonoBehaviour
     {
         [Header("References")]
+        public GameRuntimeState gameRuntimeState;
         public PlanRuntimeState planRuntimeState;
         public PlanningPanel planningPanel;
         public GameObject attackPositionIndicator;
@@ -33,6 +35,17 @@ namespace Game.Gameplay
         public bool canPlan = false;
         private int _maxMoves = 3;
         private int _maxActions = 3;
+
+        public UnityEvent onPlanSet = new();
+
+        private void Start()
+        {
+            gameRuntimeState
+                .OnValueChanged
+                .ObserveOnMainThread()
+                .Subscribe(state => canPlan = (state == GameState.Plan))
+                .AddTo(this);
+        }
 
         public void Init(Vector3 startPoint, int maxMoves, int maxActions)
         {
@@ -217,6 +230,7 @@ namespace Game.Gameplay
             {
                 SetState(PlanningStates.IdleState);
                 planRuntimeState.isPlanFilled.Value = true;
+                onPlanSet.Invoke();
             }
             else SetState(PlanningStates.PlanAttackPositionState);
         }

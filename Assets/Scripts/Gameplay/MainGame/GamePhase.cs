@@ -10,7 +10,9 @@ namespace Game.Gameplay
     public enum GameState
     {
         Start,
-        InGame,
+        EchoLocation,
+        Plan,
+        Perform,
         End
     }
 }
