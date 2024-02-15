@@ -23,7 +23,10 @@ namespace Game.UI
         protected EventManager EventManager { get => _eventManager.Value; }
 
         [Header("References")]
+        public PlanRuntimeState planRuntimeState;
         public GameRuntimeState gameRuntimeState;
+        public WDText movePlansIndicator;
+        public WDText actionPlansIndicator;
         public Dialogue dialogue;
         public PhaseIndicator phaseIndicator;
 
@@ -72,10 +75,22 @@ namespace Game.UI
                         GetCanvasGroup().alpha = 0;
                     }
 
+                    movePlansIndicator.gameObject.SetActive(state == GameState.Plan);
+                    actionPlansIndicator.gameObject.SetActive(state == GameState.Plan);
+
                     phaseIndicator.SetState(state);
                 })
                 .AddTo(this);
 
+            planRuntimeState
+                .onChangedObservable
+                .ObserveOnMainThread()
+                .Subscribe(_ =>
+                {
+                    movePlansIndicator.text = $"Moves {planRuntimeState.moveplans.Count}/{planRuntimeState.maxMoves}";
+                    actionPlansIndicator.text = $"Actions {planRuntimeState.actionPlans.Count}/{planRuntimeState.maxActions}";
+                })
+                .AddTo(this);
         }
 
         public override WDButton[] GetSelectableButtons()
@@ -109,6 +124,11 @@ namespace Game.UI
         {
             Close();
             await UniTask.CompletedTask;
+        }
+
+        private void OnDestroy()
+        {
+            EventManager.CancelSubscription(EventNames.presentDialogue, _dialogueEventSubscription);
         }
     }
 }
