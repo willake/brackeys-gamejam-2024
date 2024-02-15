@@ -22,6 +22,7 @@ namespace Game.Gameplay
         public PlanPresenter planPresenter;
         public PlanPerformer planPerformer;
         public LevelLoader levelLoader;
+        public GameState gameState;
         public GamePhaseState phaseState;
 
         private LevelEndEvent _onLevelEnd = new();
@@ -29,12 +30,6 @@ namespace Game.Gameplay
         private void Awake()
         {
             GameManager.instance.gameScene = this;
-
-            phaseState
-                .OnValueChanged
-                .ObserveOnMainThread()
-                .Subscribe(phase => ChangeGamePhase(phase))
-                .AddTo(this);
         }
 
         private async void Start()
@@ -53,6 +48,8 @@ namespace Game.Gameplay
             planController.planningPanel = UIManager.instance.OpenUI(AvailableUI.PlanningPanel) as PlanningPanel;
 
             _gameHUDPanel.onPerformPlanClickEvent.AsObservable().ObserveOnMainThread().Subscribe(_ => PerformPlan()).AddTo(this);
+
+            phaseState.OnValueChanged.ObserveOnMainThread().Subscribe(phase => SetGamePhase(phase)).AddTo(this);
         }
 
         public async UniTask PlayLevel(Level level)
@@ -70,20 +67,24 @@ namespace Game.Gameplay
             planController.Init(level.startPoint.position, level.maxMoves, level.maxActions);
 
             // TODO Show intro like "Game Start" 
+            SetGameState(GameState.Start);
             await OnGameStart();
 
-            // set EnterLocationMode as default
-            phaseState.SetValue(GamePhase.EchoLocation);
+            SetGameState(GameState.InGame);
 
             // wait for game end
             bool isWin = await _onLevelEnd.AsObservable().Take(1);
 
+            SetGameState(GameState.End);
             await OnGameEnd(isWin);
         }
 
-        public void PerformPlan()
+        public async void PerformPlan()
         {
-            planPerformer.PerformPlan(_player);
+            phaseState.SetValue(GamePhase.Perform);
+            await planPerformer.PerformPlan(_player);
+            // check if all enemies are dead, if yes, the game win
+            _onLevelEnd.Invoke(_level.AreAllEnemiesDead());
         }
 
         private Character GeneratePlayer(Transform parent, Vector3 position)
@@ -95,19 +96,38 @@ namespace Game.Gameplay
             return playerObj.GetComponent<Character>();
         }
 
-        public void ChangeGamePhase(GamePhase phase)
+        public void SetGameState(GameState state)
+        {
+            switch (state)
+            {
+                case GameState.Start:
+                    break;
+                case GameState.InGame:
+                    // set EnterLocationMode as default
+                    phaseState.SetValue(GamePhase.EchoLocation);
+                    break;
+                case GameState.End:
+                    break;
+            }
+
+            gameState = state;
+        }
+
+        public void SetGamePhase(GamePhase phase)
         {
             switch (phase)
             {
                 case GamePhase.EchoLocation:
-                    Debug.Log("Enter EchoLocation Phase");
                     planController.canPlan = false;
                     planPresenter.SetVisisble(false);
                     break;
                 case GamePhase.Planning:
-                    Debug.Log("Enter Planning Phase");
                     planController.canPlan = true;
                     planPresenter.SetVisisble(true);
+                    break;
+                case GamePhase.Perform:
+                    planController.canPlan = false;
+                    planPresenter.SetVisisble(false);
                     break;
             }
         }

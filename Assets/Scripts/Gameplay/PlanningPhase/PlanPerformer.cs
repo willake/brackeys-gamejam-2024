@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using Game.RuntimeStates;
 using UnityEngine;
 
@@ -13,7 +14,7 @@ namespace Game.Gameplay
         private bool _isPlaying = false;
         public bool IsPlaying { get => _isPlaying; }
 
-        public async void PerformPlan(Character character)
+        public async UniTask PerformPlan(Character character)
         {
             _isPlaying = false;
             // extract the plan

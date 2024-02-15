@@ -16,5 +16,15 @@ namespace Game.Gameplay
             MainGameScene gameScene = GameManager.instance.gameScene as MainGameScene;
             gameScene.PlayLevel(this).Forget();
         }
+
+        public bool AreAllEnemiesDead()
+        {
+            foreach (var enemy in enemies)
+            {
+                if (enemy.isDead == false) return false;
+            }
+
+            return true;
+        }
     }
 }
