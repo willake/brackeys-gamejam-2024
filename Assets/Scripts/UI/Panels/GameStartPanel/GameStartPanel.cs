@@ -21,6 +21,7 @@ namespace Game.UI
 
         private void Start()
         {
+            title.gameObject.SetActive(false);
         }
 
         public override WDButton[] GetSelectableButtons()
@@ -46,11 +47,14 @@ namespace Game.UI
             title.TextMesh.alpha = 0;
             title.text = text;
             titleRect.anchoredPosition = new Vector2(original.x, original.y - 200);
+            title.gameObject.SetActive(true);
             Sequence sequence = DOTween.Sequence();
             sequence.Append(titleRect.DOAnchorPosY(original.y, duration));
             sequence.Join(title.TextMesh.DOFade(1, duration));
 
             await sequence.SetUpdate(true).SetEase(ease).AsyncWaitForCompletion();
+
+            title.gameObject.SetActive(false);
         }
 
         public override async UniTask OpenAsync()
