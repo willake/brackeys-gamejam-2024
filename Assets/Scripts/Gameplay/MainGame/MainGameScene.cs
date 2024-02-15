@@ -53,7 +53,7 @@ namespace Game.Gameplay
             // spawn character
             _player = GeneratePlayer(level.transform, level.startPoint.position);
 
-            echoLocator._door = _player.transform;
+            echoLocator.Door = _player.transform;
             echoLocator.Init();
 
             // TODO Show intro like "Game Start" 
