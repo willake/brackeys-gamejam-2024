@@ -7,6 +7,7 @@ using Game.Gameplay;
 using UnityEngine.UI;
 using Game.RuntimeStates;
 using UnityEngine.Events;
+using UnityEditorInternal;
 
 namespace Game.UI
 {
@@ -14,46 +15,64 @@ namespace Game.UI
     {
         public override AvailableUI Type => AvailableUI.GameHUDPanel;
 
-        [Header("References")]
-        public PlanRuntimeState planRuntimeState;
-        public GamePhaseTab gamePhaseTab;
-        public WDButton btnPerformPlan;
+        public const string IDENTITY = "GAME_HUD_PANEL";
+        private Lazy<EventManager> _eventManager = new Lazy<EventManager>(
+            () => DIContainer.instance.GetObject<EventManager>(),
+            true
+        );
+        protected EventManager EventManager { get => _eventManager.Value; }
 
-        public UnityEvent onPerformPlanClickEvent = new();
+        [Header("References")]
+        public GameRuntimeState gameRuntimeState;
+        public Dialogue dialogue;
+
+        private Subscription _dialogueEventSubscription;
+        private CanvasGroup _canvasGroup;
+
+        public CanvasGroup GetCanvasGroup()
+        {
+            if (_canvasGroup == null) _canvasGroup = GetComponent<CanvasGroup>();
+
+            return _canvasGroup;
+        }
 
         private void Start()
         {
-            // gamePhaseTab
-            //     .OnPhaseSelectObservable
-            //     .ObserveOnMainThread()
-            //     .Subscribe(phase => gamePhaseState.SetValue(phase))
-            //     .AddTo(this);
+            dialogue.gameObject.SetActive(false);
 
-            // gamePhaseState
-            //     .OnValueChanged
-            //     .ObserveOnMainThread()
-            //     .Subscribe(phase =>
-            //     {
-            //         gamePhaseTab.SetPhaseState(phase);
-            //         if (phase == GamePhase.Perform)
-            //         {
-            //             btnPerformPlan.gameObject.SetActive(false);
-            //             gamePhaseTab.gameObject.SetActive(false);
-            //         }
-            //     })
-            //     .AddTo(this);
+            _dialogueEventSubscription =
+                EventManager.Subscribe(IDENTITY, EventNames.presentDialogue,
+                (payload) =>
+                {
+                    string dialogueText = (string)payload.args[0];
 
-            // btnPerformPlan
-            //     .OnClickObservable
-            //     .ObserveOnMainThread()
-            //     .Subscribe(_ => onPerformPlanClickEvent.Invoke())
-            //     .AddTo(this);
+                    if (dialogueText == string.Empty)
+                    {
+                        dialogue.gameObject.SetActive(false);
+                    }
+                    else
+                    {
+                        dialogue.gameObject.SetActive(true);
+                        dialogue.Present(dialogueText);
+                    }
+                });
 
-            // planRuntimeState
-            //     .isPlanFilled
-            //     .ObserveOnMainThread()
-            //     .Subscribe(isPlanFilled => btnPerformPlan.gameObject.SetActive(isPlanFilled))
-            //     .AddTo(this);
+            gameRuntimeState
+                .OnValueChanged
+                .ObserveOnMainThread()
+                .Subscribe(state =>
+                {
+                    if (state == GameState.EchoLocation || state == GameState.Plan || state == GameState.Perform)
+                    {
+                        GetCanvasGroup().alpha = 1;
+                    }
+                    else
+                    {
+                        GetCanvasGroup().alpha = 0;
+                    }
+                })
+                .AddTo(this);
+
         }
 
         public override WDButton[] GetSelectableButtons()
@@ -68,25 +87,25 @@ namespace Game.UI
 
         public override void Open()
         {
+            gameObject.SetActive(true);
+            GetCanvasGroup().alpha = 0;
         }
 
         public override async UniTask OpenAsync()
         {
+            Open();
             await UniTask.CompletedTask;
         }
 
         public override void Close()
         {
+            gameObject.SetActive(false);
         }
 
         public override async UniTask CloseAsync()
         {
+            Close();
             await UniTask.CompletedTask;
-        }
-
-        private void OnDestroy()
-        {
-            onPerformPlanClickEvent.RemoveAllListeners();
         }
     }
 }
