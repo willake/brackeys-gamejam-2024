@@ -60,7 +60,7 @@ namespace Game.Gameplay
             echoLocator.Init();
             planController.Init(level.startPoint.position, level.maxMoves, level.maxActions);
 
-            // TODO Show intro like "Game Start" 
+            // show intro like "Game Start" 
             gameRuntimeState.SetValue(GameState.Start);
             await OnGameStart();
 
@@ -68,16 +68,17 @@ namespace Game.Gameplay
             // wait for echo location done
 
             gameRuntimeState.SetValue(GameState.Plan);
+            // wait for planning dowe
             await planController.onPlanSet.AsObservable().Take(1);
-            // wait for planning down
 
             gameRuntimeState.SetValue(GameState.Perform);
-            await planPerformer.PerformPlan(_player);
             // wait for perform
+            await planPerformer.PerformPlan(_player);
 
             // wait for game end
             bool isWin = _level.AreAllEnemiesDead();
 
+            // show end game panel
             gameRuntimeState.SetValue(GameState.End);
             await OnGameEnd(isWin);
         }
@@ -93,12 +94,15 @@ namespace Game.Gameplay
 
         private async UniTask OnGameStart()
         {
-            await UniTask.CompletedTask;
+            GameStartPanel startPanel = await UIManager.instance.OpenUIAsync(AvailableUI.GameStartPanel) as GameStartPanel;
+            await startPanel.ShowText("Game Start", 1, DG.Tweening.Ease.InOutSine);
+            await UIManager.instance.PrevAsync();
         }
 
         private async UniTask OnGameEnd(bool isWin)
         {
-            await UniTask.CompletedTask;
+            GameEndPanel endPanel = await UIManager.instance.OpenUIAsync(AvailableUI.GameEndPanel) as GameEndPanel;
+            endPanel.SetEndGameState(isWin);
         }
 
         public async UniTask NavigateToMenu()

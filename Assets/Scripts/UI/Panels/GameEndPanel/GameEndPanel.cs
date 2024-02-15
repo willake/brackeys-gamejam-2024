@@ -96,22 +96,22 @@ namespace Game.UI
             return _canvasGroup;
         }
 
-        public void SetEndGameState(EndState state)
+        public void SetEndGameState(bool isWin)
         {
-            // if (state == EndGameState.Win)
-            // {
-            //     title.PlayWinAnimation();
-            //     AudioManager.instance?.PlaySFX(
-            //         ResourceManager.instance.audioResources.gameplayAudios.levelWin.clip
-            //     );
-            // }
-            // else
-            // {
-            //     title.PlayLoseAnimation();
-            //     AudioManager.instance?.PlaySFX(
-            //         ResourceManager.instance.audioResources.gameplayAudios.levelLose.clip
-            //     );
-            // }
+            if (isWin)
+            {
+                title.PlayWinAnimation();
+                // AudioManager.instance?.PlaySFX(
+                //     ResourceManager.instance.audioResources.gameplayAudios.levelWin.clip
+                // );
+            }
+            else
+            {
+                title.PlayLoseAnimation();
+                // AudioManager.instance?.PlaySFX(
+                //     ResourceManager.instance.audioResources.gameplayAudios.levelLose.clip
+                // );
+            }
         }
 
         public enum EndState
