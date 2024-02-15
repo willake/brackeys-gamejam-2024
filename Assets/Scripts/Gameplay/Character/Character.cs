@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using Game.Events;
 using UniRx;
 using UnityEngine;
 using UnityEngine.Events;
@@ -14,6 +16,12 @@ namespace Game.Gameplay
     }
     public class Character : MonoBehaviour
     {
+        private Lazy<EventManager> _eventManager = new Lazy<EventManager>(
+            () => DIContainer.instance.GetObject<EventManager>(),
+            true
+        );
+        protected EventManager EventManager { get => _eventManager.Value; }
+
         private SpriteRenderer _renderer;
         private CharacterAnimator _animator;
 
@@ -69,14 +77,28 @@ namespace Game.Gameplay
             Debug.DrawCircle(new Vector3(attackTip.x, attackTip.y, -1), attackDetectionRadius, 32, Color.red);
             RaycastHit2D[] hits = Physics2D.CircleCastAll(attackTip, attackDetectionRadius, direction);
 
+            bool kill = false;
+
             foreach (var hit in hits)
             {
                 if (hit.collider != null)
                 {
                     Character character = hit.collider.GetComponent<Character>();
                     // check if from different groups
-                    if (character && character.characterType != characterType) character.Die();
+                    if (character && character.characterType != characterType)
+                    {
+                        character.Die();
+                        kill = true;
+                    }
                 }
+            }
+
+            if (kill && characterType == CharacterType.Player)
+            {
+                EventManager.Publish(
+                    EventNames.presentDialogue,
+                    new Payload() { args = new object[] { ResourceManager.instance.dialogueResources.onKillEnemy } }
+            );
             }
         }
 

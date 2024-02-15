@@ -6,11 +6,19 @@ using Cysharp.Threading.Tasks;
 using Game.RuntimeStates;
 using UniRx;
 using UnityEngine.Events;
+using Game.Events;
+using System;
 
 namespace Game.Gameplay
 {
     public class MainGameScene : GameScene
     {
+        private Lazy<EventManager> _eventManager = new Lazy<EventManager>(
+            () => DIContainer.instance.GetObject<EventManager>(),
+            true
+        );
+        protected EventManager EventManager { get => _eventManager.Value; }
+
         private GameHUDPanel _gameHUDPanel;
         private Level _level;
         private Character _player;
@@ -48,6 +56,8 @@ namespace Game.Gameplay
 
         public async UniTask PlayLevel(Level level)
         {
+            gameRuntimeState.SetValue(GameState.Loading);
+
             _level = level;
 
             // delete player from previous level
@@ -67,10 +77,20 @@ namespace Game.Gameplay
             await OnGameStart();
 
             gameRuntimeState.SetValue(GameState.EchoLocation);
+            // ninja talk
+            EventManager.Publish(
+                    EventNames.presentDialogue,
+                    new Payload() { args = new object[] { ResourceManager.instance.dialogueResources.enterEchoLocator } }
+            );
             // wait for echo location done
             await echoLocator.LocationEndEvent.AsObservable().Take(1);
 
             gameRuntimeState.SetValue(GameState.Plan);
+            // ninja talk
+            EventManager.Publish(
+                    EventNames.presentDialogue,
+                    new Payload() { args = new object[] { ResourceManager.instance.dialogueResources.enterPlan } }
+            );
             // wait for planning dowe
             await planController.Plan();
 
@@ -79,6 +99,11 @@ namespace Game.Gameplay
             _level.doorEntrance.Open();
 
             await _player.MoveToAsync(_level.doorEntrance.transform.position);
+            // ninja talk
+            EventManager.Publish(
+                    EventNames.presentDialogue,
+                    new Payload() { args = new object[] { ResourceManager.instance.dialogueResources.enterPerform } }
+            );
             // wait for perform
             await planPerformer.PerformPlan(_player);
 
