@@ -7,13 +7,22 @@ using UnityEngine.Events;
 
 namespace Game.Gameplay
 {
+    public enum CharacterType
+    {
+        Player,
+        Enemy
+    }
     public class Character : MonoBehaviour
     {
         private CharacterAnimator _animator;
-        [Header("Settings")]
-        public float speed;
+        [Header("States")]
         public bool isDead = false;
         public bool isMoving = false;
+        [Header("Settings")]
+        public CharacterType characterType = CharacterType.Enemy;
+        public float speed;
+        public float attackRadius = 1;
+        public float attackDetectionRadius = 1;
         private Vector2 _destination = Vector2.zero;
 
         private UnityEvent _onArriveDestination = new();
@@ -41,12 +50,26 @@ namespace Game.Gameplay
 
         public void Attack(Vector2 direction)
         {
+            GetCharacterAnimator().SetMoveDirection(direction.x, direction.y);
             GetCharacterAnimator().TriggerAttack();
+
+            Vector2 attackTip = new Vector2(transform.position.x, transform.position.y) + direction * attackRadius;
+            Debug.DrawCircle(new Vector3(attackTip.x, attackTip.y, -1), attackDetectionRadius, 32, Color.red);
+            RaycastHit2D[] hits = Physics2D.CircleCastAll(attackTip, attackDetectionRadius, direction);
+
+            foreach (var hit in hits)
+            {
+                if (hit.collider != null)
+                {
+                    Character character = hit.collider.GetComponent<Character>();
+                    // check if from different groups
+                    if (character && character.characterType != characterType) character.Die();
+                }
+            }
         }
 
         public async UniTask AttackAsync(Vector2 direction)
         {
-            GetCharacterAnimator().SetMoveDirection(direction.x, direction.y);
             Attack(direction);
             await GetCharacterAnimator().attackEndedEvent.AsObservable().Take(1);
         }
