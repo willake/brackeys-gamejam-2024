@@ -18,7 +18,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1834444331816346369
 RectTransform:
   m_ObjectHideFlags: 0
@@ -224,7 +224,7 @@ MonoBehaviour:
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
   borderWidth: 0
-  falloffDistance: 1
+  falloffDistance: 0
 --- !u!114 &2617393441122207669
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -249,7 +249,7 @@ GameObject:
   - component: {fileID: 6957817181053874778}
   - component: {fileID: 8491335310336603992}
   - component: {fileID: 5782743342335559582}
-  - component: {fileID: 3778973097908739875}
+  - component: {fileID: 3473091445750419989}
   m_Layer: 5
   m_Name: border
   m_TagString: Untagged
@@ -297,14 +297,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 3f91331724a9da84197e9b6d94f0483c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 0b70e71dc855f524bab4ca38c0f5255f, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -314,9 +314,9 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
-  borderWidth: 2
-  falloffDistance: 1
---- !u!114 &3778973097908739875
+  borderWidth: 0
+  falloffDistance: 0
+--- !u!114 &3473091445750419989
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -325,10 +325,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 4588972120664804057}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68356c3764ad390429ddad9e48ce8c31, type: 3}
+  m_Script: {fileID: 11500000, guid: 8714c362c0c8a6449a9559a31cdab9a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: {x: 0, y: 0, z: 0, w: 0}
+  radius: 0
 --- !u!1 &4945837490249257622
 GameObject:
   m_ObjectHideFlags: 0
@@ -786,7 +786,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1704976064282269919
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1252,15 +1252,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6142389436048811006, guid: b50aaedd10520cb47921ffa2914b29c1, type: 3}
       propertyPath: m_Color.b
-      value: 0.254717
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6142389436048811006, guid: b50aaedd10520cb47921ffa2914b29c1, type: 3}
       propertyPath: m_Color.g
-      value: 0.254717
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6142389436048811006, guid: b50aaedd10520cb47921ffa2914b29c1, type: 3}
       propertyPath: m_Color.r
-      value: 0.254717
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6142389436048811006, guid: b50aaedd10520cb47921ffa2914b29c1, type: 3}
+      propertyPath: falloffDistance
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7725695254983186254, guid: b50aaedd10520cb47921ffa2914b29c1, type: 3}
+      propertyPath: falloffDistance
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8811197218693237002, guid: b50aaedd10520cb47921ffa2914b29c1, type: 3}
+      propertyPath: falloffDistance
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8908453533362545193, guid: b50aaedd10520cb47921ffa2914b29c1, type: 3}
       propertyPath: m_Name
