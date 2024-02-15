@@ -54,11 +54,13 @@ namespace Game.Gameplay
             if (_player) Destroy(_player.gameObject);
 
             // spawn character
-            _player = GeneratePlayer(level.transform, level.startPoint.position);
+            _player = GeneratePlayer(level.transform, level.spawnPoint.position);
 
-            echoLocator.Door = _player.transform;
+            echoLocator.Door = _level.echolocatorPoint;
             echoLocator.Init();
-            planController.Init(level.startPoint.position, level.maxMoves, level.maxActions);
+            planController.Init(level.doorEntrance.transform.position, level.maxMoves, level.maxActions);
+
+            await _player.MoveToAsync(_level.doorFront.position);
 
             // show intro like "Game Start" 
             gameRuntimeState.SetValue(GameState.Start);
@@ -73,6 +75,10 @@ namespace Game.Gameplay
             await planController.Plan();
 
             gameRuntimeState.SetValue(GameState.Perform);
+
+            _level.doorEntrance.Open();
+
+            await _player.MoveToAsync(_level.doorEntrance.transform.position);
             // wait for perform
             await planPerformer.PerformPlan(_player);
 
