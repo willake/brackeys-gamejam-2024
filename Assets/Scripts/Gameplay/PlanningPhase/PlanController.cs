@@ -1,4 +1,5 @@
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using Game.RuntimeStates;
 using Game.UI;
 using UniRx;
@@ -14,12 +15,14 @@ namespace Game.Gameplay
         public GameRuntimeState gameRuntimeState;
         public PlanRuntimeState planRuntimeState;
         public PlanningPanel planningPanel;
+        public GameObject movePositionIndicator;
         public GameObject attackPositionIndicator;
         public LineRenderer attackDirectionIndicator;
 
         private IPlanningState _currentState;
 
         // move plan related
+        private Vector2 _movePosition;
         private int _plannedMoves;
         private Vector2 _startPoint;
 
@@ -57,6 +60,7 @@ namespace Game.Gameplay
             planRuntimeState.isPlanFilled.Value = false;
 
             // init indicators
+            movePositionIndicator.gameObject.SetActive(false);
             attackPositionIndicator.gameObject.SetActive(false);
             attackDirectionIndicator.gameObject.SetActive(false);
             _actionDirectionPoses = new Vector3[2];
@@ -70,7 +74,13 @@ namespace Game.Gameplay
             planningPanel.planningActionList.Setup(maxActions);
             planningPanel.SetActionListVisible(false);
 
+            SetState(PlanningStates.IdleState);
+        }
+
+        public async UniTask Plan()
+        {
             SetState(PlanningStates.PlanMoveState);
+            await onPlanSet.AsObservable().Take(1);
         }
 
         private void HandleLeftClick(Vector3 mousePos, Vector3 mouseWorldPos)
@@ -138,6 +148,12 @@ namespace Game.Gameplay
             attackPositionIndicator.transform.position = _actionPosition;
         }
 
+        private void UpdateMovePositionIndicator(Vector3 mouseWorldPos)
+        {
+            _movePosition = mouseWorldPos;
+            movePositionIndicator.transform.position = _movePosition;
+        }
+
         private void UpdateAttackDirectionIndicator(Vector3 mouseWorldPos)
         {
             mouseWorldPos.z = 0;
@@ -163,6 +179,7 @@ namespace Game.Gameplay
             if (prev == PlanningStates.PlanMoveState &&
                 next == PlanningStates.PlanAttackPositionState)
             {
+                movePositionIndicator.gameObject.SetActive(false);
                 planningPanel.SetActionListVisible(true);
             }
             else if (prev == PlanningStates.PlanAttackDirectionState &&
@@ -181,7 +198,11 @@ namespace Game.Gameplay
 
         private void OnEnterState(IPlanningState state)
         {
-            if (state == PlanningStates.PlanAttackPositionState)
+            if (state == PlanningStates.PlanMoveState)
+            {
+                movePositionIndicator.gameObject.SetActive(true);
+            }
+            else if (state == PlanningStates.PlanAttackPositionState)
             {
                 attackPositionIndicator.gameObject.SetActive(true);
                 planningPanel.HighlightAction(_plannedActions);
@@ -250,6 +271,13 @@ namespace Game.Gameplay
             else if (Input.GetKeyDown(KeyCode.Mouse1))
             {
                 HandleRightClick();
+            }
+
+            if (_currentState.canPlanMove)
+            {
+                Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                mouseWorldPos.z = 0;
+                UpdateMovePositionIndicator(mouseWorldPos);
             }
 
             if (_currentState.canPlanAttackPosition)

@@ -14,5 +14,7 @@ namespace Game
         public GameObject settingsPanel;
         public GameObject modalPanel;
         public GameObject planningPanel;
+        public GameObject gameStartPanel;
+        public GameObject gameEndPanel;
     }
 }

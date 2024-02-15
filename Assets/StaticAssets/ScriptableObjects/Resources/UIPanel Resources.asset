@@ -17,3 +17,5 @@ MonoBehaviour:
   settingsPanel: {fileID: 8961320636660114426, guid: 6e3c34d090efa2f46976735dfbd88631, type: 3}
   modalPanel: {fileID: 6921301304203260996, guid: 76982b95586a59c49bc180d46caa047c, type: 3}
   planningPanel: {fileID: 7750447504560929411, guid: b653b5afb4011a744b9469464acaa557, type: 3}
+  gameStartPanel: {fileID: 797530540487459671, guid: 232ab3a8b544b514ab62da7b15444dde, type: 3}
+  gameEndPanel: {fileID: 9016851188987456387, guid: dfae400149e092249bee524ce190e8f4, type: 3}

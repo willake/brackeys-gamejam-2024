@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Rendering.Universal;
 
 
@@ -41,6 +42,7 @@ public class EchoLocator : MonoBehaviour
     private float _pathLength;
     private float _tracingPos;
 
+    public UnityEvent LocationEndEvent;
 
     public bool Done { get => _done; }
     public Transform Door { get => _door; set => _door = value; }
@@ -214,6 +216,8 @@ public class EchoLocator : MonoBehaviour
         _lightPoints[0].position = new Vector3(rayOrigin().x, rayOrigin().y, -1.5f);
         _lightPoints[0].GetComponent<Light2D>().intensity = 1;
 
+        LocationEndEvent = new UnityEvent();
+
         _isInitiated = true;
     }
 
@@ -235,6 +239,7 @@ public class EchoLocator : MonoBehaviour
         else
         {
             _done = true;
+            LocationEndEvent.Invoke();
         }
     }
 

@@ -52,7 +52,10 @@ namespace Game.Gameplay
 
         public void SetVisisble(bool visible)
         {
-            root?.SetActive(visible);
+            if (root)
+            {
+                root.SetActive(visible);
+            }
         }
 
         private void PresentPlan(MovePlanNode[] movePlans, ActionPlanNode[] actionPlans)

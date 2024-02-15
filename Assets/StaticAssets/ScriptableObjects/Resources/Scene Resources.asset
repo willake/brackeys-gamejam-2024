@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   menu: Assets/StaticAssets/Scenes/Menu.unity
   game: Assets/StaticAssets/Scenes/MainGame.unity
-  echoLocation: Assets/StaticAssets/Scenes/EchoLocationTest.unity
+  echoLocation: 
