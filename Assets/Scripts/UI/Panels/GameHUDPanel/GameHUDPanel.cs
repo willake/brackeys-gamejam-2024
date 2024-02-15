@@ -24,37 +24,37 @@ namespace Game.UI
 
         private void Start()
         {
-            gamePhaseTab
-                .OnPhaseSelectObservable
-                .ObserveOnMainThread()
-                .Subscribe(phase => gamePhaseState.SetValue(phase))
-                .AddTo(this);
+            // gamePhaseTab
+            //     .OnPhaseSelectObservable
+            //     .ObserveOnMainThread()
+            //     .Subscribe(phase => gamePhaseState.SetValue(phase))
+            //     .AddTo(this);
 
-            gamePhaseState
-                .OnValueChanged
-                .ObserveOnMainThread()
-                .Subscribe(phase =>
-                {
-                    gamePhaseTab.SetPhaseState(phase);
-                    if (phase == GamePhase.Perform)
-                    {
-                        btnPerformPlan.gameObject.SetActive(false);
-                        gamePhaseTab.gameObject.SetActive(false);
-                    }
-                })
-                .AddTo(this);
+            // gamePhaseState
+            //     .OnValueChanged
+            //     .ObserveOnMainThread()
+            //     .Subscribe(phase =>
+            //     {
+            //         gamePhaseTab.SetPhaseState(phase);
+            //         if (phase == GamePhase.Perform)
+            //         {
+            //             btnPerformPlan.gameObject.SetActive(false);
+            //             gamePhaseTab.gameObject.SetActive(false);
+            //         }
+            //     })
+            //     .AddTo(this);
 
-            btnPerformPlan
-                .OnClickObservable
-                .ObserveOnMainThread()
-                .Subscribe(_ => onPerformPlanClickEvent.Invoke())
-                .AddTo(this);
+            // btnPerformPlan
+            //     .OnClickObservable
+            //     .ObserveOnMainThread()
+            //     .Subscribe(_ => onPerformPlanClickEvent.Invoke())
+            //     .AddTo(this);
 
-            planRuntimeState
-                .isPlanFilled
-                .ObserveOnMainThread()
-                .Subscribe(isPlanFilled => btnPerformPlan.gameObject.SetActive(isPlanFilled))
-                .AddTo(this);
+            // planRuntimeState
+            //     .isPlanFilled
+            //     .ObserveOnMainThread()
+            //     .Subscribe(isPlanFilled => btnPerformPlan.gameObject.SetActive(isPlanFilled))
+            //     .AddTo(this);
         }
 
         public override WDButton[] GetSelectableButtons()

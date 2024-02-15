@@ -472,13 +472,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 614f704f5280b2f4ea9d73e8036e60b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameRuntimeState: {fileID: 11400000, guid: e6bfdf1c08792504fb423868a5f05987, type: 2}
   prefabPlayer: {fileID: 4685882066404047874, guid: b4dc97a9bbb664f499567147965689fa, type: 3}
   echoLocator: {fileID: 1498717590}
   planController: {fileID: 190824154}
-  planPresenter: {fileID: 426897621045872351}
   planPerformer: {fileID: 1439440496}
   levelLoader: {fileID: 1865955073}
-  phaseState: {fileID: 11400000, guid: f47d0c941c247174e9e1d1dff7046d84, type: 2}
 --- !u!4 &789512049
 Transform:
   m_ObjectHideFlags: 0
@@ -665,6 +664,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5262265611246969663, guid: c6d87782a32508741942fbdcf121becd, type: 3}
+      propertyPath: gameRuntimeState
+      value: 
+      objectReference: {fileID: 11400000, guid: e6bfdf1c08792504fb423868a5f05987, type: 2}
     - target: {fileID: 6259928441769445345, guid: c6d87782a32508741942fbdcf121becd, type: 3}
       propertyPath: m_Name
       value: PlanPresenter
@@ -741,6 +744,10 @@ PrefabInstance:
       propertyPath: planPresenter
       value: 
       objectReference: {fileID: 426897621045872351}
+    - target: {fileID: 8616061218480581829, guid: 16a2100f8b6002847bb3789277da215c, type: 3}
+      propertyPath: gameRuntimeState
+      value: 
+      objectReference: {fileID: 11400000, guid: e6bfdf1c08792504fb423868a5f05987, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
