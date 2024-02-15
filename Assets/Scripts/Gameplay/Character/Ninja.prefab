@@ -115,8 +115,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ead5a2cd1702bb469e06711d34c2837, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackAnimationTime: 0.5
-  damageAnimationTime: 0.5
+  attackAnimationTime: 0.8
+  damageAnimationTime: 0.8
   attackEndedEvent:
     m_PersistentCalls:
       m_Calls: []

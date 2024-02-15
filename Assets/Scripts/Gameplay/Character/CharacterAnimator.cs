@@ -26,11 +26,15 @@ namespace Game.Gameplay
             return _animator;
         }
 
-        public void SetMoveSpeed(float horizontal, float vertical, float speed)
+        public void SetMoveSpeed(float speed)
+        {
+            GetAnimator().SetFloat("Speed", speed);
+        }
+
+        public void SetMoveDirection(float horizontal, float vertical)
         {
             GetAnimator().SetFloat("Horizontal", horizontal);
             GetAnimator().SetFloat("Vertical", vertical);
-            GetAnimator().SetFloat("Speed", speed);
         }
 
         public void TriggerAttack()
@@ -64,13 +68,13 @@ namespace Game.Gameplay
 
         IEnumerator CountdownAttackAnimation()
         {
-            yield return new WaitForSecondsRealtime(attackAnimationTime);
+            yield return new WaitForSeconds(attackAnimationTime);
             attackEndedEvent.Invoke();
         }
 
         IEnumerator CountdownDamageAnimation()
         {
-            yield return new WaitForSecondsRealtime(damageAnimationTime);
+            yield return new WaitForSeconds(damageAnimationTime);
             damageEndedEvent.Invoke();
         }
 

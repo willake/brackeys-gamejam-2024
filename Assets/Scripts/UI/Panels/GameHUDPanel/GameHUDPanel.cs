@@ -33,7 +33,15 @@ namespace Game.UI
             gamePhaseState
                 .OnValueChanged
                 .ObserveOnMainThread()
-                .Subscribe(phase => gamePhaseTab.SetPhaseState(phase))
+                .Subscribe(phase =>
+                {
+                    gamePhaseTab.SetPhaseState(phase);
+                    if (phase == GamePhase.Perform)
+                    {
+                        btnPerformPlan.gameObject.SetActive(false);
+                        gamePhaseTab.gameObject.SetActive(false);
+                    }
+                })
                 .AddTo(this);
 
             btnPerformPlan
@@ -43,9 +51,9 @@ namespace Game.UI
                 .AddTo(this);
 
             planRuntimeState
-                .onChangedObservable
+                .isPlanFilled
                 .ObserveOnMainThread()
-                .Subscribe(_ => ShowPerformButton(planRuntimeState.moveplans.Count > 0))
+                .Subscribe(isPlanFilled => btnPerformPlan.gameObject.SetActive(isPlanFilled))
                 .AddTo(this);
         }
 
@@ -75,11 +83,6 @@ namespace Game.UI
         public override async UniTask CloseAsync()
         {
             await UniTask.CompletedTask;
-        }
-
-        public void ShowPerformButton(bool shouldShow)
-        {
-            btnPerformPlan.gameObject.SetActive(shouldShow);
         }
 
         private void OnDestroy()

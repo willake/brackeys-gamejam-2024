@@ -27,8 +27,7 @@ namespace Game.Gameplay
 
         public void MoveTo(Vector2 destination)
         {
-            Vector2 direction = (destination - new Vector2(transform.position.x, transform.position.y));
-            GetCharacterAnimator().SetMoveSpeed(direction.x, direction.y, speed);
+            GetCharacterAnimator().SetMoveSpeed(speed);
             isMoving = true;
             _destination = destination;
         }
@@ -47,8 +46,8 @@ namespace Game.Gameplay
 
         public async UniTask AttackAsync(Vector2 direction)
         {
+            GetCharacterAnimator().SetMoveDirection(direction.x, direction.y);
             Attack(direction);
-
             await GetCharacterAnimator().attackEndedEvent.AsObservable().Take(1);
         }
 
@@ -65,12 +64,16 @@ namespace Game.Gameplay
                 float step = speed * Time.deltaTime;
                 transform.position = Vector2.MoveTowards(transform.position, _destination, step);
 
+                Vector2 direction = (_destination - new Vector2(transform.position.x, transform.position.y));
+                GetCharacterAnimator().SetMoveDirection(direction.x, direction.y);
+
+
                 float distanceToDestination = Vector2.Distance(transform.position, _destination);
 
                 if (distanceToDestination < 0.01f)
                 {
                     isMoving = false;
-                    GetCharacterAnimator().SetMoveSpeed(0, 0, 0);
+                    GetCharacterAnimator().SetMoveSpeed(0);
                     _onArriveDestination.Invoke();
                 }
             }

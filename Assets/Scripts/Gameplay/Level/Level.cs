@@ -8,11 +8,23 @@ namespace Game.Gameplay
         [Header("References")]
         public Transform startPoint;
         public Character[] enemies;
+        public int maxMoves = 3;
+        public int maxActions = 3;
 
         private void Start()
         {
             MainGameScene gameScene = GameManager.instance.gameScene as MainGameScene;
-            gameScene.StartLevel(this).Forget();
+            gameScene.PlayLevel(this).Forget();
+        }
+
+        public bool AreAllEnemiesDead()
+        {
+            foreach (var enemy in enemies)
+            {
+                if (enemy.isDead == false) return false;
+            }
+
+            return true;
         }
     }
 }
