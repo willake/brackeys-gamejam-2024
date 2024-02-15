@@ -105,7 +105,7 @@ MonoBehaviour:
   isDead: 0
   isMoving: 0
   characterType: 0
-  speed: 2
+  speed: 4
   attackRadius: 1
   attackDetectionRadius: 1
   footstepsInterval: 0.6
