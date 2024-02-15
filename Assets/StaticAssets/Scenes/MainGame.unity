@@ -412,8 +412,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _trailRenderer: []
   _isInitiated: 0
-  _maxBounce: 3
-  _shotNumber: 3
+  _maxBounce: 4
+  _shotNumber: 5
   _angle: 0
   _door: {fileID: 0}
   _lineRenderer: {fileID: 266925257}

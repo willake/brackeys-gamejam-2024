@@ -126,7 +126,10 @@ public class EchoLocator : MonoBehaviour
         int segmentID = 0;
 
         if (trailLength > _pathLength)
+        {
+
             return false;
+        }
 
         while (trailLength > 0 && trailLength > segmentEnd)
         {
@@ -147,9 +150,11 @@ public class EchoLocator : MonoBehaviour
         for (int i = 0; i <= segmentID; i++)
             _lineRenderer.SetPosition(i, trailPos);
 
-        if (_trailRenderer[_currentShot].positionCount <= segmentID + 1)
-            _trailRenderer[_currentShot].positionCount = segmentID + 2;
-        _trailRenderer[_currentShot].SetPosition(segmentID + 1, trailPos);
+        if (segmentID < 1)
+        {
+            _trailRenderer[_currentShot].positionCount = 2;
+            _trailRenderer[_currentShot].SetPosition(1, trailPos);
+        }
 
         segmentStart = 0;
         segmentEnd = _distances[0];
@@ -175,8 +180,18 @@ public class EchoLocator : MonoBehaviour
 
         Vector2 pos = startPos + (endPos - startPos) * ((frontParam - segmentStart) / (segmentEnd - segmentStart));
         _lineRenderer.SetPosition(segmentID + 1, pos);
-        _lightPoints[(_currentShot) * (_maxBounce + 2) + segmentID + 1].GetComponent<Light2D>().intensity = 1;
-        _lightPoints[(_currentShot) * (_maxBounce + 2) + segmentID + 1].position = new Vector3(pos.x, pos.y, -1.5f);
+        for(int i = 0; i < segmentID; i++)
+        {
+            _lightPoints[(_currentShot) * (_maxBounce + 2) + segmentID].GetComponent<Light2D>().intensity = 1;
+            _lightPoints[(_currentShot) * (_maxBounce + 2) + segmentID].position = _bouncePoints[i];
+        }
+        if (t>1.0f)
+        {
+            _lightPoints[(_currentShot) * (_maxBounce + 2) + _maxBounce + 1].GetComponent<Light2D>().intensity = 1;
+            _lightPoints[(_currentShot) * (_maxBounce + 2) + _maxBounce + 1].position = _bouncePoints[_maxBounce];
+        }
+
+
 
         return true;
     }
@@ -197,7 +212,7 @@ public class EchoLocator : MonoBehaviour
         _trailRenderer[0].positionCount = 1;
         _trailRenderer[0].SetPosition(0, rayOrigin());
 
-        _lightPoints = new Transform[(_maxBounce + 2) * _shotNumber];
+        _lightPoints = new Transform[(_maxBounce + 2) * _shotNumber +1];
         _bouncePoints = new Vector2[_maxBounce + 1];
         _distances = new float[_maxBounce + 1];
 
