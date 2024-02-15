@@ -29,6 +29,14 @@ namespace Game
         [Serializable]
         public class GameplayAudios
         {
+            [FormerlySerializedAs("FootstepsWood1")] public WrappedAudioClip footstepsWood1;
+            [FormerlySerializedAs("FootstepsWood2")] public WrappedAudioClip footstepsWood2;
+            [FormerlySerializedAs("FootstepsWood3")] public WrappedAudioClip footstepsWood3;
+            [FormerlySerializedAs("ClickPhath1")] public WrappedAudioClip clickPath1;
+            [FormerlySerializedAs("ClickPhath2")] public WrappedAudioClip clickPath2;
+            [FormerlySerializedAs("ClickPhath3")] public WrappedAudioClip clickPath3;
+            [FormerlySerializedAs("Attack")] public WrappedAudioClip attack;
+            [FormerlySerializedAs("Dead")] public WrappedAudioClip dead;
         }
     }
 }
