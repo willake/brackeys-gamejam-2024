@@ -11,6 +11,7 @@ namespace Game.UI
         [Header("AI Settings")]
         public float facingDirectionInDegrees = 0f;
         public float sightRangeInDegree = 30f;
+        public float sightDistance = 1.5f;
 
         private void Start()
         {
@@ -49,8 +50,8 @@ namespace Game.UI
                 0
             );
 
-            Gizmos.DrawLine(origin, origin + minDirection * 1.5f);
-            Gizmos.DrawLine(origin, origin + maxDirection * 1.5f);
+            Gizmos.DrawLine(origin, origin + minDirection * sightDistance);
+            Gizmos.DrawLine(origin, origin + maxDirection * sightDistance);
         }
     }
 }
