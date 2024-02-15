@@ -52,7 +52,6 @@ namespace Game.Gameplay
 
             // show Game HUD, it contains a button to switch between Echo Locating and Planning phase
             _gameHUDPanel = UIManager.instance.OpenUI(AvailableUI.GameHUDPanel) as GameHUDPanel;
-            planController.planningPanel = UIManager.instance.OpenUI(AvailableUI.PlanningPanel) as PlanningPanel;
         }
 
         public async UniTask PlayLevel(Level level)
