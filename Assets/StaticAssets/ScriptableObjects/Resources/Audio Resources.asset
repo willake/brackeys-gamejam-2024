@@ -19,47 +19,28 @@ MonoBehaviour:
     buttonConfirm:
       clip: {fileID: 8300000, guid: 00cbb81606f76974984b5bf6652ad536, type: 3}
       volume: 1
-  backgroundAudios:
-    ambienceWind:
-      clip: {fileID: 8300000, guid: ede3ea62d8f31c14ab1285cbbeac66aa, type: 3}
-      volume: 0.5
   gameplayAudios:
-    levelWin:
-      clip: {fileID: 8300000, guid: 3346a7f6eab633847bb845f76a31ea40, type: 3}
-      volume: 0.8
-    levelLose:
-      clip: {fileID: 8300000, guid: ad75698d155c81c4cb83f800fe5714f4, type: 3}
-      volume: 0.8
-    levelStart:
-      clip: {fileID: 8300000, guid: 83649b73213442c4696a4bbd2d640791, type: 3}
-      volume: 0.4
-    footStep1:
-      clip: {fileID: 8300000, guid: 20cad1860046bcc40aed59c8674f726b, type: 3}
-      volume: 0.05
-    footStep2:
-      clip: {fileID: 8300000, guid: 20cad1860046bcc40aed59c8674f726b, type: 3}
-      volume: 0.05
-    snowballThrow:
-      clip: {fileID: 8300000, guid: 034b81e5071913a48a93213926cbad7d, type: 3}
+    footstepsWood1:
+      clip: {fileID: 8300000, guid: 1662629bc74b6a74c9bd7079cae382cf, type: 3}
       volume: 1
-    snowballNotHit:
-      clip: {fileID: 8300000, guid: d2a3674aaac91044096de5c7b71ffe58, type: 3}
-      volume: 0.4
-    snowballHit:
-      clip: {fileID: 8300000, guid: 6af35136c4354b6438d8c50a9f40b3ad, type: 3}
+    footstepsWood2:
+      clip: {fileID: 8300000, guid: 44456584ddecbff4e9077a047e30335c, type: 3}
       volume: 1
-    snowballHitHard:
-      clip: {fileID: 8300000, guid: 69be47b30f0384e4998e18680362621d, type: 3}
+    footstepsWood3:
+      clip: {fileID: 8300000, guid: fbc36682d2928e645ad69e88c5255198, type: 3}
       volume: 1
-    playerDamaged:
-      clip: {fileID: 8300000, guid: 0a1f33bbafbb3a549bf08afce0ddec09, type: 3}
+    clickPath1:
+      clip: {fileID: 8300000, guid: a775a9e8337c4b240a704ca929954d4f, type: 3}
       volume: 1
-    enemyDamaged:
-      clip: {fileID: 0}
+    clickPath2:
+      clip: {fileID: 8300000, guid: b8d6052ed21e0fb4280caec110c8ad03, type: 3}
       volume: 1
-    reload:
-      clip: {fileID: 8300000, guid: 134c7bcf80747d949926ec9f102740f3, type: 3}
-      volume: 0.2
-    criticalCharge:
-      clip: {fileID: 8300000, guid: b0400996705ccfa48924d240ace5cc8a, type: 3}
+    clickPath3:
+      clip: {fileID: 8300000, guid: bf0c61eefb53c4044a37f9dda9d5e0fc, type: 3}
+      volume: 1
+    attack:
+      clip: {fileID: 8300000, guid: 1aaae4b16d878224fafc462251a3036c, type: 3}
+      volume: 1
+    dead:
+      clip: {fileID: 8300000, guid: 566e580b69588914488359b6955f96f0, type: 3}
       volume: 1

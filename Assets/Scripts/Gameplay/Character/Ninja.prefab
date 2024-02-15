@@ -108,6 +108,7 @@ MonoBehaviour:
   speed: 2
   attackRadius: 1
   attackDetectionRadius: 1
+  footstepsInterval: 0.6
 --- !u!114 &-6837078435734401123
 MonoBehaviour:
   m_ObjectHideFlags: 0
