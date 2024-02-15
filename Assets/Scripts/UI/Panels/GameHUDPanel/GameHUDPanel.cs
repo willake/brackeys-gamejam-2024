@@ -17,7 +17,6 @@ namespace Game.UI
         [Header("References")]
         public PlanRuntimeState planRuntimeState;
         public GamePhaseTab gamePhaseTab;
-        public GamePhaseState gamePhaseState;
         public WDButton btnPerformPlan;
 
         public UnityEvent onPerformPlanClickEvent = new();
