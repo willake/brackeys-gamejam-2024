@@ -42,14 +42,14 @@ namespace Game.Gameplay
         private float _lastFootstepsTime = 0;
 
 
-        private SpriteRenderer GetRenderer()
+        protected SpriteRenderer GetRenderer()
         {
             if (_renderer == null) _renderer = GetComponent<SpriteRenderer>();
 
             return _renderer;
         }
 
-        private CharacterAnimator GetCharacterAnimator()
+        protected CharacterAnimator GetCharacterAnimator()
         {
             if (_animator == null) _animator = GetComponent<CharacterAnimator>();
 
