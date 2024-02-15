@@ -100,9 +100,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2bac54d06dec0c4e96eef133558b81e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 1
   isDead: 0
   isMoving: 0
+  characterType: 0
+  speed: 2
+  attackRadius: 1
+  attackDetectionRadius: 1
 --- !u!114 &-6837078435734401123
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -490,10 +490,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   txtTitle: {fileID: 7262122425529876385}
-  winColor: {r: 1, g: 0.99144226, b: 0.43867922, a: 0}
+  winColor: {r: 1, g: 0.99144226, b: 0.43867922, a: 1}
   winDuration: 0.2
   winEase: 19
-  loseColor: {r: 1, g: 1, b: 1, a: 0}
+  loseColor: {r: 1, g: 1, b: 1, a: 1}
   loseDuration: 0.2
   loseEase: 19
 --- !u!1 &8697368215145911008
