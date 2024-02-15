@@ -597,6 +597,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9028487181099343638}
   - component: {fileID: 8576585684801986989}
+  - component: {fileID: 1311832719894907669}
   m_Layer: 5
   m_Name: GameEndPanel
   m_TagString: Untagged
@@ -639,6 +640,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   title: {fileID: 8079727769128151563}
-  btnMenu: {fileID: 0}
+  btnMenu: {fileID: 284439455255394629}
   fadeDuration: 0.2
   fadeEase: 2
+--- !u!225 &1311832719894907669
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9016851188987456387}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0

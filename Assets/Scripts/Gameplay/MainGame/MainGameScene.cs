@@ -66,6 +66,7 @@ namespace Game.Gameplay
 
             gameRuntimeState.SetValue(GameState.EchoLocation);
             // wait for echo location done
+            await echoLocator.LocationEndEvent.AsObservable().Take(1);
 
             gameRuntimeState.SetValue(GameState.Plan);
             // wait for planning dowe

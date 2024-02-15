@@ -55,8 +55,7 @@ namespace Game.UI
             GetCanvasGroup().alpha = 0;
             gameObject.SetActive(true);
 
-            GetCanvasGroup().DOFade(1, fadeDuration).SetEase(fadeEase).SetUpdate(true);
-            await UniTask.CompletedTask;
+            await GetCanvasGroup().DOFade(1, fadeDuration).SetEase(fadeEase).SetUpdate(true).AsyncWaitForCompletion();
         }
 
         public override void Close()
