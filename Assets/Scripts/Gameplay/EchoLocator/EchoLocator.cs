@@ -31,6 +31,8 @@ public class EchoLocator : MonoBehaviour
     private GameObject _pointLightParent;
     [SerializeField]
     private Material lineMat;
+    [SerializeField]
+    private LayerMask _layerMask;
 
     private Transform[] _lightPoints;
     private Vector2[] _bouncePoints;
@@ -89,23 +91,19 @@ public class EchoLocator : MonoBehaviour
     public bool bounce(int bounceID, Vector2 origin, Vector2 direction, out Vector2 newOrigin, out Vector2 newDir)
     {
 
-        RaycastHit2D hit = Physics2D.Raycast(origin, direction);
+        RaycastHit2D hit = Physics2D.Raycast(origin, direction, Mathf.Infinity, _layerMask);
         if (hit.collider != null)
         {
-            if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Obstacles") || hit.collider.gameObject.layer == LayerMask.NameToLayer("Enemy"))
-            {
-                Vector2 collisionPoint = origin + direction * hit.distance;
-                float angle = Vector2.SignedAngle(-direction, hit.normal);
-                
-                _distances[bounceID] = hit.distance;
-                _pathLength += hit.distance;
-                
-                newOrigin = collisionPoint + hit.normal * 0.001f;
-                newDir = Quaternion.Euler(0, 0, angle) * hit.normal;
+            Vector2 collisionPoint = origin + direction * hit.distance;
+            float angle = Vector2.SignedAngle(-direction, hit.normal);
 
-                return true;
+            _distances[bounceID] = hit.distance;
+            _pathLength += hit.distance;
 
-            }
+            newOrigin = collisionPoint + hit.normal * 0.001f;
+            newDir = Quaternion.Euler(0, 0, angle) * hit.normal;
+
+            return true;
         }
 
         newOrigin = Vector2.zero;
@@ -118,7 +116,7 @@ public class EchoLocator : MonoBehaviour
         float frontParam = Mathf.Min(t, 1.0f);
 
         float targetLength = frontParam * _pathLength;
-        
+
         float trailLength = Mathf.Max((t * _pathLength - 10.0f), 0.0f);
         float trailParam = trailLength / _pathLength;
 
@@ -261,7 +259,7 @@ public class EchoLocator : MonoBehaviour
             _tracingPos += Time.deltaTime / _pathLength * 6.0f;
 
             if (!traceSoundRay(_tracingPos))
-                nextShot();                
+                nextShot();
         }
     }
 

@@ -421,6 +421,12 @@ MonoBehaviour:
   _pointLightPrefab: {fileID: 2813779991219869535, guid: 45e600d5b6404b245a7cc9664c9ffadc, type: 3}
   _pointLightParent: {fileID: 542712040}
   lineMat: {fileID: 2100000, guid: 78f306c130c840b4fb61f5beae50c96c, type: 2}
+  _layerMask:
+    serializedVersion: 2
+    m_Bits: 640
+  LocationEndEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!4 &1498717591
 Transform:
   m_ObjectHideFlags: 0
