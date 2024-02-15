@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using Game.Audios;
 using Game.RuntimeStates;
 using UnityEngine;
 
@@ -16,7 +17,20 @@ namespace Game.Gameplay
 
         public async UniTask PerformPlan(Character character)
         {
-            _isPlaying = false;
+            float r = Random.value;
+            WrappedAudioClip audioClip;
+
+            if (r > 0.66) audioClip = ResourceManager.instance?.audioResources.gameplayAudios.acceptPlan1;
+            else if (r > 0.33) audioClip = ResourceManager.instance?.audioResources.gameplayAudios.acceptPlan2;
+            else audioClip = ResourceManager.instance?.audioResources.gameplayAudios.acceptPlan3;
+
+            AudioManager.instance?.PlaySFX(
+                audioClip.clip,
+                audioClip.volume,
+                Random.Range(0.6f, 1f)
+            );
+
+            _isPlaying = true;
             // extract the plan
             List<PerformerPlanNode> plans =
                 ExtractPlans(planRuntimeState.moveplans.ToArray(), planRuntimeState.actionPlans.ToArray());
@@ -33,7 +47,7 @@ namespace Game.Gameplay
                     await character.AttackAsync(plan.v1);
                 }
             }
-            _isPlaying = true;
+            _isPlaying = false;
         }
 
         private List<PerformerPlanNode> ExtractPlans(MovePlanNode[] movePlans, ActionPlanNode[] actionPlans)

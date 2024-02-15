@@ -1,5 +1,6 @@
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using Game.Audios;
 using Game.RuntimeStates;
 using Game.UI;
 using UniRx;
@@ -96,21 +97,43 @@ namespace Game.Gameplay
             return false;
         }
 
+        private void PlayClickSound()
+        {
+            float r = Random.value;
+            WrappedAudioClip audioClip;
+
+            if (r > 0.66) audioClip = ResourceManager.instance?.audioResources.gameplayAudios.clickPath1;
+            else if (r > 0.33) audioClip = ResourceManager.instance?.audioResources.gameplayAudios.clickPath2;
+            else audioClip = ResourceManager.instance?.audioResources.gameplayAudios.clickPath3;
+
+            AudioManager.instance?.PlaySFX(
+                audioClip.clip,
+                audioClip.volume,
+                Random.Range(0.6f, 1f)
+            );
+        }
+
         private void HandleLeftClick(Vector3 mousePos, Vector3 mouseWorldPos)
         {
             if (_currentState.canPlanMove && IsInRoom(mouseWorldPos))
             {
                 AddMovePlan(mouseWorldPos);
                 PlanNextMove();
+
+                PlayClickSound();
             }
             else if (_currentState.canPlanAttackPosition)
             {
                 SetState(PlanningStates.PlanAttackDirectionState);
+
+                PlayClickSound();
             }
             else if (_currentState.canPlanAttackDirection)
             {
                 AddActionPlan(PlanActionType.Attack, mouseWorldPos);
                 PlanNextAction();
+
+                PlayClickSound();
             }
         }
 

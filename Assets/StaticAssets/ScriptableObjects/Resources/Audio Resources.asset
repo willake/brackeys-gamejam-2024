@@ -38,6 +38,15 @@ MonoBehaviour:
     clickPath3:
       clip: {fileID: 8300000, guid: bf0c61eefb53c4044a37f9dda9d5e0fc, type: 3}
       volume: 1
+    acceptPlan1:
+      clip: {fileID: 8300000, guid: 01b861b71ff75d64183a05c7b72ec9b8, type: 3}
+      volume: 1
+    acceptPlan2:
+      clip: {fileID: 8300000, guid: 9a74a8e56cab98c4880f6077c29ec59f, type: 3}
+      volume: 1
+    acceptPlan3:
+      clip: {fileID: 8300000, guid: f5edc9ea5e7f2904d9abdf62f332992d, type: 3}
+      volume: 1
     attack:
       clip: {fileID: 8300000, guid: 1aaae4b16d878224fafc462251a3036c, type: 3}
       volume: 1

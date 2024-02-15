@@ -35,6 +35,9 @@ namespace Game
             [FormerlySerializedAs("ClickPhath1")] public WrappedAudioClip clickPath1;
             [FormerlySerializedAs("ClickPhath2")] public WrappedAudioClip clickPath2;
             [FormerlySerializedAs("ClickPhath3")] public WrappedAudioClip clickPath3;
+            [FormerlySerializedAs("AcceptPlan1")] public WrappedAudioClip acceptPlan1;
+            [FormerlySerializedAs("AcceptPlan2")] public WrappedAudioClip acceptPlan2;
+            [FormerlySerializedAs("AcceptPlan3")] public WrappedAudioClip acceptPlan3;
             [FormerlySerializedAs("Attack")] public WrappedAudioClip attack;
             [FormerlySerializedAs("Dead")] public WrappedAudioClip dead;
         }
