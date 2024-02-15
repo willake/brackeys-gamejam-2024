@@ -89,7 +89,8 @@ namespace Game.UI
                 {
                     movePlansIndicator.text = $"Moves {planRuntimeState.moveplans.Count}/{planRuntimeState.maxMoves}";
                     actionPlansIndicator.text = $"Actions {planRuntimeState.actionPlans.Count}/{planRuntimeState.maxActions}";
-                });
+                })
+                .AddTo(this);
         }
 
         public override WDButton[] GetSelectableButtons()
@@ -123,6 +124,11 @@ namespace Game.UI
         {
             Close();
             await UniTask.CompletedTask;
+        }
+
+        private void OnDestroy()
+        {
+            EventManager.CancelSubscription(EventNames.presentDialogue, _dialogueEventSubscription);
         }
     }
 }
