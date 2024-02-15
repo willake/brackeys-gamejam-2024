@@ -7,6 +7,8 @@ namespace Game.UI
         SettingsPanel,
         TransitionPanel,
         ModalPanel,
-        PlanningPanel
+        PlanningPanel,
+        GameStartPanel,
+        GameEndPanel,
     }
 }
