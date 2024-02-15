@@ -58,7 +58,11 @@ namespace Game.Gameplay
             for (int i = 0; i < moveCount; i++)
             {
                 // bad for performance but no worries for a prototype
-                actionPlans.Where(x => x.pathIdx == i).ToList().ForEach(action => plans.Add(
+                actionPlans
+                    .Where(x => x.pathIdx == i)
+                    .OrderBy(x => Vector2.Distance(x.attackPosition, movePlans[i].start))
+                    .ToList()
+                    .ForEach(action => plans.Add(
                     new PerformerPlanNode()
                     {
                         nodeType = PlanNodeType.Attack,
