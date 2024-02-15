@@ -1,12 +1,6 @@
-using DG.Tweening.Core.Easing;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.Graphs;
 using UnityEngine;
-using UnityEngine.UIElements;
-using static Codice.Client.Commands.WkTree.WorkspaceTreeNode;
-using static UnityEngine.Rendering.HableCurve;
-using static UnityEngine.UI.Image;
+using UnityEngine.Rendering.Universal;
+
 
 public class EchoLocator : MonoBehaviour
 {
@@ -15,40 +9,41 @@ public class EchoLocator : MonoBehaviour
     private Vector2 _direction = Vector2.up;
 
     [SerializeField]
-    private LineRenderer _lineRenderer;
-    [SerializeField]
-    private GameObject _trailPrefab;
-    [SerializeField]
     private LineRenderer[] _trailRenderer;
     [SerializeField]
-    private float _angle = -90;
-    [SerializeField]
-    public Transform _door;
+    private bool _isInitiated;
     [SerializeField]
     private int _maxBounce;
     [SerializeField]
     private int _shotNumber;
     [SerializeField]
-    private Material lineMat;
+    private float _angle = -90;
+    [SerializeField]
+    private Transform _door;
+    [SerializeField]
+    private LineRenderer _lineRenderer;
+    [SerializeField]
+    private GameObject _trailPrefab;
     [SerializeField]
     private GameObject _pointLightPrefab;
     [SerializeField]
     private GameObject _pointLightParent;
-
-    private float _positionParam;
+    [SerializeField]
+    private Material lineMat;
 
     private Transform[] _lightPoints;
     private Vector2[] _bouncePoints;
+
+    private bool _shot;
+    private bool _done;
+    private int _currentShot;
     private float[] _distances;
     private float _pathLength;
-    private int _currentShot;
-    private bool _shot;
-    private bool _ended;
+    private float _tracingPos;
 
-    [SerializeField]
-    private bool _isInitiated;
 
-    public Vector2 Direction { get => _direction; }
+    public bool Done { get => _done; }
+    public Transform Door { get => _door; set => _door = value; }
 
     public Vector2 rayOrigin()
     {
@@ -76,13 +71,14 @@ public class EchoLocator : MonoBehaviour
         Vector2 dir;
 
         origin = rayOrigin();
-        dir = Direction;
+        dir = _direction;
 
         for (int i = 0; i <= _maxBounce; i++)
         {
-            if (!bounce(i, origin, dir, out origin, out dir))
+            if (bounce(i, origin, dir, out origin, out dir))
+                _bouncePoints[i] = origin;
+            else
                 break;
-            _bouncePoints[i] = origin;
         }
 
         _shot = true;
@@ -90,45 +86,47 @@ public class EchoLocator : MonoBehaviour
 
     public bool bounce(int bounceID, Vector2 origin, Vector2 direction, out Vector2 newOrigin, out Vector2 newDir)
     {
-        // RaycastHit hit;
 
         RaycastHit2D hit = Physics2D.Raycast(origin, direction);
         if (hit.collider != null)
         {
-            if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Obstacles") || hit.collider.gameObject.layer == LayerMask.NameToLayer("Door"))
+            if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Obstacles") || hit.collider.gameObject.layer == LayerMask.NameToLayer("Enemy"))
             {
                 Vector2 collisionPoint = origin + direction * hit.distance;
+                float angle = Vector2.SignedAngle(-direction, hit.normal);
+                
                 _distances[bounceID] = hit.distance;
                 _pathLength += hit.distance;
-                Debug.Log($"hit.normal {hit.normal}");
-                float colAngle = Vector2.SignedAngle(-direction, hit.normal);
-                Vector2 colDir = Quaternion.Euler(0, 0, colAngle) * hit.normal;
-
-                newOrigin = collisionPoint;
-                newDir = colDir;
+                
+                newOrigin = collisionPoint + hit.normal * 0.001f;
+                newDir = Quaternion.Euler(0, 0, angle) * hit.normal;
 
                 return true;
 
             }
         }
+
         newOrigin = Vector2.zero;
         newDir = Vector2.zero;
         return false;
-
     }
 
-    private void traceSoundRay(float t)
+    private bool traceSoundRay(float t)
     {
         float frontParam = Mathf.Min(t, 1.0f);
-        float trailParam = Mathf.Max(t - 0.2f, 0.0f);
 
         float targetLength = frontParam * _pathLength;
-        float trailLength = trailParam * _pathLength;
+        
+        float trailLength = Mathf.Max((t * _pathLength - 10.0f), 0.0f);
+        float trailParam = trailLength / _pathLength;
 
         float segmentStart = 0;
         float segmentEnd = _distances[0];
 
         int segmentID = 0;
+
+        if (trailLength > _pathLength)
+            return false;
 
         while (trailLength > 0 && trailLength > segmentEnd)
         {
@@ -145,14 +143,13 @@ public class EchoLocator : MonoBehaviour
         else
             startTrailSegment = _bouncePoints[segmentID - 1];
 
-        Vector2 pos = startTrailSegment + (endTrailSegment - startTrailSegment) * ((trailParam - segmentStart) / (segmentEnd - segmentStart));
-
+        Vector2 trailPos = startTrailSegment + (endTrailSegment - startTrailSegment) * ((trailParam - segmentStart) / (segmentEnd - segmentStart));
         for (int i = 0; i <= segmentID; i++)
-            _lineRenderer.SetPosition(i, pos);
+            _lineRenderer.SetPosition(i, trailPos);
 
         if (_trailRenderer[_currentShot].positionCount <= segmentID + 1)
             _trailRenderer[_currentShot].positionCount = segmentID + 2;
-        _trailRenderer[_currentShot].SetPosition(segmentID + 1, pos);
+        _trailRenderer[_currentShot].SetPosition(segmentID + 1, trailPos);
 
         segmentStart = 0;
         segmentEnd = _distances[0];
@@ -176,25 +173,27 @@ public class EchoLocator : MonoBehaviour
         else
             startPos = _bouncePoints[segmentID - 1];
 
-        pos = startPos + (endPos - startPos) * ((frontParam - segmentStart) / (segmentEnd - segmentStart));
+        Vector2 pos = startPos + (endPos - startPos) * ((frontParam - segmentStart) / (segmentEnd - segmentStart));
         _lineRenderer.SetPosition(segmentID + 1, pos);
+        _lightPoints[(_currentShot) * (_maxBounce + 2) + segmentID + 1].GetComponent<Light2D>().intensity = 1;
         _lightPoints[(_currentShot) * (_maxBounce + 2) + segmentID + 1].position = new Vector3(pos.x, pos.y, -1.5f);
+
+        return true;
     }
 
     // Start is called before the first frame update
     public void Init()
     {
         _shot = false;
-        _ended = false;
+        _done = false;
         _currentShot = 0;
         _pathLength = 0.0f;
-        _positionParam = 0.0f;
+        _tracingPos = 0.0f;
 
         _trailRenderer = new LineRenderer[_shotNumber];
         for (int i = 0; i < _shotNumber; i++)
             _trailRenderer[i] = Instantiate(_trailPrefab, transform).GetComponent<LineRenderer>();
 
-        _lineRenderer.positionCount = 2;
         _trailRenderer[0].positionCount = 1;
         _trailRenderer[0].SetPosition(0, rayOrigin());
 
@@ -206,56 +205,59 @@ public class EchoLocator : MonoBehaviour
         {
             _lightPoints[i] = Instantiate(_pointLightPrefab, _pointLightParent.transform).transform;
             _lightPoints[i].position = rayOrigin();
+            _lightPoints[i].GetComponent<Light2D>().intensity = 0;
         }
 
+        _lineRenderer.positionCount = 2;
         _lineRenderer.SetPosition(0, rayOrigin());
+
         _lightPoints[0].position = new Vector3(rayOrigin().x, rayOrigin().y, -1.5f);
+        _lightPoints[0].GetComponent<Light2D>().intensity = 1;
+
         _isInitiated = true;
+    }
+
+    void nextShot()
+    {
+        _tracingPos = 0.0f;
+        _pathLength = 0.0f;
+        _lineRenderer.positionCount = 0;
+        _shot = false;
+        _currentShot++;
+
+        if (_currentShot < _shotNumber)
+        {
+            _trailRenderer[_currentShot].positionCount = 1;
+            _trailRenderer[_currentShot].SetPosition(0, rayOrigin());
+            _lineRenderer.positionCount = 2;
+            _lineRenderer.SetPosition(0, rayOrigin());
+        }
+        else
+        {
+            _done = true;
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
         if (!_isInitiated) return;
-        if (!_shot & _currentShot < _shotNumber)
+        if (!_shot & !_done)
         {
             updateAngle(Camera.main.ScreenToWorldPoint(Input.mousePosition));
             updateDir();
-            _lineRenderer.SetPosition(1, rayOrigin() + Direction.normalized * 2);
+            _lineRenderer.SetPosition(1, rayOrigin() + _direction.normalized * 2);
             if (Input.GetMouseButton(0))
                 Shoot();
         }
 
-        if (_shot & !_ended)
+        if (_shot)
         {
-            _positionParam += Time.deltaTime * 0.2f;
+            _tracingPos += Time.deltaTime / _pathLength * 6.0f;
 
-            if (_positionParam > 1.2f)
-            {
-                _positionParam = 0.0f;
-                _pathLength = 0.0f;
-                _lineRenderer.positionCount = 0;
-                _ended = false;
-                _shot = false;
-                _currentShot++;
-
-                if (_currentShot < _shotNumber)
-                {
-                    _trailRenderer[_currentShot].positionCount = 1;
-                    _trailRenderer[_currentShot].SetPosition(0, rayOrigin());
-                    _lineRenderer.positionCount = 2;
-                    _lineRenderer.SetPosition(0, rayOrigin());
-                }
-
-            }
-            else
-            {
-                traceSoundRay(_positionParam);
-            }
+            if (!traceSoundRay(_tracingPos))
+                nextShot();                
         }
-
-
-
     }
 
 }
