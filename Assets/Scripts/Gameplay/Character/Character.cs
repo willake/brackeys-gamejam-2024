@@ -14,7 +14,11 @@ namespace Game.Gameplay
     }
     public class Character : MonoBehaviour
     {
+        private SpriteRenderer _renderer;
         private CharacterAnimator _animator;
+
+        [Header("References")]
+        public ParticleSystem deathVFX;
         [Header("States")]
         public bool isDead = false;
         public bool isMoving = false;
@@ -26,6 +30,14 @@ namespace Game.Gameplay
         private Vector2 _destination = Vector2.zero;
 
         private UnityEvent _onArriveDestination = new();
+
+
+        private SpriteRenderer GetRenderer()
+        {
+            if (_renderer == null) _renderer = GetComponent<SpriteRenderer>();
+
+            return _renderer;
+        }
 
         private CharacterAnimator GetCharacterAnimator()
         {
@@ -77,6 +89,8 @@ namespace Game.Gameplay
         public void Die()
         {
             GetCharacterAnimator().TriggerDead();
+            deathVFX.Play();
+            GetRenderer().enabled = false;
             isDead = true;
         }
 
