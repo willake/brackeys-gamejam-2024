@@ -10,6 +10,8 @@ namespace Game.RuntimeStates
     {
         public ReactiveCollection<MovePlanNode> moveplans;
         public ReactiveCollection<ActionPlanNode> actionPlans;
+        public int maxMoves;
+        public int maxActions;
         public ReactiveProperty<bool> isPlanFilled;
 
         public IObservable<Unit> onChangedObservable

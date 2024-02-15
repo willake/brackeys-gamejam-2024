@@ -15,7 +15,6 @@ namespace Game.Gameplay
         [Header("References")]
         public GameRuntimeState gameRuntimeState;
         public PlanRuntimeState planRuntimeState;
-        public PlanningPanel planningPanel;
         public GameObject movePositionIndicator;
         public GameObject attackPositionIndicator;
         public LineRenderer attackDirectionIndicator;
@@ -59,6 +58,8 @@ namespace Game.Gameplay
             planRuntimeState.moveplans.Clear();
             planRuntimeState.actionPlans.Clear();
             planRuntimeState.isPlanFilled.Value = false;
+            planRuntimeState.maxMoves = maxMoves;
+            planRuntimeState.maxActions = maxActions;
 
             // init indicators
             movePositionIndicator.gameObject.SetActive(false);
@@ -71,9 +72,6 @@ namespace Game.Gameplay
 
             _maxMoves = maxMoves;
             _maxActions = maxActions;
-
-            planningPanel.planningActionList.Setup(maxActions);
-            planningPanel.SetActionListVisible(false);
 
             SetState(PlanningStates.IdleState);
         }
@@ -216,14 +214,12 @@ namespace Game.Gameplay
                 next == PlanningStates.PlanAttackPositionState)
             {
                 movePositionIndicator.gameObject.SetActive(false);
-                planningPanel.SetActionListVisible(true);
             }
             else if (prev == PlanningStates.PlanAttackDirectionState &&
                     next != PlanningStates.PlanAttackPositionState)
             {
                 attackPositionIndicator.gameObject.SetActive(false);
                 attackDirectionIndicator.gameObject.SetActive(false);
-                planningPanel.SetActionListVisible(false);
             }
 
             if (prev == PlanningStates.PlanAttackDirectionState)
@@ -241,7 +237,6 @@ namespace Game.Gameplay
             else if (state == PlanningStates.PlanAttackPositionState)
             {
                 attackPositionIndicator.gameObject.SetActive(true);
-                planningPanel.HighlightAction(_plannedActions);
             }
             else if (state == PlanningStates.PlanAttackDirectionState)
             {
