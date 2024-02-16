@@ -62,6 +62,7 @@ namespace Game.Gameplay
             // show Game HUD, it contains a button to switch between Echo Locating and Planning phase
             _gameHUDPanel = UIManager.instance.OpenUI(AvailableUI.GameHUDPanel) as GameHUDPanel;
 
+
             echoLocator.LocationEndEvent
                 .AsObservable()
                 .Where(_ => GameState == GameState.EchoLocation)
@@ -86,10 +87,25 @@ namespace Game.Gameplay
             SetState(GameState.Idle);
         }
 
+        private void Update()
+        {
+            if ((Input.GetKeyDown(KeyCode.P) || Input.GetKeyDown(KeyCode.Escape)) &&
+                (GameState == GameState.EchoLocation || GameState == GameState.Plan))
+            {
+                if (GameManager.instance.IsPaused == false) UIManager.instance.OpenUI(AvailableUI.PausePanel);
+            }
+        }
+
         public void PlayLevel(Level level)
         {
             _level = level;
 
+            SetState(GameState.Loading);
+        }
+
+        public void RetryCurrentLevel()
+        {
+            _playerDeadEventDisposable?.Dispose();
             SetState(GameState.Loading);
         }
 

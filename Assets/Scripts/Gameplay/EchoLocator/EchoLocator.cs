@@ -3,6 +3,7 @@ using Game;
 using Game.Audios;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.Rendering.Universal;
 using static Obstacles;
 
@@ -495,7 +496,8 @@ public class EchoLocator : MonoBehaviour
                 updateAngle(Camera.main.ScreenToWorldPoint(Input.mousePosition));
                 updateDir();
                 _lineRenderer.SetPosition(1, rayOrigin() + _direction.normalized * 2);
-                if (Input.GetMouseButton(0))
+                // EventSystem.current.IsPointerOverGameObject() check if click on UI
+                if (Input.GetMouseButton(0) && EventSystem.current.IsPointerOverGameObject() == false)
                     Shoot();
             }
 

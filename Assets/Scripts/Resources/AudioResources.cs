@@ -18,6 +18,8 @@ namespace Game
             [FormerlySerializedAs("ButtonClick")] public WrappedAudioClip buttonClick;
             [FormerlySerializedAs("ButtonConfirm")] public WrappedAudioClip buttonConfirm;
             [FormerlySerializedAs("Dialogue")] public WrappedAudioClip dialogue;
+            [FormerlySerializedAs("UIOpen")] public WrappedAudioClip UIOpen;
+            [FormerlySerializedAs("UIClose")] public WrappedAudioClip UIClose;
         }
 
         [Serializable]
