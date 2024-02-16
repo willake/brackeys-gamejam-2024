@@ -88,8 +88,10 @@ namespace Game.Gameplay
                     EventNames.presentDialogue,
                     new Payload() { args = new object[] { ResourceManager.instance.dialogueResources.enterEchoLocator } }
             );
+            echoLocator.Enable();
             // wait for echo location done
             await echoLocator.LocationEndEvent.AsObservable().Take(1);
+            echoLocator.Disable();
 
             gameRuntimeState.SetValue(GameState.Plan);
             // ninja talk
