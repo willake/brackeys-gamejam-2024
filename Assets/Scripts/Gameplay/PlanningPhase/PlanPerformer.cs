@@ -5,6 +5,7 @@ using Cysharp.Threading.Tasks;
 using Game.Audios;
 using Game.RuntimeStates;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Game.Gameplay
 {
@@ -15,39 +16,13 @@ namespace Game.Gameplay
         private bool _isPlaying = false;
         public bool IsPlaying { get => _isPlaying; }
 
-        public async UniTask PerformPlan(Character character)
+        private Coroutine _coroutine;
+
+        public UnityEvent onPerformPlanFinish = new();
+
+        public void PerformPlan(Character player)
         {
-            float r = Random.value;
-            WrappedAudioClip audioClip;
-
-            if (r > 0.66) audioClip = ResourceManager.instance?.audioResources.gameplayAudios.acceptPlan1;
-            else if (r > 0.33) audioClip = ResourceManager.instance?.audioResources.gameplayAudios.acceptPlan2;
-            else audioClip = ResourceManager.instance?.audioResources.gameplayAudios.acceptPlan3;
-
-            AudioManager.instance?.PlaySFX(
-                audioClip.clip,
-                audioClip.volume,
-                1f
-            );
-
-            _isPlaying = true;
-            // extract the plan
-            List<PerformerPlanNode> plans =
-                ExtractPlans(planRuntimeState.moveplans.ToArray(), planRuntimeState.actionPlans.ToArray());
-
-            foreach (PerformerPlanNode plan in plans)
-            {
-                if (plan.nodeType == PlanNodeType.Move)
-                {
-                    await character.MoveToAsync(plan.v1);
-                }
-                else
-                {
-                    await character.MoveToAsync(plan.v0);
-                    await character.AttackAsync(plan.v1);
-                }
-            }
-            _isPlaying = false;
+            StartCoroutine(PerformPlans(player));
         }
 
         private List<PerformerPlanNode> ExtractPlans(MovePlanNode[] movePlans, ActionPlanNode[] actionPlans)
@@ -80,6 +55,52 @@ namespace Game.Gameplay
             }
 
             return plans;
+        }
+
+        public void Cancel()
+        {
+            if (_coroutine != null)
+            {
+                StopCoroutine(_coroutine);
+            }
+            onPerformPlanFinish.Invoke();
+        }
+
+        IEnumerator PerformPlans(Character player)
+        {
+            float r = Random.value;
+            WrappedAudioClip audioClip;
+
+            if (r > 0.66) audioClip = ResourceManager.instance?.audioResources.gameplayAudios.acceptPlan1;
+            else if (r > 0.33) audioClip = ResourceManager.instance?.audioResources.gameplayAudios.acceptPlan2;
+            else audioClip = ResourceManager.instance?.audioResources.gameplayAudios.acceptPlan3;
+
+            AudioManager.instance?.PlaySFX(
+                audioClip.clip,
+                audioClip.volume,
+                1f
+            );
+
+            _isPlaying = true;
+            // extract the plan
+            List<PerformerPlanNode> plans =
+                ExtractPlans(planRuntimeState.moveplans.ToArray(), planRuntimeState.actionPlans.ToArray());
+
+            foreach (PerformerPlanNode plan in plans)
+            {
+                if (plan.nodeType == PlanNodeType.Move)
+                {
+                    yield return player.MoveToAsync(plan.v1).ToCoroutine();
+                }
+                else
+                {
+                    yield return player.MoveToAsync(plan.v0).ToCoroutine();
+                    yield return player.AttackAsync(plan.v1).ToCoroutine();
+                }
+            }
+            _isPlaying = false;
+
+            onPerformPlanFinish.Invoke();
         }
     }
 }

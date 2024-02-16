@@ -25,7 +25,7 @@ namespace Game.UI
 
             playerPositionState
                 .OnValueChanged
-                .Where(_ => isDead == false)
+                .Where(_ => State != CharacterStates.DeadState)
                 .ObserveOnMainThread()
                 .Subscribe(pos => AttackIfDetected(pos))
                 .AddTo(this);
@@ -57,7 +57,7 @@ namespace Game.UI
                     if (hit.collider != null && hit.collider.CompareTag("Player"))
                     {
                         Character player = hit.collider.GetComponent<Character>();
-                        player.Die();
+                        if (player.State != CharacterStates.DeadState) player.Die();
                     }
                 }
             }

@@ -31,7 +31,7 @@ namespace Game.Gameplay
         {
             foreach (var enemy in enemies)
             {
-                if (enemy.isDead == false) return false;
+                if (enemy.State != CharacterStates.DeadState) return false;
             }
 
             return true;
