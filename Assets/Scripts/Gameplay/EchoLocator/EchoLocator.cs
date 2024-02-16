@@ -183,10 +183,10 @@ public class EchoLocator : MonoBehaviour
         Vector2 pos = startPos + (endPos - startPos) * ((frontParam - segmentStart) / (segmentEnd - segmentStart));
         _lineRenderer.SetPosition(segmentID + 1, pos);
 
-        for(int i = 0; i < segmentID; i++)
+        for (int i = 0; i < segmentID; i++)
             SpawnLight(_currentShot * (_maxBounce + 2) + segmentID, i);
 
-        if (t>1.0f)
+        if (t > 1.0f)
             SpawnLight(_currentShot * (_maxBounce + 2) + _maxBounce + 1, _maxBounce);
 
         return true;
@@ -194,7 +194,7 @@ public class EchoLocator : MonoBehaviour
 
     private void SpawnLight(int lightIdx, int bounceIdx)
     {
-        for(int i = 0; i < _lightPoints.Length; i++)
+        for (int i = 0; i < _lightPoints.Length; i++)
             if (_lightPoints[i].GetComponent<Light2D>().intensity > 0 && Vector2.Distance(_lightPoints[i].position, _bouncePoints[bounceIdx]) < _lightPoints[i].GetComponent<Light2D>().pointLightOuterRadius * 0.75f)
                 return;
 
@@ -249,13 +249,13 @@ public class EchoLocator : MonoBehaviour
 
     public void Disable()
     {
-        for (int i = 0; i<_shotNumber; i++)
+        for (int i = 0; i < _shotNumber; i++)
             _trailRenderer[i].positionCount = 0;
 
         _isEnable = false;
     }
 
-    void NextLevel(int rayNb, int bounceNb)
+    public void NextLevel(int rayNb, int bounceNb)
     {
         _shotNumber = rayNb;
         _maxBounce = bounceNb;
@@ -265,6 +265,14 @@ public class EchoLocator : MonoBehaviour
             _trailRenderer[i] = Instantiate(_trailPrefab, transform).GetComponent<LineRenderer>();
 
         _lightPoints = new Transform[(_maxBounce + 2) * _shotNumber];
+
+        for (int i = 0; i < (_maxBounce + 2) * _shotNumber; i++)
+        {
+            _lightPoints[i] = Instantiate(_pointLightPrefab, _pointLightParent.transform).transform;
+            _lightPoints[i].position = rayOrigin();
+            _lightPoints[i].GetComponent<Light2D>().intensity = 0;
+        }
+
         _bouncePoints = new Vector2[_maxBounce + 1];
         _distances = new float[_maxBounce + 1];
     }

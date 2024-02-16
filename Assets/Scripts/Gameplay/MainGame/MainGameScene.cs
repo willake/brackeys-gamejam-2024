@@ -76,6 +76,8 @@ namespace Game.Gameplay
             echoLocator.Init();
             planController.Init(level.doorEntrance.transform.position, level.maxMoves, level.maxActions);
 
+            echoLocator.NextLevel(_level.maxRays, _level.maxBounces);
+
             await _player.MoveToAsync(_level.doorFront.position);
 
             // show intro like "Game Start" 
