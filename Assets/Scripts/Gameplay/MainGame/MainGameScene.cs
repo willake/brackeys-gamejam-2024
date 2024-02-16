@@ -42,6 +42,7 @@ namespace Game.Gameplay
         int _combatAudioToken = -1;
         private Coroutine _coroutine;
         private IDisposable _playerDeadEventDisposable;
+        private int _currentLevelIndex = -1;
 
         private void Awake()
         {
@@ -53,6 +54,7 @@ namespace Game.Gameplay
             if (GameManager.instance)
             {
                 await levelLoader.LoadLevel(GameManager.instance.levelOption, GameManager.instance.levelIndex);
+                _currentLevelIndex = GameManager.instance.levelIndex;
             }
             else
             {
@@ -94,26 +96,6 @@ namespace Game.Gameplay
             {
                 if (GameManager.instance.IsPaused == false) UIManager.instance.OpenUI(AvailableUI.PausePanel);
             }
-        }
-
-        public void PlayLevel(Level level)
-        {
-            _level = level;
-
-            SetState(GameState.Loading);
-        }
-
-        public void RetryCurrentLevel()
-        {
-            _playerDeadEventDisposable?.Dispose();
-            SetState(GameState.Loading);
-        }
-
-        private void OnExitLevel()
-        {
-            _playerDeadEventDisposable?.Dispose();
-            _level = null;
-            _player = null;
         }
 
         private Character GeneratePlayer(Transform parent, Vector3 position)
@@ -269,6 +251,49 @@ namespace Game.Gameplay
         {
             await levelLoader.UnloadCurrentLevel();
             GameManager.instance.SwitchScene(AvailableScene.Menu);
+        }
+
+        public void PlayLevel(Level level)
+        {
+            _level = level;
+
+            SetState(GameState.Loading);
+        }
+
+        public async void NextLevel()
+        {
+            int levelCount = ResourceManager.instance.levelResources.levels.Length;
+            if (_currentLevelIndex == -1)
+            {
+                Debug.Log("Test level does not have next level.");
+                return;
+            }
+            if (_currentLevelIndex + 1 < levelCount)
+            {
+                Debug.Log("Current level is the last level.");
+                return;
+            }
+
+            OnExitLevel();
+            _currentLevelIndex += 1;
+            await levelLoader.LoadLevel(LevelOption.Levels, _currentLevelIndex);
+        }
+
+        public void RetryCurrentLevel()
+        {
+            _playerDeadEventDisposable?.Dispose();
+            if (_coroutine != null)
+            {
+                StopCoroutine(_coroutine);
+            }
+            SetState(GameState.Loading);
+        }
+
+        private void OnExitLevel()
+        {
+            _playerDeadEventDisposable?.Dispose();
+            _level = null;
+            _player = null;
         }
     }
 }
