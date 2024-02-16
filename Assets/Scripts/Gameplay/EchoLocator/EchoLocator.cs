@@ -133,13 +133,13 @@ public class EchoLocator : MonoBehaviour
                 switch (idx - _drawIdx)
                 {
                     case 0:
-                        _designRays[idx].GetComponent<Renderer>().material.color = Color.red;
+                        _designRays[idx].GetComponent<Renderer>().material.color = Color.cyan;
                         break;
                     case 1:
-                        _designRays[idx].GetComponent<Renderer>().material.color = Color.blue;
+                        _designRays[idx].GetComponent<Renderer>().material.color = Color.magenta;
                         break;
                     case 2:
-                        _designRays[idx].GetComponent<Renderer>().material.color = Color.green;
+                        _designRays[idx].GetComponent<Renderer>().material.color = Color.yellow;
                         break;
                 }
                 for (int j = 0; j < bounceNb; j++)
@@ -308,7 +308,10 @@ public class EchoLocator : MonoBehaviour
 
         _trailRenderer = new LineRenderer[_shotNumber];
         for (int i = 0; i < _shotNumber; i++)
+        {
             _trailRenderer[i] = Instantiate(_trailPrefab, transform).GetComponent<LineRenderer>();
+            _trailRenderer[i].GetComponent<Renderer>().material.color = Color.red;
+        }
 
         _lightPoints = new Transform[(_maxBounce + 2) * _shotNumber];
         _bouncePoints = new Vector2[_maxBounce + 1];
