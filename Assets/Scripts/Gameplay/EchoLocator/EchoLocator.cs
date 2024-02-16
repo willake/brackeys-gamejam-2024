@@ -1,8 +1,10 @@
+using DG.Tweening.Core.Easing;
 using System;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Rendering.Universal;
-using static UnityEngine.Rendering.HableCurve;
+using UnityEngine.UIElements;
+using static UnityEngine.ParticleSystem;
 
 
 public class EchoLocator : MonoBehaviour
@@ -11,8 +13,6 @@ public class EchoLocator : MonoBehaviour
     // private values should with a prefix _
     private Vector2 _direction = Vector2.up;
 
-    [SerializeField]
-    private LineRenderer[] _trailRenderer;
     [SerializeField]
     private int _maxBounce;
     [SerializeField]
@@ -33,13 +33,23 @@ public class EchoLocator : MonoBehaviour
     private Material lineMat;
     [SerializeField]
     private LayerMask _layerMask;
+    [SerializeField]
+    private bool _designMode = false;
+    [SerializeField]
+    private int _designRayNB = 36;
 
+    private LineRenderer[] _trailRenderer;
     private Transform[] _lightPoints;
     private Vector2[] _bouncePoints;
+
+    private LineRenderer[] _designRays;
+    private Transform[] _designLights;
+    private int _drawIdx = 0;
 
     private bool _shot;
     private bool _isEnable = false;
     private bool _isInitiated = false;
+
     private bool _done;
     private int _currentShot;
     private float[] _distances;
@@ -69,6 +79,79 @@ public class EchoLocator : MonoBehaviour
     {
         _angle = Mathf.Min(90, Mathf.Max(-90, _angle));
         _direction = Quaternion.Euler(0, 0, _angle) * Vector2.up;
+    }
+
+    private void designShoot()
+    {
+        Vector2 dir;
+        Vector2 origin;
+        Vector2[] bouncePoints = new Vector2[_maxBounce + 1];
+
+        int interval = Mathf.FloorToInt(180/_designRayNB);
+        int bounceNb = 0;
+
+        for (int i = 0; i < _designRayNB * (_maxBounce + 1); i++)
+            _designLights[i].GetComponent<Light2D>().intensity = 0;
+
+        for (int i = 0; i < _designRayNB; i++)
+            _designRays[i].positionCount = 0;
+
+        for (int i = -90 + interval; i <= 90 - interval; i+= interval)
+        {
+            int idx = ((i + 90) / interval);
+            dir = Quaternion.Euler(0, 0, i) * Vector2.up;
+            origin = rayOrigin();
+            bounceNb = 0;
+
+            for (int j = 0; j <= _maxBounce; j++)
+            {
+                RaycastHit2D hit = Physics2D.Raycast(origin, dir, Mathf.Infinity, _layerMask);
+                if (hit.collider != null)
+                {
+                    Vector2 collisionPoint = origin + dir * hit.distance;
+                    float angle = Vector2.SignedAngle(-dir, hit.normal);
+
+                    bouncePoints[j] = collisionPoint;
+
+                    origin = collisionPoint + hit.normal * 0.001f;
+                    dir = Quaternion.Euler(0, 0, angle) * hit.normal;
+
+                    SpawnDesignLight(idx * (_maxBounce+1) + j, origin);
+                    bounceNb = j;
+                }
+                else
+                {
+                    bounceNb = j;
+                    break;
+                }
+            }
+
+            if(idx >= _drawIdx  && idx < _drawIdx +3)
+            {
+                _designRays[idx].positionCount = bounceNb + 1;
+                _designRays[idx].SetPosition(0, rayOrigin());
+                switch (idx - _drawIdx)
+                {
+                    case 0:
+                        _designRays[idx].GetComponent<Renderer>().material.color = Color.cyan;
+                        break;
+                    case 1:
+                        _designRays[idx].GetComponent<Renderer>().material.color = Color.magenta;
+                        break;
+                    case 2:
+                        _designRays[idx].GetComponent<Renderer>().material.color = Color.yellow;
+                        break;
+                }
+                for (int j = 0; j < bounceNb; j++)
+                {
+
+                    
+                    _designRays[idx].SetPosition(j+1, bouncePoints[j]);
+                }
+            }
+            
+        }
+
     }
 
     private void Shoot()
@@ -183,24 +266,36 @@ public class EchoLocator : MonoBehaviour
         Vector2 pos = startPos + (endPos - startPos) * ((frontParam - segmentStart) / (segmentEnd - segmentStart));
         _lineRenderer.SetPosition(segmentID + 1, pos);
 
-        for (int i = 0; i < segmentID; i++)
-            SpawnLight(_currentShot * (_maxBounce + 2) + segmentID, i);
+        for(int i = 0; i < segmentID; i++)
+            SpawnLight(_currentShot * (_maxBounce + 2) + segmentID, _bouncePoints[i]);
 
-        if (t > 1.0f)
-            SpawnLight(_currentShot * (_maxBounce + 2) + _maxBounce + 1, _maxBounce);
+        if (t>1.0f)
+            SpawnLight(_currentShot * (_maxBounce + 2) + _maxBounce + 1, _bouncePoints[_maxBounce]);
+
 
         return true;
     }
 
-    private void SpawnLight(int lightIdx, int bounceIdx)
+    private void SpawnLight(int lightIdx, Vector2 pos)
     {
-        for (int i = 0; i < _lightPoints.Length; i++)
-            if (_lightPoints[i].GetComponent<Light2D>().intensity > 0 && Vector2.Distance(_lightPoints[i].position, _bouncePoints[bounceIdx]) < _lightPoints[i].GetComponent<Light2D>().pointLightOuterRadius * 0.75f)
+        for(int i = 0; i < _lightPoints.Length; i++)
+            if (_lightPoints[i].GetComponent<Light2D>().intensity > 0 && Vector2.Distance(_lightPoints[i].position, pos) < _lightPoints[i].GetComponent<Light2D>().pointLightOuterRadius * 0.75f)
                 return;
 
 
         _lightPoints[lightIdx].GetComponent<Light2D>().intensity = 1;
-        _lightPoints[lightIdx].position = _bouncePoints[bounceIdx];
+        _lightPoints[lightIdx].position = pos;
+    }
+
+    private void SpawnDesignLight(int lightIdx, Vector2 pos)
+    {
+        for (int i = 0; i < _designLights.Length; i++)
+            if (_designLights[i].GetComponent<Light2D>().intensity > 0 && Vector2.Distance(_designLights[i].position, pos) < _designLights[i].GetComponent<Light2D>().pointLightOuterRadius * 0.75f)
+                return;
+
+
+        _designLights[lightIdx].GetComponent<Light2D>().intensity = 1;
+        _designLights[lightIdx].position = pos;
     }
 
     // Start is called before the first frame update
@@ -214,7 +309,10 @@ public class EchoLocator : MonoBehaviour
 
         _trailRenderer = new LineRenderer[_shotNumber];
         for (int i = 0; i < _shotNumber; i++)
+        {
             _trailRenderer[i] = Instantiate(_trailPrefab, transform).GetComponent<LineRenderer>();
+            _trailRenderer[i].GetComponent<Renderer>().material.color = Color.red;
+        }
 
         _lightPoints = new Transform[(_maxBounce + 2) * _shotNumber];
         _bouncePoints = new Vector2[_maxBounce + 1];
@@ -227,6 +325,25 @@ public class EchoLocator : MonoBehaviour
             _lightPoints[i].GetComponent<Light2D>().intensity = 0;
         }
 
+        if (_designMode)
+        {
+            _designLights = new Transform[_designRayNB * (_maxBounce + 1)];
+            for (int i = 0; i < _designRayNB * (_maxBounce + 1); i++)
+            {
+                _designLights[i] = Instantiate(_pointLightPrefab, _pointLightParent.transform).transform;
+                _designLights[i].position = rayOrigin();
+                _designLights[i].GetComponent<Light2D>().intensity = 0;
+                _designLights[i].GetComponent<Light2D>().color = Color.magenta;
+            }
+
+            _designRays = new LineRenderer[_designRayNB];
+            for (int i = 0; i < _designRayNB; i++)
+            {
+                _designRays[i] = Instantiate(_trailPrefab, transform).GetComponent<LineRenderer>();
+                _designRays[i].name = $"Design Ray {i}";
+            }
+        }
+
         LocationEndEvent = new UnityEvent();
 
         _isInitiated = true;
@@ -234,17 +351,26 @@ public class EchoLocator : MonoBehaviour
 
     public void Enable()
     {
+        _shot = false;
+        _done = false;
+        _currentShot = 0;
+        _pathLength = 0.0f;
+        _tracingPos = 0.0f;
+
+        if (!_designMode)
+        {
+            _trailRenderer[0].positionCount = 1;
+            _trailRenderer[0].SetPosition(0, rayOrigin());
+
+            _lightPoints[0].position = new Vector3(rayOrigin().x, rayOrigin().y, -1.5f);
+            _lightPoints[0].GetComponent<Light2D>().intensity = 1;
+
+            _lineRenderer.positionCount = 2;
+            _lineRenderer.SetPosition(0, rayOrigin());
+            _lineRenderer.SetPosition(1, rayOrigin() + _direction.normalized * 2);
+        }
+
         _isEnable = true;
-
-        _trailRenderer[0].positionCount = 1;
-        _trailRenderer[0].SetPosition(0, rayOrigin());
-
-        _lightPoints[0].position = new Vector3(rayOrigin().x, rayOrigin().y, -1.5f);
-        _lightPoints[0].GetComponent<Light2D>().intensity = 1;
-
-        _lineRenderer.positionCount = 2;
-        _lineRenderer.SetPosition(0, rayOrigin());
-        _lineRenderer.SetPosition(1, rayOrigin() + _direction.normalized * 2);
     }
 
     public void Disable()
@@ -303,21 +429,35 @@ public class EchoLocator : MonoBehaviour
     void Update()
     {
         if (!_isInitiated || !_isEnable) return;
-        if (!_shot & !_done)
+
+        if (_designMode)
         {
-            updateAngle(Camera.main.ScreenToWorldPoint(Input.mousePosition));
-            updateDir();
-            _lineRenderer.SetPosition(1, rayOrigin() + _direction.normalized * 2);
-            if (Input.GetMouseButton(0))
-                Shoot();
+            designShoot();
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+                _drawIdx++;
+            if (Input.GetKeyDown(KeyCode.DownArrow))
+                _drawIdx--;
+
+            _drawIdx = Mathf.Min(Mathf.Max(0, _drawIdx), _designRayNB - 1);
         }
-
-        if (_shot)
+        else
         {
-            _tracingPos += Time.deltaTime / _pathLength * 6.0f;
+            if (!_shot & !_done)
+            {
+                updateAngle(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+                updateDir();
+                _lineRenderer.SetPosition(1, rayOrigin() + _direction.normalized * 2);
+                if (Input.GetMouseButton(0))
+                    Shoot();
+            }
 
-            if (!traceSoundRay(_tracingPos))
-                nextShot();
+            if (_shot)
+            {
+                _tracingPos += Time.deltaTime / _pathLength * 6.0f;
+
+                if (!traceSoundRay(_tracingPos))
+                    nextShot();
+            }
         }
     }
 
