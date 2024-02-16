@@ -23,6 +23,7 @@ namespace Game.Gameplay
             true
         );
         protected EventManager EventManager { get => _eventManager.Value; }
+        public UnityEvent onDie = new();
 
         private SpriteRenderer _renderer;
         private CharacterAnimator _animator;
@@ -30,9 +31,6 @@ namespace Game.Gameplay
         [Header("References")]
         public Vector3State playerPositionState;
         public ParticleSystem deathVFX;
-        [Header("States")]
-        public bool isDead = false;
-        public bool isMoving = false;
         [Header("Settings")]
         public CharacterType characterType = CharacterType.Enemy;
         public float speed;
@@ -42,6 +40,8 @@ namespace Game.Gameplay
         private Vector2 _destination = Vector2.zero;
         private UnityEvent _onArriveDestination = new();
         private float _lastFootstepsTime = 0;
+        private ICharacterState _state = CharacterStates.IdleState;
+        public ICharacterState State { get => _state; }
 
 
         protected SpriteRenderer GetRenderer()
@@ -58,22 +58,26 @@ namespace Game.Gameplay
             return _animator;
         }
 
-        public void MoveTo(Vector2 destination)
-        {
-            GetCharacterAnimator().SetMoveSpeed(speed);
-            isMoving = true;
-            _destination = destination;
-        }
-
         public async UniTask MoveToAsync(Vector2 destination)
         {
-            MoveTo(destination);
+            if (_state.canMove == false) return;
+            SetState(CharacterStates.MoveState);
+            GetCharacterAnimator().SetMoveSpeed(speed);
+            _destination = destination;
 
             await _onArriveDestination.AsObservable().Take(1);
         }
 
-        public void Attack(Vector2 direction)
+        private void SetState(ICharacterState state)
         {
+            _state = state;
+        }
+
+        public async UniTask AttackAsync(Vector2 direction)
+        {
+            if (_state.canAttack == false) return;
+
+            SetState(CharacterStates.AttackState);
             GetCharacterAnimator().SetMoveDirection(direction.x, direction.y);
             GetCharacterAnimator().TriggerAttack();
 
@@ -85,11 +89,7 @@ namespace Game.Gameplay
                 audioClip.volume,
                 UnityEngine.Random.Range(0.6f, 1f)
             );
-        }
 
-        public async UniTask AttackAsync(Vector2 direction)
-        {
-            Attack(direction);
             await GetCharacterAnimator().attackEndedEvent.AsObservable().Take(1);
 
             Vector2 attackTip = new Vector2(transform.position.x, transform.position.y) + direction * attackRadius;
@@ -123,6 +123,7 @@ namespace Game.Gameplay
 
         public void Die()
         {
+            SetState(CharacterStates.DeadState);
             GetCharacterAnimator().TriggerDead();
             deathVFX.Play();
 
@@ -136,12 +137,12 @@ namespace Game.Gameplay
             );
 
             GetRenderer().enabled = false;
-            isDead = true;
+            onDie.Invoke();
         }
 
         private void Update()
         {
-            if (isMoving)
+            if (_state.isMoving)
             {
                 float step = speed * Time.deltaTime;
                 transform.position = Vector2.MoveTowards(transform.position, _destination, step);
@@ -154,7 +155,7 @@ namespace Game.Gameplay
 
                 if (distanceToDestination < 0.01f)
                 {
-                    isMoving = false;
+                    SetState(CharacterStates.IdleState);
                     GetCharacterAnimator().SetMoveSpeed(0);
                     _onArriveDestination.Invoke();
                 }

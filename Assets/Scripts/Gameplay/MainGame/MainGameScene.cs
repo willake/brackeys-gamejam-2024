@@ -9,6 +9,7 @@ using UnityEngine.Events;
 using Game.Events;
 using System;
 using Game.Audios;
+using System.Threading;
 
 namespace Game.Gameplay
 {
@@ -33,6 +34,8 @@ namespace Game.Gameplay
         public LevelLoader levelLoader;
 
         public GameState GameState { get => gameRuntimeState.Value; }
+
+        private CancellationTokenSource _performPhasecCts = new CancellationTokenSource();
 
         private void Awake()
         {
@@ -107,11 +110,17 @@ namespace Game.Gameplay
                     EventNames.presentDialogue,
                     new Payload() { args = new object[] { ResourceManager.instance.dialogueResources.enterPerform } }
             );
-            // wait for perform
-            await planPerformer.PerformPlan(_player);
+
+            // cancel the perform phase if player die
+            _player.onDie.AsObservable().Take(1).Do(_ => _performPhasecCts.Cancel()).Subscribe(_ => planPerformer.Cancel());
+
+            planPerformer.PerformPlan(_player);
+            await planPerformer.onPerformPlanFinish.AsObservable().Take(1);
 
             // wait for game end
             bool isWin = _level.AreAllEnemiesDead();
+
+            await UniTask.Delay(TimeSpan.FromSeconds(1));
 
             // show end game panel
             gameRuntimeState.SetValue(GameState.End);
