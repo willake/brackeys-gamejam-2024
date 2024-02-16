@@ -251,6 +251,8 @@ public class EchoLocator : MonoBehaviour
     {
         for (int i = 0; i<_shotNumber; i++)
             _trailRenderer[i].positionCount = 0;
+
+        _isEnable = false;
     }
 
     void NextLevel(int rayNb, int bounceNb)
