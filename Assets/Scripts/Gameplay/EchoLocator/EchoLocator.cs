@@ -146,10 +146,12 @@ public class EchoLocator : MonoBehaviour
                 {
 
                     
+
                     _designRays[idx].SetPosition(j+1, bouncePoints[j]);
                 }
             }
             
+
         }
 
     }
@@ -401,6 +403,18 @@ public class EchoLocator : MonoBehaviour
 
         _bouncePoints = new Vector2[_maxBounce + 1];
         _distances = new float[_maxBounce + 1];
+
+        if (_designMode)
+        {
+            _designLights = new Transform[_designRayNB * (_maxBounce + 1)];
+            for (int i = 0; i < _designRayNB * (_maxBounce + 1); i++)
+            {
+                _designLights[i] = Instantiate(_pointLightPrefab, _pointLightParent.transform).transform;
+                _designLights[i].position = rayOrigin();
+                _designLights[i].GetComponent<Light2D>().intensity = 0;
+                _designLights[i].GetComponent<Light2D>().color = Color.magenta;
+            }
+        }
     }
 
     void nextShot()
