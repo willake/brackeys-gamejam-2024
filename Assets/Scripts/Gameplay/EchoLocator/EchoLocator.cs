@@ -1,6 +1,8 @@
+using System;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Rendering.Universal;
+using static UnityEngine.Rendering.HableCurve;
 
 
 public class EchoLocator : MonoBehaviour
@@ -11,8 +13,6 @@ public class EchoLocator : MonoBehaviour
 
     [SerializeField]
     private LineRenderer[] _trailRenderer;
-    [SerializeField]
-    private bool _isInitiated;
     [SerializeField]
     private int _maxBounce;
     [SerializeField]
@@ -38,6 +38,8 @@ public class EchoLocator : MonoBehaviour
     private Vector2[] _bouncePoints;
 
     private bool _shot;
+    private bool _isEnable = false;
+    private bool _isInitiated = false;
     private bool _done;
     private int _currentShot;
     private float[] _distances;
@@ -180,20 +182,25 @@ public class EchoLocator : MonoBehaviour
 
         Vector2 pos = startPos + (endPos - startPos) * ((frontParam - segmentStart) / (segmentEnd - segmentStart));
         _lineRenderer.SetPosition(segmentID + 1, pos);
+
         for(int i = 0; i < segmentID; i++)
-        {
-            _lightPoints[(_currentShot) * (_maxBounce + 2) + segmentID].GetComponent<Light2D>().intensity = 1;
-            _lightPoints[(_currentShot) * (_maxBounce + 2) + segmentID].position = _bouncePoints[i];
-        }
+            SpawnLight(_currentShot * (_maxBounce + 2) + segmentID, i);
+
         if (t>1.0f)
-        {
-            _lightPoints[(_currentShot) * (_maxBounce + 2) + _maxBounce + 1].GetComponent<Light2D>().intensity = 1;
-            _lightPoints[(_currentShot) * (_maxBounce + 2) + _maxBounce + 1].position = _bouncePoints[_maxBounce];
-        }
-
-
+            SpawnLight(_currentShot * (_maxBounce + 2) + _maxBounce + 1, _maxBounce);
 
         return true;
+    }
+
+    private void SpawnLight(int lightIdx, int bounceIdx)
+    {
+        for(int i = 0; i < _lightPoints.Length; i++)
+            if (_lightPoints[i].GetComponent<Light2D>().intensity > 0 && Vector2.Distance(_lightPoints[i].position, _bouncePoints[bounceIdx]) < _lightPoints[i].GetComponent<Light2D>().pointLightOuterRadius * 0.75f)
+                return;
+
+
+        _lightPoints[lightIdx].GetComponent<Light2D>().intensity = 1;
+        _lightPoints[lightIdx].position = _bouncePoints[bounceIdx];
     }
 
     // Start is called before the first frame update
@@ -209,10 +216,7 @@ public class EchoLocator : MonoBehaviour
         for (int i = 0; i < _shotNumber; i++)
             _trailRenderer[i] = Instantiate(_trailPrefab, transform).GetComponent<LineRenderer>();
 
-        _trailRenderer[0].positionCount = 1;
-        _trailRenderer[0].SetPosition(0, rayOrigin());
-
-        _lightPoints = new Transform[(_maxBounce + 2) * _shotNumber +1];
+        _lightPoints = new Transform[(_maxBounce + 2) * _shotNumber];
         _bouncePoints = new Vector2[_maxBounce + 1];
         _distances = new float[_maxBounce + 1];
 
@@ -223,15 +227,30 @@ public class EchoLocator : MonoBehaviour
             _lightPoints[i].GetComponent<Light2D>().intensity = 0;
         }
 
-        _lineRenderer.positionCount = 2;
-        _lineRenderer.SetPosition(0, rayOrigin());
+        LocationEndEvent = new UnityEvent();
+
+        _isInitiated = true;
+    }
+
+    public void Enable()
+    {
+        _isEnable = true;
+
+        _trailRenderer[0].positionCount = 1;
+        _trailRenderer[0].SetPosition(0, rayOrigin());
 
         _lightPoints[0].position = new Vector3(rayOrigin().x, rayOrigin().y, -1.5f);
         _lightPoints[0].GetComponent<Light2D>().intensity = 1;
 
-        LocationEndEvent = new UnityEvent();
+        _lineRenderer.positionCount = 2;
+        _lineRenderer.SetPosition(0, rayOrigin());
+        _lineRenderer.SetPosition(1, rayOrigin() + _direction.normalized * 2);
+    }
 
-        _isInitiated = true;
+    public void Disable()
+    {
+        for (int i = 0; i<_shotNumber; i++)
+            _trailRenderer[i].positionCount = 0;
     }
 
     void nextShot()
@@ -259,7 +278,7 @@ public class EchoLocator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!_isInitiated) return;
+        if (!_isInitiated || !_isEnable) return;
         if (!_shot & !_done)
         {
             updateAngle(Camera.main.ScreenToWorldPoint(Input.mousePosition));
