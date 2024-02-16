@@ -343,6 +343,7 @@ MonoBehaviour:
   echoLocator: {fileID: 1498717590}
   planController: {fileID: 190824154}
   planPerformer: {fileID: 1439440496}
+  planPresenter: {fileID: 426897621045872351}
   levelLoader: {fileID: 1865955073}
 --- !u!4 &789512049
 Transform:
@@ -422,7 +423,7 @@ MonoBehaviour:
   _layerMask:
     serializedVersion: 2
     m_Bits: 640
-  _designMode: 1
+  _designMode: 0
   _designRayNB: 36
   LocationEndEvent:
     m_PersistentCalls:
