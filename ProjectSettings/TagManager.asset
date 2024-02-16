@@ -53,3 +53,6 @@ TagManager:
   - name: Object Indicator
     uniqueID: 3445952807
     locked: 0
+  - name: Wall
+    uniqueID: 3562265901
+    locked: 0
