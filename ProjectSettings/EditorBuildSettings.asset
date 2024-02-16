@@ -21,6 +21,6 @@ EditorBuildSettings:
     path: Assets/StaticAssets/Scenes/Levels/Level_1.unity
     guid: 24f9d24fe2ae6e04d854484f6d2254bb
   - enabled: 1
-    path: Assets/StaticAssets/Scenes/Levels/EchoLocationTest.unity
-    guid: 3152c3e784954b449bd526bf986ab8bc
+    path: Assets/StaticAssets/Scenes/Levels/Level_2.unity
+    guid: 101f8ed6efed6fb4a842a4cdb809bedb
   m_configObjects: {}

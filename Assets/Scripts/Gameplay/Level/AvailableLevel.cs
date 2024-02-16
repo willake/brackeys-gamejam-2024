@@ -1,10 +1,8 @@
 namespace Game.Gameplay
 {
-    public enum AvailableLevel
+    public enum LevelOption
     {
         Test,
-        Level1,
-        Level2,
-        Level3
+        Levels
     }
 }

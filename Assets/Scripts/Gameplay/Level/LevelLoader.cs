@@ -24,9 +24,9 @@ namespace Game.Gameplay
             get => onLevelLoaded.AsObservable();
         }
 
-        public async UniTask LoadLevel(AvailableLevel level)
+        public async UniTask LoadLevel(LevelOption level, int index)
         {
-            string levelName = GetLevelName(level);
+            string levelName = GetLevelName(level, index);
 
             onLoadLevel.Invoke(levelName);
 
@@ -35,15 +35,15 @@ namespace Game.Gameplay
             onLevelLoaded.Invoke(levelName);
         }
 
-        private string GetLevelName(AvailableLevel scene)
+        private string GetLevelName(LevelOption option, int index)
         {
-            switch (scene)
+            switch (option)
             {
-                case AvailableLevel.Test:
+                case LevelOption.Test:
                 default:
                     return ResourceManager.instance.levelResources.test.GetSceneNameByPath();
-                case AvailableLevel.Level1:
-                    return ResourceManager.instance.levelResources.level1.GetSceneNameByPath();
+                case LevelOption.Levels:
+                    return ResourceManager.instance.levelResources.levels[index].GetSceneNameByPath();
             }
         }
 
