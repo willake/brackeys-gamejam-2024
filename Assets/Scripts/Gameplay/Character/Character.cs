@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Game.Audios;
 using Game.Events;
+using Game.RuntimeStates;
 using UniRx;
 using UnityEngine;
 using UnityEngine.Events;
@@ -27,6 +28,7 @@ namespace Game.Gameplay
         private CharacterAnimator _animator;
 
         [Header("References")]
+        public Vector3State playerPositionState;
         public ParticleSystem deathVFX;
         [Header("States")]
         public bool isDead = false;
@@ -173,6 +175,8 @@ namespace Game.Gameplay
                     );
                     _lastFootstepsTime = Time.time;
                 }
+
+                if (characterType == CharacterType.Player) playerPositionState.SetValue(transform.position);
             }
         }
     }

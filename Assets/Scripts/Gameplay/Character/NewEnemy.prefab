@@ -101,6 +101,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6823e9653fcf4648b192fd3c5f7b3af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerPositionState: {fileID: 11400000, guid: a1b2173129a90d54da66ebe4c3f26843, type: 2}
   deathVFX: {fileID: 2224687472368272614}
   isDead: 0
   isMoving: 0
@@ -110,7 +111,11 @@ MonoBehaviour:
   attackDetectionRadius: 1
   footstepsInterval: 0.2
   facingDirectionInDegrees: 0
-  sightRangeInDegree: 60
+  sightRangeInDegree: 80
+  sightDistance: 2
+  playerLayermask:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!114 &7599342188618719823
 MonoBehaviour:
   m_ObjectHideFlags: 0
