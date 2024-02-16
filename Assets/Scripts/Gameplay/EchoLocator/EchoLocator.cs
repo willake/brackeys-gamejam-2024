@@ -59,7 +59,7 @@ public class EchoLocator : MonoBehaviour
     private float _pathLength;
     private float _tracingPos;
 
-    public UnityEvent LocationEndEvent;
+    public UnityEvent LocationEndEvent = new();
 
     public bool Done { get => _done; }
     public Transform Door { get => _door; set => _door = value; }
@@ -90,7 +90,7 @@ public class EchoLocator : MonoBehaviour
         Vector2 origin;
         Vector2[] bouncePoints = new Vector2[_maxBounce + 1];
 
-        int interval = Mathf.FloorToInt(180/_designRayNB);
+        int interval = Mathf.FloorToInt(180 / _designRayNB);
         int bounceNb = 0;
 
         for (int i = 0; i < _designRayNB * (_maxBounce + 1); i++)
@@ -99,7 +99,7 @@ public class EchoLocator : MonoBehaviour
         for (int i = 0; i < _designRayNB; i++)
             _designRays[i].positionCount = 0;
 
-        for (int i = -90 + interval; i <= 90 - interval; i+= interval)
+        for (int i = -90 + interval; i <= 90 - interval; i += interval)
         {
             int idx = ((i + 90) / interval);
             dir = Quaternion.Euler(0, 0, i) * Vector2.up;
@@ -119,7 +119,7 @@ public class EchoLocator : MonoBehaviour
                     origin = collisionPoint + hit.normal * 0.001f;
                     dir = Quaternion.Euler(0, 0, angle) * hit.normal;
 
-                    SpawnDesignLight(idx * (_maxBounce+1) + j, origin);
+                    SpawnDesignLight(idx * (_maxBounce + 1) + j, origin);
                     bounceNb = j;
                 }
                 else
@@ -129,7 +129,7 @@ public class EchoLocator : MonoBehaviour
                 }
             }
 
-            if(idx >= _drawIdx  && idx < _drawIdx +3)
+            if (idx >= _drawIdx && idx < _drawIdx + 3)
             {
                 _designRays[idx].positionCount = bounceNb + 1;
                 _designRays[idx].SetPosition(0, rayOrigin());
@@ -148,12 +148,12 @@ public class EchoLocator : MonoBehaviour
                 for (int j = 0; j < bounceNb; j++)
                 {
 
-                    
 
-                    _designRays[idx].SetPosition(j+1, bouncePoints[j]);
+
+                    _designRays[idx].SetPosition(j + 1, bouncePoints[j]);
                 }
             }
-            
+
 
         }
 
@@ -189,8 +189,8 @@ public class EchoLocator : MonoBehaviour
 
             _distances[bounceID] = hit.distance;
             _pathLength += hit.distance;
-            
-            if(hit.transform.GetComponent<Obstacles>() != null)
+
+            if (hit.transform.GetComponent<Obstacles>() != null)
                 _obstaclesType[bounceID] = hit.transform.GetComponent<Obstacles>().type;
             else
                 _obstaclesType[bounceID] = ObstacleType.Empty;
@@ -276,10 +276,10 @@ public class EchoLocator : MonoBehaviour
         Vector2 pos = startPos + (endPos - startPos) * ((frontParam - segmentStart) / (segmentEnd - segmentStart));
         _lineRenderer.SetPosition(segmentID + 1, pos);
 
-        for(int i = 0; i < segmentID; i++)
+        for (int i = 0; i < segmentID; i++)
             SpawnLight(_currentShot * (_maxBounce + 2) + segmentID, _bouncePoints[i]);
 
-        if (t>1.0f)
+        if (t > 1.0f)
             SpawnLight(_currentShot * (_maxBounce + 2) + _maxBounce + 1, _bouncePoints[_maxBounce]);
 
 
@@ -288,7 +288,7 @@ public class EchoLocator : MonoBehaviour
 
     private void SpawnLight(int lightIdx, Vector2 pos)
     {
-        for(int i = 0; i < _lightPoints.Length; i++)
+        for (int i = 0; i < _lightPoints.Length; i++)
             if (_lightPoints[i].GetComponent<Light2D>().intensity > 0 && Vector2.Distance(_lightPoints[i].position, pos) < _lightPoints[i].GetComponent<Light2D>().pointLightOuterRadius * 0.75f)
                 return;
 
@@ -354,8 +354,6 @@ public class EchoLocator : MonoBehaviour
                 _designRays[i].name = $"Design Ray {i}";
             }
         }
-
-        LocationEndEvent = new UnityEvent();
 
         _isInitiated = true;
     }
@@ -513,7 +511,7 @@ public class EchoLocator : MonoBehaviour
                     _segmentTraced = currSegment;
                 }
 
-                if(_tracingPos > 1.0f && !_hitLast)
+                if (_tracingPos > 1.0f && !_hitLast)
                 {
                     PlaySound(_segmentTraced);
                     _hitLast = true;

@@ -9,6 +9,7 @@ namespace Game.Gameplay
 
     public enum GameState
     {
+        Idle,
         Loading,
         Start,
         EchoLocation,

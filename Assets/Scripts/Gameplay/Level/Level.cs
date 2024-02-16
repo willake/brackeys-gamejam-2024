@@ -26,7 +26,7 @@ namespace Game.Gameplay
             MainGameScene gameScene = GameManager.instance.gameScene as MainGameScene;
 
             globalLight.intensity = 0;
-            gameScene.PlayLevel(this).Forget();
+            gameScene.PlayLevel(this);
         }
 
         public bool AreAllEnemiesDead()

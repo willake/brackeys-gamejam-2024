@@ -76,10 +76,9 @@ namespace Game.Gameplay
             SetState(PlanningStates.IdleState);
         }
 
-        public async UniTask Plan()
+        public void StartPlanning()
         {
             SetState(PlanningStates.PlanMoveState);
-            await onPlanSet.AsObservable().Take(1);
         }
 
         private bool IsInRoom(Vector2 mouseWorldPos)
