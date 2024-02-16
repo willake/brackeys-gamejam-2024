@@ -120,7 +120,7 @@ namespace Game.Gameplay
             // wait for game end
             bool isWin = _level.AreAllEnemiesDead();
 
-            await UniTask.Delay(TimeSpan.FromSeconds(1));
+            await UniTask.Delay(TimeSpan.FromSeconds(2));
 
             // show end game panel
             gameRuntimeState.SetValue(GameState.End);
