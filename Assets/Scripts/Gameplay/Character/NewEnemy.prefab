@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 110508062358036892}
   - component: {fileID: 1354515025008671857}
   - component: {fileID: 2181873252784923247}
+  - component: {fileID: 6094985899132707087}
   m_Layer: 7
   m_Name: NewEnemy
   m_TagString: Untagged
@@ -255,10 +256,23 @@ MonoBehaviour:
   - {x: 0.13987517, y: -0.18205208, z: 0}
   m_ShapePathHash: -1190619109
   m_Mesh: {fileID: 0}
-  m_InstanceId: -11062
+  m_InstanceId: 40702
   m_LocalBounds:
     m_Center: {x: -0.001689434, y: 0.07760212, z: 0}
     m_Extent: {x: 0.25468278, y: 0.2661429, z: 0}
+--- !u!114 &6094985899132707087
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6725298337196015624}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fff9600d4dbc3642a02f3c3c8bc25ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 3
 --- !u!1001 &3277593459396595942
 PrefabInstance:
   m_ObjectHideFlags: 0
