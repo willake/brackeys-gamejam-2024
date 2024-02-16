@@ -272,6 +272,7 @@ public class EchoLocator : MonoBehaviour
         if (t>1.0f)
             SpawnLight(_currentShot * (_maxBounce + 2) + _maxBounce + 1, _bouncePoints[_maxBounce]);
 
+
         return true;
     }
 
@@ -374,13 +375,13 @@ public class EchoLocator : MonoBehaviour
 
     public void Disable()
     {
-        for (int i = 0; i<_shotNumber; i++)
+        for (int i = 0; i < _shotNumber; i++)
             _trailRenderer[i].positionCount = 0;
 
         _isEnable = false;
     }
 
-    void NextLevel(int rayNb, int bounceNb)
+    public void NextLevel(int rayNb, int bounceNb)
     {
         _shotNumber = rayNb;
         _maxBounce = bounceNb;

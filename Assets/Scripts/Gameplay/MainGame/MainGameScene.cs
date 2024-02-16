@@ -63,6 +63,9 @@ namespace Game.Gameplay
 
             _level = level;
 
+            WrappedAudioClip musicPlan = ResourceManager.instance.audioResources.backgroundAudios.musicPlan;
+            AudioManager.instance.PlayMusic(musicPlan.clip, musicPlan.volume);
+
             // delete player from previous level
             if (_player) Destroy(_player.gameObject);
 
@@ -73,14 +76,13 @@ namespace Game.Gameplay
             echoLocator.Init();
             planController.Init(level.doorEntrance.transform.position, level.maxMoves, level.maxActions);
 
+            echoLocator.NextLevel(_level.maxRays, _level.maxBounces);
+
             await _player.MoveToAsync(_level.doorFront.position);
 
             // show intro like "Game Start" 
             gameRuntimeState.SetValue(GameState.Start);
             await OnGameStart();
-
-            WrappedAudioClip ambient = ResourceManager.instance.audioResources.backgroundAudios.ambient;
-            AudioManager.instance.PlayMusic(ambient.clip, ambient.volume);
 
             gameRuntimeState.SetValue(GameState.EchoLocation);
             // ninja talk
@@ -116,8 +118,15 @@ namespace Game.Gameplay
             // cancel the perform phase if player die
             _player.onDie.AsObservable().Take(1).Do(_ => _performPhasecCts.Cancel()).Subscribe(_ => planPerformer.Cancel());
 
+            AudioManager.instance.PauseMusic();
+
+            WrappedAudioClip combat = ResourceManager.instance.audioResources.backgroundAudios.Combat;
+            int combatAudioToken = AudioManager.instance.PlaySFXLoop(combat.clip, combat.volume);
+
             planPerformer.PerformPlan(_player);
             await planPerformer.onPerformPlanFinish.AsObservable().Take(1);
+
+            AudioManager.instance.StopSFXLoop(combatAudioToken);
 
             // wait for game end
             bool isWin = _level.AreAllEnemiesDead();
@@ -149,6 +158,10 @@ namespace Game.Gameplay
 
         private async UniTask OnGameEnd(bool isWin)
         {
+            WrappedAudioClip endSFX = isWin
+                ? ResourceManager.instance.audioResources.gameplayAudios.stingWin
+                : ResourceManager.instance.audioResources.gameplayAudios.stingLose;
+            AudioManager.instance.PlaySFX(endSFX.clip, endSFX.volume);
             GameEndPanel endPanel = await UIManager.instance.OpenUIAsync(AvailableUI.GameEndPanel) as GameEndPanel;
             endPanel.SetEndGameState(isWin);
         }

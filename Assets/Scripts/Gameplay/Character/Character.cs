@@ -104,7 +104,7 @@ namespace Game.Gameplay
                 {
                     Character character = hit.collider.GetComponent<Character>();
                     // check if from different groups
-                    if (character && character.characterType != characterType)
+                    if (character && character.characterType != characterType && character.State != CharacterStates.DeadState)
                     {
                         character.Die();
                         kill = true;

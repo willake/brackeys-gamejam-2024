@@ -18,6 +18,8 @@ namespace Game.Gameplay
         public Transform echolocatorPoint;
         public int maxMoves = 3;
         public int maxActions = 3;
+        public int maxRays = 3;
+        public int maxBounces = 5;
 
         private void Start()
         {
