@@ -76,8 +76,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 871894429
-  m_SortingLayer: 3
+  m_SortingLayerID: -732701395
+  m_SortingLayer: 5
   m_SortingOrder: 0
   m_Sprite: {fileID: -983452850, guid: 5c1569fabcf8da24b9c1550c9474f1f8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -102,10 +102,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2bac54d06dec0c4e96eef133558b81e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  onDie:
+    m_PersistentCalls:
+      m_Calls: []
   playerPositionState: {fileID: 11400000, guid: a1b2173129a90d54da66ebe4c3f26843, type: 2}
   deathVFX: {fileID: 4800878760223212972}
-  isDead: 0
-  isMoving: 0
   characterType: 0
   speed: 4
   attackRadius: 1
