@@ -253,6 +253,20 @@ public class EchoLocator : MonoBehaviour
             _trailRenderer[i].positionCount = 0;
     }
 
+    void NextLevel(int rayNb, int bounceNb)
+    {
+        _shotNumber = rayNb;
+        _maxBounce = bounceNb;
+
+        _trailRenderer = new LineRenderer[_shotNumber];
+        for (int i = 0; i < _shotNumber; i++)
+            _trailRenderer[i] = Instantiate(_trailPrefab, transform).GetComponent<LineRenderer>();
+
+        _lightPoints = new Transform[(_maxBounce + 2) * _shotNumber];
+        _bouncePoints = new Vector2[_maxBounce + 1];
+        _distances = new float[_maxBounce + 1];
+    }
+
     void nextShot()
     {
         _tracingPos = 0.0f;
