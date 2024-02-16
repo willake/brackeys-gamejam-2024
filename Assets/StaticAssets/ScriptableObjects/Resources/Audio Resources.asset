@@ -75,3 +75,24 @@ MonoBehaviour:
     stingLose:
       clip: {fileID: 8300000, guid: 2074f502cdbf35d48a4b48c6bcc48dea, type: 3}
       volume: 1
+    hitCupboard1:
+      clip: {fileID: 8300000, guid: a3325edde7e89644dabc40d84a6244ea, type: 3}
+      volume: 1
+    hitCupboard2:
+      clip: {fileID: 8300000, guid: ea533dc7a811e694d91f4f714988c646, type: 3}
+      volume: 1
+    HitEnnemy1:
+      clip: {fileID: 8300000, guid: c8c8f53388ebed74ba0e7c6791436428, type: 3}
+      volume: 1
+    HitEnnemy2:
+      clip: {fileID: 8300000, guid: 43697898652c0df4ab26092fe8c857c3, type: 3}
+      volume: 1
+    HitWall1:
+      clip: {fileID: 8300000, guid: f0567acab71c12345a02e32dadfa21fd, type: 3}
+      volume: 1
+    HitWall2:
+      clip: {fileID: 8300000, guid: 6b99af041352990459f1c1f2e7a97635, type: 3}
+      volume: 1
+    CastSpell:
+      clip: {fileID: 8300000, guid: 1bf2e0a24fb51bb4794da53a283d8c93, type: 3}
+      volume: 1

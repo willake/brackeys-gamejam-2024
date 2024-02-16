@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using System;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -47,6 +45,14 @@ namespace Game
             [FormerlySerializedAs("Dead")] public WrappedAudioClip dead;
             [FormerlySerializedAs("StingWin")] public WrappedAudioClip stingWin;
             [FormerlySerializedAs("StingLose")] public WrappedAudioClip stingLose;
+            [FormerlySerializedAs("HitCupboard1")] public WrappedAudioClip hitCupboard1;
+            [FormerlySerializedAs("HitCupboard2")] public WrappedAudioClip hitCupboard2;
+            [FormerlySerializedAs("HitEnnemy1")] public WrappedAudioClip hitEnnemy1;
+            [FormerlySerializedAs("HitEnnemy2")] public WrappedAudioClip hitEnnemy2;
+            [FormerlySerializedAs("HitWall1")] public WrappedAudioClip hitWall1;
+            [FormerlySerializedAs("HitWall2")] public WrappedAudioClip hitWall2;
+            [FormerlySerializedAs("CastSpell")] public WrappedAudioClip castSpell;
+
         }
     }
 }

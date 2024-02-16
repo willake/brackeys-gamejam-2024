@@ -31,6 +31,7 @@ namespace Game.Gameplay
         public EchoLocator echoLocator;
         public PlanController planController;
         public PlanPerformer planPerformer;
+        public PlanPresenter planPresenter;
         public LevelLoader levelLoader;
 
         public GameState GameState { get => gameRuntimeState.Value; }
@@ -75,6 +76,7 @@ namespace Game.Gameplay
             echoLocator.Door = _level.echolocatorPoint;
             echoLocator.Init();
             planController.Init(level.doorEntrance.transform.position, level.maxMoves, level.maxActions);
+            planPresenter.Init(level.maxMoves, level.maxActions);
 
             echoLocator.NextLevel(_level.maxRays, _level.maxBounces);
 

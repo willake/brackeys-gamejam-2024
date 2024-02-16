@@ -1,10 +1,10 @@
 using DG.Tweening.Core.Easing;
-using System;
+using Game;
+using Game.Audios;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Rendering.Universal;
-using UnityEngine.UIElements;
-using static UnityEngine.ParticleSystem;
+using static Obstacles;
 
 
 public class EchoLocator : MonoBehaviour
@@ -41,6 +41,7 @@ public class EchoLocator : MonoBehaviour
     private LineRenderer[] _trailRenderer;
     private Transform[] _lightPoints;
     private Vector2[] _bouncePoints;
+    private ObstacleType[] _obstaclesType;
 
     private LineRenderer[] _designRays;
     private Transform[] _designLights;
@@ -49,9 +50,11 @@ public class EchoLocator : MonoBehaviour
     private bool _shot;
     private bool _isEnable = false;
     private bool _isInitiated = false;
+    private bool _hitLast = false;
 
     private bool _done;
     private int _currentShot;
+    private int _segmentTraced;
     private float[] _distances;
     private float _pathLength;
     private float _tracingPos;
@@ -186,6 +189,11 @@ public class EchoLocator : MonoBehaviour
 
             _distances[bounceID] = hit.distance;
             _pathLength += hit.distance;
+            
+            if(hit.transform.GetComponent<Obstacles>() != null)
+                _obstaclesType[bounceID] = hit.transform.GetComponent<Obstacles>().type;
+            else
+                _obstaclesType[bounceID] = ObstacleType.Empty;
 
             newOrigin = collisionPoint + hit.normal * 0.001f;
             newDir = Quaternion.Euler(0, 0, angle) * hit.normal;
@@ -198,7 +206,7 @@ public class EchoLocator : MonoBehaviour
         return false;
     }
 
-    private bool traceSoundRay(float t)
+    private int traceSoundRay(float t)
     {
         float frontParam = Mathf.Min(t, 1.0f);
 
@@ -215,7 +223,7 @@ public class EchoLocator : MonoBehaviour
         if (trailLength > _pathLength)
         {
 
-            return false;
+            return -1;
         }
 
         while (trailLength > 0 && trailLength > segmentEnd)
@@ -275,7 +283,7 @@ public class EchoLocator : MonoBehaviour
             SpawnLight(_currentShot * (_maxBounce + 2) + _maxBounce + 1, _bouncePoints[_maxBounce]);
 
 
-        return true;
+        return segmentID;
     }
 
     private void SpawnLight(int lightIdx, Vector2 pos)
@@ -318,6 +326,7 @@ public class EchoLocator : MonoBehaviour
 
         _lightPoints = new Transform[(_maxBounce + 2) * _shotNumber];
         _bouncePoints = new Vector2[_maxBounce + 1];
+        _obstaclesType = new ObstacleType[_maxBounce + 1];
         _distances = new float[_maxBounce + 1];
 
         for (int i = 0; i < (_maxBounce + 2) * _shotNumber; i++)
@@ -355,6 +364,7 @@ public class EchoLocator : MonoBehaviour
     {
         _shot = false;
         _done = false;
+        _hitLast = false;
         _currentShot = 0;
         _pathLength = 0.0f;
         _tracingPos = 0.0f;
@@ -403,6 +413,7 @@ public class EchoLocator : MonoBehaviour
 
         _bouncePoints = new Vector2[_maxBounce + 1];
         _distances = new float[_maxBounce + 1];
+        _obstaclesType = new ObstacleType[_maxBounce + 1];
 
         if (_designMode)
         {
@@ -423,7 +434,9 @@ public class EchoLocator : MonoBehaviour
         _pathLength = 0.0f;
         _lineRenderer.positionCount = 0;
         _shot = false;
+        _hitLast = false;
         _currentShot++;
+        _segmentTraced = 0;
 
         if (_currentShot < _shotNumber)
         {
@@ -438,6 +451,29 @@ public class EchoLocator : MonoBehaviour
             LocationEndEvent.Invoke();
         }
     }
+
+    void PlaySound(int i)
+    {
+        int rand = Random.Range(0, 2);
+        WrappedAudioClip sound = ResourceManager.instance.audioResources.gameplayAudios.hitWall1;
+        switch (_obstaclesType[i])
+        {
+            case ObstacleType.Wall:
+                sound = (rand == 0 ? ResourceManager.instance.audioResources.gameplayAudios.hitWall1 : ResourceManager.instance.audioResources.gameplayAudios.hitWall2);
+                break;
+            case ObstacleType.Cupboard:
+                sound = (rand == 0 ? ResourceManager.instance.audioResources.gameplayAudios.hitCupboard1 : ResourceManager.instance.audioResources.gameplayAudios.hitCupboard2);
+                break;
+            case ObstacleType.Ennemy:
+                sound = (rand == 0 ? ResourceManager.instance.audioResources.gameplayAudios.hitEnnemy1 : ResourceManager.instance.audioResources.gameplayAudios.hitEnnemy2);
+                break;
+            case ObstacleType.Empty:
+                Debug.LogWarning("Collided obstacles don't have an obstacles componenent and type attached");
+                return;
+        }
+        AudioManager.instance.PlaySFX(sound.clip, sound.volume);
+    }
+
 
     // Update is called once per frame
     void Update()
@@ -469,7 +505,21 @@ public class EchoLocator : MonoBehaviour
             {
                 _tracingPos += Time.deltaTime / _pathLength * 6.0f;
 
-                if (!traceSoundRay(_tracingPos))
+                int currSegment = traceSoundRay(_tracingPos);
+
+                if (currSegment > _segmentTraced)
+                {
+                    PlaySound(_segmentTraced);
+                    _segmentTraced = currSegment;
+                }
+
+                if(_tracingPos > 1.0f && !_hitLast)
+                {
+                    PlaySound(_segmentTraced);
+                    _hitLast = true;
+                }
+
+                if (currSegment == -1)
                     nextShot();
             }
         }
