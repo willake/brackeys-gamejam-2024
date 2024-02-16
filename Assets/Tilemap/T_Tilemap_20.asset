@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: T_Tilemap_20
   m_EditorClassIdentifier: 
   m_Sprite: {fileID: 1788153648, guid: 0f4cc7e1ffad56f4f950b49657ab0e49, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.5803922, g: 0.63529414, b: 0.8509804, a: 1}
   m_Transform:
     e00: 1
     e01: 0
@@ -33,4 +33,4 @@ MonoBehaviour:
     e33: 1
   m_InstancedGameObject: {fileID: 0}
   m_Flags: 1
-  m_ColliderType: 1
+  m_ColliderType: 2

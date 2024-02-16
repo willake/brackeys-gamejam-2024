@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 7599342188618719823}
   - component: {fileID: 110508062358036892}
   - component: {fileID: 1354515025008671857}
+  - component: {fileID: 2181873252784923247}
   m_Layer: 7
   m_Name: NewEnemy
   m_TagString: Untagged
@@ -101,10 +102,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6823e9653fcf4648b192fd3c5f7b3af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  onDie:
+    m_PersistentCalls:
+      m_Calls: []
   playerPositionState: {fileID: 11400000, guid: a1b2173129a90d54da66ebe4c3f26843, type: 2}
   deathVFX: {fileID: 2224687472368272614}
-  isDead: 0
-  isMoving: 0
   characterType: 1
   speed: 2
   attackRadius: 1
@@ -222,6 +224,41 @@ PolygonCollider2D:
       - {x: 0.296875, y: -0.28125}
       - {x: 0.421875, y: -0.234375}
   m_UseDelaunayMesh: 0
+--- !u!114 &2181873252784923247
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6725298337196015624}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7db70e0ea77f5ac47a8f4565a9406397, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ShadowGroup: 0
+  m_ComponentVersion: 1
+  m_HasRenderer: 1
+  m_UseRendererSilhouette: 1
+  m_CastsShadows: 1
+  m_SelfShadows: 0
+  m_ApplyToSortingLayers: 00000000456c119b457e67f59d0df833271165cd
+  m_ShapePath:
+  - {x: -0.12040925, y: -0.18854079, z: 0}
+  - {x: -0.24045062, y: -0.019098759, z: 0}
+  - {x: -0.2563722, y: 0.14583862, z: 0.00000006891787}
+  - {x: -0.16877437, y: 0.29183513, z: 0.00000006891787}
+  - {x: -0.00006723404, y: 0.343745, z: 0.00000006891787}
+  - {x: 0.2015183, y: 0.28262743, z: 0}
+  - {x: 0.25299335, y: 0.12312803, z: 0.00000006891787}
+  - {x: 0.24001598, y: -0.061800897, z: 0.00000006891787}
+  - {x: 0.13987517, y: -0.18205208, z: 0}
+  m_ShapePathHash: -1190619109
+  m_Mesh: {fileID: 0}
+  m_InstanceId: -11062
+  m_LocalBounds:
+    m_Center: {x: -0.001689434, y: 0.07760212, z: 0}
+    m_Extent: {x: 0.25468278, y: 0.2661429, z: 0}
 --- !u!1001 &3277593459396595942
 PrefabInstance:
   m_ObjectHideFlags: 0
