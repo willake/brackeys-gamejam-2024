@@ -410,8 +410,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 814e44208690e0e4fb1758658f1826d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _trailRenderer: []
-  _isInitiated: 0
   _maxBounce: 4
   _shotNumber: 5
   _angle: 0
@@ -424,6 +422,8 @@ MonoBehaviour:
   _layerMask:
     serializedVersion: 2
     m_Bits: 640
+  _designMode: 0
+  _designRayNB: 36
   LocationEndEvent:
     m_PersistentCalls:
       m_Calls: []
