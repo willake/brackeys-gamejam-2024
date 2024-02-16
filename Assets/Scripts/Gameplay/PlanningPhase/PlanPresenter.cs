@@ -13,10 +13,18 @@ namespace Game.Gameplay
         public GameRuntimeState gameRuntimeState;
         public PlanRuntimeState planRuntimeState;
         public GameObject root;
-        public GameObject[] movementDestinations;
-        public LineRenderer[] movementPaths;
-        public GameObject[] attackPositions;
-        public LineRenderer[] attackDirections;
+        public GameObject moveDestinationPrefab;
+        public GameObject movePathPrefab;
+        public GameObject attackPositionPrefab;
+        public GameObject attackDirectionPrefab;
+
+        private List<GameObject> _moveDestinations = new();
+        private List<LineRenderer> _movePaths = new();
+        private List<GameObject> _attackPositions = new();
+        private List<LineRenderer> _attackDirections = new();
+
+        private int _maxMoves = 0;
+        private int _maxActions = 0;
 
         private void Start()
         {
@@ -31,23 +39,59 @@ namespace Game.Gameplay
                 .OnValueChanged
                 .ObserveOnMainThread()
                 .Subscribe(state => SetVisisble(state == GameState.Plan));
+        }
 
-            foreach (var point in movementDestinations)
+        public void Init(int maxMoves, int maxActions)
+        {
+            Clear();
+            for (int i = 0; i < maxMoves; i++)
             {
-                point.gameObject.SetActive(false);
+                GameObject destinationObj = Instantiate(moveDestinationPrefab, root.transform);
+                destinationObj.name = $"Destination {i}";
+                destinationObj.SetActive(false);
+                _moveDestinations.Add(destinationObj);
+                GameObject pathObj = Instantiate(movePathPrefab, root.transform);
+                pathObj.name = $"Path {i}";
+                pathObj.SetActive(false);
+                LineRenderer pathRenderer = pathObj.GetComponent<LineRenderer>();
+                _movePaths.Add(pathRenderer);
             }
-            foreach (var path in movementPaths)
+
+            for (int i = 0; i < maxMoves; i++)
             {
-                path.gameObject.SetActive(false);
+                GameObject attackPositionObj = Instantiate(attackPositionPrefab, root.transform);
+                attackPositionObj.name = $"Attack Position {i}";
+                attackPositionObj.SetActive(false);
+                _attackPositions.Add(attackPositionObj);
+                GameObject directionObj = Instantiate(attackDirectionPrefab, root.transform);
+                directionObj.name = $"Attack Direction {i}";
+                directionObj.SetActive(false);
+                LineRenderer pathRenderer = directionObj.GetComponent<LineRenderer>();
+                _attackDirections.Add(pathRenderer);
             }
-            foreach (var point in attackPositions)
+
+            _maxMoves = maxMoves;
+            _maxActions = maxActions;
+        }
+
+        private void Clear()
+        {
+            for (int i = 0; i < _maxMoves; i++)
             {
-                point.gameObject.SetActive(false);
+                Destroy(_moveDestinations[i]);
+                Destroy(_movePaths[i].gameObject);
             }
-            foreach (var attackDirection in attackDirections)
+
+            for (int i = 0; i < _maxActions; i++)
             {
-                attackDirection.gameObject.SetActive(false);
+                Destroy(_attackPositions[i]);
+                Destroy(_attackDirections[i].gameObject);
             }
+
+            _moveDestinations.Clear();
+            _movePaths.Clear();
+            _attackPositions.Clear();
+            _attackDirections.Clear();
         }
 
         public void SetVisisble(bool visible)
@@ -60,40 +104,40 @@ namespace Game.Gameplay
 
         private void PresentPlan(MovePlanNode[] movePlans, ActionPlanNode[] actionPlans)
         {
-            foreach (var point in movementDestinations)
+            foreach (var point in _moveDestinations)
             {
                 point.gameObject.SetActive(false);
             }
-            foreach (var path in movementPaths)
+            foreach (var path in _movePaths)
             {
                 path.gameObject.SetActive(false);
             }
-            foreach (var point in attackPositions)
+            foreach (var point in _attackPositions)
             {
                 point.gameObject.SetActive(false);
             }
-            foreach (var attackDirection in attackDirections)
+            foreach (var attackDirection in _attackDirections)
             {
                 attackDirection.gameObject.SetActive(false);
             }
 
             for (int i = 0; i < movePlans.Length; i++)
             {
-                movementDestinations[i].SetActive(true);
-                movementDestinations[i].transform.position = movePlans[i].destination;
+                _moveDestinations[i].SetActive(true);
+                _moveDestinations[i].transform.position = movePlans[i].destination;
 
-                var line = movementPaths[i];
+                var line = _movePaths[i];
                 line.gameObject.SetActive(true);
                 line.SetPositions(new Vector3[] { movePlans[i].start, movePlans[i].destination });
             }
 
             for (int i = 0; i < actionPlans.Length; i++)
             {
-                attackPositions[i].SetActive(true);
-                attackPositions[i].transform.position = actionPlans[i].attackPosition;
+                _attackPositions[i].SetActive(true);
+                _attackPositions[i].transform.position = actionPlans[i].attackPosition;
 
-                attackDirections[i].gameObject.SetActive(true);
-                var line = attackDirections[i];
+                _attackDirections[i].gameObject.SetActive(true);
+                var line = _attackDirections[i];
                 line.SetPositions(new Vector3[] {
                     actionPlans[i].attackPosition,
                     actionPlans[i].attackPosition + actionPlans[i].direction });
