@@ -19,6 +19,7 @@ namespace Game
         {
             [FormerlySerializedAs("ButtonClick")] public WrappedAudioClip buttonClick;
             [FormerlySerializedAs("ButtonConfirm")] public WrappedAudioClip buttonConfirm;
+            [FormerlySerializedAs("Dialogue")] public WrappedAudioClip dialogue;
         }
 
         [Serializable]

@@ -19,6 +19,9 @@ MonoBehaviour:
     buttonConfirm:
       clip: {fileID: 8300000, guid: 00cbb81606f76974984b5bf6652ad536, type: 3}
       volume: 1
+    dialogue:
+      clip: {fileID: 8300000, guid: d87740dc187b7d7439e711a24148c20d, type: 3}
+      volume: 0.2
   backgroundAudios:
     ambient:
       clip: {fileID: 8300000, guid: 24736b1ea62783f4c8cfa42dc38ac198, type: 3}
