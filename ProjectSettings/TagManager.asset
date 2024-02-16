@@ -47,6 +47,9 @@ TagManager:
   - name: Object
     uniqueID: 871894429
     locked: 0
+  - name: Unlighten Objects
+    uniqueID: 2837629799
+    locked: 0
   - name: Ground Indicator
     uniqueID: 4117200453
     locked: 0
