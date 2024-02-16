@@ -7,12 +7,13 @@ namespace Game
     [CreateAssetMenu(menuName = "MyGame/Resources/LevelResources")]
     public class LevelResources : ScriptableObject
     {
-        [Header("Levels")]
+        [Header("Test Scene")]
         [FormerlySerializedAs("Test")]
         [Scene]
         public string test;
-        [FormerlySerializedAs("Level1")]
+        [Header("Levels")]
+        [FormerlySerializedAs("Levels")]
         [Scene]
-        public string level1;
+        public string[] levels;
     }
 }

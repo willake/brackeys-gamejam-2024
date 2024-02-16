@@ -46,11 +46,11 @@ namespace Game.Gameplay
         {
             if (GameManager.instance)
             {
-                await levelLoader.LoadLevel(GameManager.instance.levelToLoad);
+                await levelLoader.LoadLevel(GameManager.instance.levelOption, GameManager.instance.levelIndex);
             }
             else
             {
-                await levelLoader.LoadLevel(AvailableLevel.Test);
+                await levelLoader.LoadLevel(LevelOption.Test, 0);
             }
 
             // show Game HUD, it contains a button to switch between Echo Locating and Planning phase

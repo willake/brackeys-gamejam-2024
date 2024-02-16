@@ -24,7 +24,8 @@ namespace Game
         [Header("References")]
         public GameScene gameScene;
         public SceneLoader sceneLoader;
-        public AvailableLevel levelToLoad = AvailableLevel.Test;
+        public LevelOption levelOption = LevelOption.Test;
+        public int levelIndex = 0;
 
         public bool IsPaused { get; private set; }
 
