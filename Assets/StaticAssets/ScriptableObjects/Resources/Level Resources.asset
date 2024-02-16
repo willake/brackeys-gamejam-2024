@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   test: Assets/StaticAssets/Scenes/Levels/Test.unity
   levels:
+  - Assets/StaticAssets/Scenes/Levels/Level_0.unity
   - Assets/StaticAssets/Scenes/Levels/Level_1.unity
   - Assets/StaticAssets/Scenes/Levels/Level_2.unity

@@ -53,9 +53,6 @@ TagManager:
   - name: Object Indicator
     uniqueID: 3445952807
     locked: 0
-  - name: Wall
+  - name: Player
     uniqueID: 3562265901
-    locked: 0
-  - name: 
-    uniqueID: 1365439843
     locked: 0
