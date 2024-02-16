@@ -14,15 +14,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uiAudios:
     buttonClick:
-      clip: {fileID: 8300000, guid: 851f1bad1863f0b4ba9c5bdd1ae6ec35, type: 3}
+      clip: {fileID: 8300000, guid: dd95bd075a7dcb84894ce05b49175898, type: 3}
       volume: 1
     buttonConfirm:
-      clip: {fileID: 8300000, guid: 00cbb81606f76974984b5bf6652ad536, type: 3}
+      clip: {fileID: 8300000, guid: dd95bd075a7dcb84894ce05b49175898, type: 3}
       volume: 1
-  backgroundAudios:
-    ambient:
-      clip: {fileID: 8300000, guid: 24736b1ea62783f4c8cfa42dc38ac198, type: 3}
+    dialogue:
+      clip: {fileID: 8300000, guid: d87740dc187b7d7439e711a24148c20d, type: 3}
       volume: 0.2
+  backgroundAudios:
+    musicMainTheme:
+      clip: {fileID: 8300000, guid: 33abc2e556075254db932f155b02052a, type: 3}
+      volume: 1
+    musicPlan:
+      clip: {fileID: 8300000, guid: 67e8721f57570f04cbcba6f0a458c444, type: 3}
+      volume: 1
+    Combat:
+      clip: {fileID: 8300000, guid: 24736b1ea62783f4c8cfa42dc38ac198, type: 3}
+      volume: 0.5
   gameplayAudios:
     footstepsWood1:
       clip: {fileID: 8300000, guid: 1662629bc74b6a74c9bd7079cae382cf, type: 3}
@@ -51,9 +60,18 @@ MonoBehaviour:
     acceptPlan3:
       clip: {fileID: 8300000, guid: f5edc9ea5e7f2904d9abdf62f332992d, type: 3}
       volume: 1
+    door:
+      clip: {fileID: 8300000, guid: c094cbe0ff8e91e47808f58105c7a1f2, type: 3}
+      volume: 1
     attack:
       clip: {fileID: 8300000, guid: 1aaae4b16d878224fafc462251a3036c, type: 3}
       volume: 1
     dead:
       clip: {fileID: 8300000, guid: 566e580b69588914488359b6955f96f0, type: 3}
+      volume: 1
+    stingWin:
+      clip: {fileID: 8300000, guid: 3ae308bff22836e4086cdf0f52350151, type: 3}
+      volume: 1
+    stingLose:
+      clip: {fileID: 8300000, guid: 2074f502cdbf35d48a4b48c6bcc48dea, type: 3}
       volume: 1

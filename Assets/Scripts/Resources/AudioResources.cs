@@ -19,12 +19,15 @@ namespace Game
         {
             [FormerlySerializedAs("ButtonClick")] public WrappedAudioClip buttonClick;
             [FormerlySerializedAs("ButtonConfirm")] public WrappedAudioClip buttonConfirm;
+            [FormerlySerializedAs("Dialogue")] public WrappedAudioClip dialogue;
         }
 
         [Serializable]
         public class BackgroundAudios
         {
-            [FormerlySerializedAs("Ambient")] public WrappedAudioClip ambient;
+            [FormerlySerializedAs("MusicMainTheme")] public WrappedAudioClip musicMainTheme;
+            [FormerlySerializedAs("MusicPerform")] public WrappedAudioClip musicPlan;
+            [FormerlySerializedAs("Combat")] public WrappedAudioClip Combat;
         }
 
         [Serializable]
@@ -39,8 +42,11 @@ namespace Game
             [FormerlySerializedAs("AcceptPlan1")] public WrappedAudioClip acceptPlan1;
             [FormerlySerializedAs("AcceptPlan2")] public WrappedAudioClip acceptPlan2;
             [FormerlySerializedAs("AcceptPlan3")] public WrappedAudioClip acceptPlan3;
+            [FormerlySerializedAs("Door")] public WrappedAudioClip door;
             [FormerlySerializedAs("Attack")] public WrappedAudioClip attack;
             [FormerlySerializedAs("Dead")] public WrappedAudioClip dead;
+            [FormerlySerializedAs("StingWin")] public WrappedAudioClip stingWin;
+            [FormerlySerializedAs("StingLose")] public WrappedAudioClip stingLose;
         }
     }
 }

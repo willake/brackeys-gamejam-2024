@@ -132,6 +132,17 @@ namespace Game.Audios
             SetSFXVolume(maxVolume);
         }
 
+        public AudioSource BorrowSFXSource()
+        {
+            return _sfxSourcePool.Dequeue();
+        }
+
+        public void ReturnSFXSource(AudioSource source)
+        {
+            source.outputAudioMixerGroup = _sfxMixerGroup;
+            _sfxSourcePool.Enqueue(source);
+        }
+
         public void PlaySFX(AudioClip clip, float volume = 1, float pitch = 1f)
         {
             if (isSfxMuted) return;
