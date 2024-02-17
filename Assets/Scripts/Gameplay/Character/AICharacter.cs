@@ -10,6 +10,10 @@ namespace Game.UI
 {
     public class AICharacter : Character
     {
+        [Header("AI Character References")]
+        public LineRenderer sightStartRenderer;
+        public LineRenderer sightEndRenderer;
+
         [Header("AI Settings")]
         public float facingDirectionInDegrees = 0f;
         public float sightRangeInDegree = 30f;
@@ -33,12 +37,39 @@ namespace Game.UI
             );
             GetCharacterAnimator().SetMoveDirection(direction.x, direction.y);
 
+            Vector2 origin = transform.position;
+            float minAngle = facingDirectionInDegrees - (sightRangeInDegree / 2);
+            float maxAngle = facingDirectionInDegrees + (sightRangeInDegree / 2);
+
+            Vector2 minDirection = new Vector3(
+                Mathf.Cos(minAngle * Mathf.Deg2Rad),
+                Mathf.Sin(minAngle * Mathf.Deg2Rad),
+                0
+            );
+            Vector2 maxDirection = new Vector3(
+                Mathf.Cos(maxAngle * Mathf.Deg2Rad),
+                Mathf.Sin(maxAngle * Mathf.Deg2Rad),
+                0
+            );
+
+            Vector2 sightStartTip = origin + minDirection * sightDistance;
+            Vector2 sightEndTip = origin + maxDirection * sightDistance;
+
+            sightStartRenderer.SetPositions(new Vector3[] { origin, sightStartTip });
+            sightEndRenderer.SetPositions(new Vector3[] { origin, sightEndTip });
+
             playerPositionState
                 .OnValueChanged
                 .Where(_ => State != CharacterStates.DeadState)
                 .ObserveOnMainThread()
                 .Subscribe(pos => AttackIfDetected(pos))
                 .AddTo(this);
+        }
+
+        public void SetIsDetected(bool isDetected)
+        {
+            sightStartRenderer.gameObject.SetActive(isDetected);
+            sightEndRenderer.gameObject.SetActive(isDetected);
         }
 
         public override void Reset()
