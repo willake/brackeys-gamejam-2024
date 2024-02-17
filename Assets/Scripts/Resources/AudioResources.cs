@@ -56,6 +56,8 @@ namespace Game
             [FormerlySerializedAs("CastSpell")] public WrappedAudioClip castSpell;
             [FormerlySerializedAs("EnemyDeath1")] public WrappedAudioClip enemyDeath1;
             [FormerlySerializedAs("EnemyDeath2")] public WrappedAudioClip enemyDeath2;
+            [FormerlySerializedAs("Pistol1")] public WrappedAudioClip pistol1;
+            [FormerlySerializedAs("Pistol2")] public WrappedAudioClip pistol2;
         }
     }
 }

@@ -86,9 +86,20 @@ namespace Game.Gameplay
             await _onArriveDestination.AsObservable().Take(1);
         }
 
-        private void SetState(ICharacterState state)
+        protected void SetState(ICharacterState state)
         {
             _state = state;
+
+            if (state == CharacterStates.IdleState)
+            {
+
+            }
+
+            if (characterType == CharacterType.Player && state == CharacterStates.DeadState)
+            {
+                GetNavMeshAgent().isStopped = true;
+                GetNavMeshAgent().SetDestination(transform.position);
+            }
         }
 
         public async UniTask AttackAsync(Vector2 direction)
@@ -124,7 +135,7 @@ namespace Game.Gameplay
                     // check if from different groups
                     if (character && character.characterType != characterType && character.State != CharacterStates.DeadState)
                     {
-                        character.Die();
+                        character.Die(direction);
                         kill = true;
                     }
                 }
@@ -139,19 +150,24 @@ namespace Game.Gameplay
             }
         }
 
-        public virtual void Die()
+        public virtual void Die(Vector2 attackDirection)
         {
             SetState(CharacterStates.DeadState);
             GetCharacterAnimator().TriggerDead();
 
-            WrappedAudioClip audioClip =
-                ResourceManager.instance.audioResources.gameplayAudios.assassinate;
+            GetCharacterAnimator().SetMoveDirection(-attackDirection.x, -attackDirection.y);
 
-            AudioManager.instance?.PlaySFX(
-                audioClip.clip,
-                audioClip.volume,
-                UnityEngine.Random.Range(0.6f, 1f)
-            );
+            if (characterType == CharacterType.Enemy)
+            {
+                WrappedAudioClip audioClip =
+                    ResourceManager.instance.audioResources.gameplayAudios.assassinate;
+
+                AudioManager.instance?.PlaySFX(
+                    audioClip.clip,
+                    audioClip.volume,
+                    UnityEngine.Random.Range(0.6f, 1f)
+                );
+            }
 
             int random = UnityEngine.Random.Range(0, 2);
             WrappedAudioClip deathClip = random == 0

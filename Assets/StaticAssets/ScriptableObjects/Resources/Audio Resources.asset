@@ -108,3 +108,9 @@ MonoBehaviour:
     enemyDeath2:
       clip: {fileID: 8300000, guid: b9201c1a1bc25bc45b5df480b2239712, type: 3}
       volume: 1
+    pistol1:
+      clip: {fileID: 8300000, guid: 79a0b1e0d1116e34581795951d7fcf9b, type: 3}
+      volume: 1
+    pistol2:
+      clip: {fileID: 8300000, guid: 4a76f5613b41790468ae08d3f245108c, type: 3}
+      volume: 1
