@@ -254,7 +254,6 @@ namespace Game.Gameplay
         public void PlayLevel(Level level)
         {
             _level = level;
-            echoLocator.Disable(true);
             SetState(GameState.Loading);
         }
 
@@ -282,6 +281,7 @@ namespace Game.Gameplay
             await _player.MoveToAsync(_level.exitPoint.position);
 
             OnExitLevel();
+            echoLocator.Disable(true);
 
             _currentLevelIndex += 1;
             await levelLoader.LoadLevel(LevelOption.Levels, _currentLevelIndex);
