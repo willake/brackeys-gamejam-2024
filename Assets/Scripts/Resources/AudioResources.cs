@@ -44,7 +44,7 @@ namespace Game
             [FormerlySerializedAs("AcceptPlan3")] public WrappedAudioClip acceptPlan3;
             [FormerlySerializedAs("Door")] public WrappedAudioClip door;
             [FormerlySerializedAs("Attack")] public WrappedAudioClip attack;
-            [FormerlySerializedAs("Dead")] public WrappedAudioClip dead;
+            [FormerlySerializedAs("Assassinate")] public WrappedAudioClip assassinate;
             [FormerlySerializedAs("StingWin")] public WrappedAudioClip stingWin;
             [FormerlySerializedAs("StingLose")] public WrappedAudioClip stingLose;
             [FormerlySerializedAs("HitCupboard1")] public WrappedAudioClip hitCupboard1;
@@ -54,7 +54,8 @@ namespace Game
             [FormerlySerializedAs("HitWall1")] public WrappedAudioClip hitWall1;
             [FormerlySerializedAs("HitWall2")] public WrappedAudioClip hitWall2;
             [FormerlySerializedAs("CastSpell")] public WrappedAudioClip castSpell;
-
+            [FormerlySerializedAs("EnemyDeath1")] public WrappedAudioClip enemyDeath1;
+            [FormerlySerializedAs("EnemyDeath2")] public WrappedAudioClip enemyDeath2;
         }
     }
 }
