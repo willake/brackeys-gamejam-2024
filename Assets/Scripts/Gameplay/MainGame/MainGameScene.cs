@@ -269,7 +269,7 @@ namespace Game.Gameplay
             return true;
         }
 
-        public async void NextLevel()
+        public async UniTask NextLevel()
         {
             if (HasNextLevel() == false) return;
 

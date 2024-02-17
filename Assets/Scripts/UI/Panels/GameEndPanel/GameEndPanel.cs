@@ -100,7 +100,7 @@ namespace Game.UI
         private void GoNextLevel()
         {
             UIManager.instance.Prev();
-            (GameManager.instance.gameScene as MainGameScene).NextLevel();
+            (GameManager.instance.gameScene as MainGameScene).NextLevel().Forget();
         }
 
         private void GoMainMenu()
