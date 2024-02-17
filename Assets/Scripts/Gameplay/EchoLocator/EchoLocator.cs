@@ -98,7 +98,7 @@ public class EchoLocator : MonoBehaviour
         int interval = Mathf.FloorToInt(180 / _designRayNB);
         int bounceNb = 0;
 
-        for (int i = 0; i < _designRayNB * (_maxBounce + 1); i++)
+        for (int i = 0; i < (_maxBounce + 1) * _designRayNB; i++)
             _designLights[i].GetComponent<Light2D>().intensity = 0;
 
         for (int i = 0; i < _designRayNB; i++)
@@ -152,9 +152,6 @@ public class EchoLocator : MonoBehaviour
                 }
                 for (int j = 0; j < bounceNb; j++)
                 {
-
-
-
                     _designRays[idx].SetPosition(j + 1, bouncePoints[j]);
                 }
             }
@@ -343,16 +340,45 @@ public class EchoLocator : MonoBehaviour
         _shot = false;
         _done = false;
         _hitLast = false;
-        _maxBounce = 0;
-        _shotNumber = 0;
 
         _currentShot = 0;
         _pathLength = 0.0f;
         _tracingPos = 0.0f;
 
-        _lineRenderer.positionCount = 2;
-        _lineRenderer.SetPosition(0, rayOrigin());
-        _lineRenderer.SetPosition(1, rayOrigin() + _direction.normalized * 2);
+        _bouncePoints = new Vector2[bounceNb + 1];
+        _distances = new float[bounceNb + 1];
+        _obstaclesType = new ObstacleType[bounceNb + 1];
+        _collidedCharacter = new AICharacter[bounceNb + 1];
+
+        if (_designMode)
+        {
+            for (int i = bounceNb * _designRayNB ; i < (_maxBounce + 1) * _designRayNB; i++)
+                Destroy(_designLights[i].gameObject);
+
+            Array.Resize(ref _designLights, (bounceNb + 1) * _designRayNB);
+            for (int i = _maxBounce  * _designRayNB ; i < (bounceNb + 1) * _designRayNB; i++)
+            {
+                _designLights[i] = Instantiate(_pointLightPrefab, _pointLightParent.transform).transform;
+                _designLights[i].position = rayOrigin();
+                _designLights[i].GetComponent<Light2D>().intensity = 0;
+                _designLights[i].GetComponent<Light2D>().color = Color.magenta;
+            }
+            _designRays = new LineRenderer[_designRayNB];
+            for (int i = 0; i < _designRayNB; i++)
+            {
+                _designRays[i] = Instantiate(_trailPrefab, transform).GetComponent<LineRenderer>();
+                _designRays[i].name = $"Design Ray {i}";
+            }
+        } else
+        {
+            _lineRenderer.positionCount = 2;
+            _lineRenderer.SetPosition(0, rayOrigin());
+            _lineRenderer.SetPosition(1, rayOrigin() + _direction.normalized * 2);
+
+            _lightPoints[0].position = new Vector3(rayOrigin().x, rayOrigin().y, -1.5f);
+            _lightPoints[0].GetComponent<Light2D>().intensity = 1;
+        }
+
 
         for (int i = rayNb; i < _shotNumber; i++)
             Destroy(_trailRenderer[i].gameObject);
@@ -366,13 +392,12 @@ public class EchoLocator : MonoBehaviour
             _trailRenderer[i].SetPosition(0, rayOrigin());
         }
 
+
         for (int i = (bounceNb + 1) * rayNb + 1; i < (_maxBounce + 1) * _shotNumber + 1; i++)
             Destroy(_lightPoints[i].gameObject);
 
         Array.Resize(ref _lightPoints, (bounceNb + 1) * rayNb + 1);
 
-        _lightPoints[0].position = new Vector3(rayOrigin().x, rayOrigin().y, -1.5f);
-        _lightPoints[0].GetComponent<Light2D>().intensity = 1;
         for (int i = (_maxBounce + 1) * _shotNumber + 1; i < (bounceNb + 1) * rayNb + 1; i++)
         {
             _lightPoints[i] = Instantiate(_pointLightPrefab, _pointLightParent.transform).transform;
@@ -380,25 +405,6 @@ public class EchoLocator : MonoBehaviour
             _lightPoints[i].GetComponent<Light2D>().intensity = 0;
         }
 
-        _bouncePoints = new Vector2[bounceNb + 1];
-        _distances = new float[bounceNb + 1];
-        _obstaclesType = new ObstacleType[bounceNb + 1];
-        _collidedCharacter = new AICharacter[bounceNb + 1];
-
-        if (_designMode)
-        {
-            for (int i = (bounceNb + 1) * _designRayNB ; i < (_maxBounce + 1) * _designRayNB; i++)
-                Destroy(_designLights[i].gameObject);
-
-            Array.Resize(ref _designLights, (bounceNb + 1) * _designRayNB);
-            for (int i = (_maxBounce + 1)  *_designRayNB ; i < (bounceNb + 1) * _designRayNB; i++)
-            {
-                _designLights[i] = Instantiate(_pointLightPrefab, _pointLightParent.transform).transform;
-                _designLights[i].position = rayOrigin();
-                _designLights[i].GetComponent<Light2D>().intensity = 0;
-                _designLights[i].GetComponent<Light2D>().color = Color.magenta;
-            }
-        }
 
         _shotNumber = rayNb;
         _maxBounce = bounceNb;
@@ -507,7 +513,7 @@ public class EchoLocator : MonoBehaviour
 
 
         // Update is called once per frame
-        void Update()
+    void Update()
     {
         if (!_isInitiated || !_isEnable) return;
 
