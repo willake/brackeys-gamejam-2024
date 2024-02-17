@@ -170,7 +170,7 @@ namespace Game.Gameplay
 
             GameStartPanel startPanel = openPanelTask.Result as GameStartPanel;
 
-            yield return startPanel.ShowText("Game Start", 1, DG.Tweening.Ease.InOutSine).ToCoroutine();
+            yield return startPanel.ShowText("Game Starts", 2, DG.Tweening.Ease.InOutSine).ToCoroutine();
             yield return UIManager.instance.PrevAsync();
 
             SetState(GameState.EchoLocation);
