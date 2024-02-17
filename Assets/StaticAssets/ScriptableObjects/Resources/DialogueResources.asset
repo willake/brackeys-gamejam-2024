@@ -15,9 +15,8 @@ MonoBehaviour:
   enterEchoLocator: Hmm... I should check what's behind the door first.
   enterPlan: Let's make a plan...
   enterPerform: OK. Let's go!
-  attackFail: Oh crap...
+  attackFail: Oops
   attackSuccess: Gotcha!
-  playerDie: ahhhhhh
   winAndMoreLevel: You win!
   winAndLastLevel: Congratulations! You beat all the levels!
   loseCuzMoreEnemies: 'You didn''t find all the enemies :( '
