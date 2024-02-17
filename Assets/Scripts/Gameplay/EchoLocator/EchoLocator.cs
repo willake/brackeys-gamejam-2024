@@ -1,6 +1,7 @@
 using Game;
 using Game.Audios;
 using Game.RuntimeStates;
+using Game.UI;
 using System;
 using UnityEngine;
 using UnityEngine.Events;
@@ -43,6 +44,7 @@ public class EchoLocator : MonoBehaviour
     private Transform[] _lightPoints;
     private Vector2[] _bouncePoints;
     private ObstacleType[] _obstaclesType;
+    private AICharacter[] _collidedCharacter;
 
     private LineRenderer[] _designRays;
     private Transform[] _designLights;
@@ -198,6 +200,9 @@ public class EchoLocator : MonoBehaviour
                 _obstaclesType[bounceID] = hit.transform.GetComponent<Obstacles>().type;
             else
                 _obstaclesType[bounceID] = ObstacleType.Empty;
+
+            if (hit.transform.GetComponent<Obstacles>() != null)
+                _collidedCharacter[bounceID] = hit.transform.GetComponent<AICharacter>();            
 
             newOrigin = collisionPoint + hit.normal * 0.001f;
             newDir = Quaternion.Euler(0, 0, angle) * hit.normal;
@@ -378,6 +383,7 @@ public class EchoLocator : MonoBehaviour
         _bouncePoints = new Vector2[bounceNb + 1];
         _distances = new float[bounceNb + 1];
         _obstaclesType = new ObstacleType[bounceNb + 1];
+        _collidedCharacter = new AICharacter[bounceNb + 1];
 
         if (_designMode)
         {
@@ -493,9 +499,15 @@ public class EchoLocator : MonoBehaviour
         AudioManager.instance.PlaySFX(sound.clip, sound.volume);
     }
 
+    void DetectAICharacter(int i)
+    {
+        if (_collidedCharacter[i] != null)
+            _collidedCharacter[i].SetIsDetected(true);
+    }
 
-    // Update is called once per frame
-    void Update()
+
+        // Update is called once per frame
+        void Update()
     {
         if (!_isInitiated || !_isEnable) return;
 
@@ -529,12 +541,14 @@ public class EchoLocator : MonoBehaviour
                 if (currSegment > _segmentTraced)
                 {
                     PlayObstaclesSound(_segmentTraced);
+                    DetectAICharacter(_segmentTraced);
                     _segmentTraced = currSegment;
                 }
 
                 if (_tracingPos > 1.0f && !_hitLast)
                 {
                     PlayObstaclesSound(_segmentTraced);
+                    DetectAICharacter(_segmentTraced);
                     _hitLast = true;
                 }
 
