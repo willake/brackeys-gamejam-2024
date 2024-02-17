@@ -6717,10 +6717,10 @@ MonoBehaviour:
   doorFront: {fileID: 1451888056}
   echolocatorPoint: {fileID: 547549945}
   exitPoint: {fileID: 1429505846}
-  maxMoves: 3
-  maxActions: 3
-  maxRays: 3
-  maxBounces: 5
+  maxMoves: 7
+  maxActions: 6
+  maxRays: 5
+  maxBounces: 6
 --- !u!4 &946309607
 Transform:
   m_ObjectHideFlags: 0
