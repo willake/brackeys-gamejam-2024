@@ -22,6 +22,12 @@ MonoBehaviour:
     dialogue:
       clip: {fileID: 8300000, guid: d87740dc187b7d7439e711a24148c20d, type: 3}
       volume: 0.2
+    UIOpen:
+      clip: {fileID: 8300000, guid: a467577c8a0fef44da4fda831483e7f7, type: 3}
+      volume: 1
+    UIClose:
+      clip: {fileID: 8300000, guid: 329c9c8bc52ef7b4da51f56779186412, type: 3}
+      volume: 1
   backgroundAudios:
     musicMainTheme:
       clip: {fileID: 8300000, guid: 33abc2e556075254db932f155b02052a, type: 3}
@@ -81,18 +87,18 @@ MonoBehaviour:
     hitCupboard2:
       clip: {fileID: 8300000, guid: ea533dc7a811e694d91f4f714988c646, type: 3}
       volume: 1
-    HitEnnemy1:
+    hitEnnemy1:
       clip: {fileID: 8300000, guid: c8c8f53388ebed74ba0e7c6791436428, type: 3}
       volume: 1
-    HitEnnemy2:
+    hitEnnemy2:
       clip: {fileID: 8300000, guid: 43697898652c0df4ab26092fe8c857c3, type: 3}
       volume: 1
-    HitWall1:
+    hitWall1:
       clip: {fileID: 8300000, guid: f0567acab71c12345a02e32dadfa21fd, type: 3}
       volume: 1
-    HitWall2:
+    hitWall2:
       clip: {fileID: 8300000, guid: 6b99af041352990459f1c1f2e7a97635, type: 3}
       volume: 1
-    CastSpell:
+    castSpell:
       clip: {fileID: 8300000, guid: 1bf2e0a24fb51bb4794da53a283d8c93, type: 3}
       volume: 1

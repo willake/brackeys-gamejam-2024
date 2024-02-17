@@ -1,16 +1,19 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Game.UI;
 using Cysharp.Threading.Tasks;
 using Game.RuntimeStates;
 using UniRx;
-using UnityEngine.Events;
 using Game.Events;
 using System;
 using Game.Audios;
-using System.Threading;
+using System.Threading.Tasks;
 
+
+// I was using UniTask to handle the whole game state but I found
+// that I would be unable to control the lifecycle of the tasks
+// which means that it is hard to load next level or reload the level.
+// because I will just throw the tasks to no where  
 namespace Game.Gameplay
 {
     public class MainGameScene : GameScene
@@ -36,7 +39,10 @@ namespace Game.Gameplay
 
         public GameState GameState { get => gameRuntimeState.Value; }
 
-        private CancellationTokenSource _performPhasecCts = new CancellationTokenSource();
+        int _combatAudioToken = -1;
+        private Coroutine _coroutine;
+        private IDisposable _playerDeadEventDisposable;
+        private int _currentLevelIndex = -1;
 
         private void Awake()
         {
@@ -48,6 +54,7 @@ namespace Game.Gameplay
             if (GameManager.instance)
             {
                 await levelLoader.LoadLevel(GameManager.instance.levelOption, GameManager.instance.levelIndex);
+                _currentLevelIndex = GameManager.instance.levelIndex;
             }
             else
             {
@@ -56,90 +63,39 @@ namespace Game.Gameplay
 
             // show Game HUD, it contains a button to switch between Echo Locating and Planning phase
             _gameHUDPanel = UIManager.instance.OpenUI(AvailableUI.GameHUDPanel) as GameHUDPanel;
+
+
+            echoLocator.LocationEndEvent
+                .AsObservable()
+                .Where(_ => GameState == GameState.EchoLocation)
+                .ObserveOnMainThread()
+                .Subscribe(_ => SetState(GameState.Plan))
+                .AddTo(this);
+
+            planController.onPlanSet
+                .AsObservable()
+                .Where(_ => GameState == GameState.Plan)
+                .ObserveOnMainThread()
+                .Subscribe(_ => SetState(GameState.Perform))
+                .AddTo(this);
+
+            planPerformer.onPerformPlanFinish
+                .AsObservable()
+                .Where(_ => GameState == GameState.Perform)
+                .ObserveOnMainThread()
+                .Subscribe(_ => SetState(GameState.End))
+                .AddTo(this);
+
+            SetState(GameState.Idle);
         }
 
-        public async UniTask PlayLevel(Level level)
+        private void Update()
         {
-            gameRuntimeState.SetValue(GameState.Loading);
-
-            _level = level;
-
-            WrappedAudioClip musicPlan = ResourceManager.instance.audioResources.backgroundAudios.musicPlan;
-            AudioManager.instance.PlayMusic(musicPlan.clip, musicPlan.volume);
-
-            // delete player from previous level
-            if (_player) Destroy(_player.gameObject);
-
-            // spawn character
-            _player = GeneratePlayer(level.transform, level.spawnPoint.position);
-
-            echoLocator.Door = _level.echolocatorPoint;
-            echoLocator.Init();
-            planController.Init(level.doorEntrance.transform.position, level.maxMoves, level.maxActions);
-            planPresenter.Init(level.maxMoves, level.maxActions);
-
-            echoLocator.NextLevel(_level.maxRays, _level.maxBounces);
-
-            await _player.MoveToAsync(_level.doorFront.position);
-
-            // show intro like "Game Start" 
-            gameRuntimeState.SetValue(GameState.Start);
-            await OnGameStart();
-
-            gameRuntimeState.SetValue(GameState.EchoLocation);
-            // ninja talk
-            EventManager.Publish(
-                    EventNames.presentDialogue,
-                    new Payload() { args = new object[] { ResourceManager.instance.dialogueResources.enterEchoLocator } }
-            );
-            echoLocator.Enable();
-            // wait for echo location done
-            await echoLocator.LocationEndEvent.AsObservable().Take(1);
-            echoLocator.Disable();
-
-            gameRuntimeState.SetValue(GameState.Plan);
-            // ninja talk
-            EventManager.Publish(
-                    EventNames.presentDialogue,
-                    new Payload() { args = new object[] { ResourceManager.instance.dialogueResources.enterPlan } }
-            );
-            // wait for planning dowe
-            await planController.Plan();
-
-            gameRuntimeState.SetValue(GameState.Perform);
-
-            _level.doorEntrance.Open();
-
-            await _player.MoveToAsync(_level.doorEntrance.transform.position);
-            // ninja talk
-            EventManager.Publish(
-                    EventNames.presentDialogue,
-                    new Payload() { args = new object[] { ResourceManager.instance.dialogueResources.enterPerform } }
-            );
-
-            // cancel the perform phase if player die
-            _player.onDie.AsObservable().Take(1).Do(_ => _performPhasecCts.Cancel()).Subscribe(_ => planPerformer.Cancel());
-
-            AudioManager.instance.PauseMusic();
-
-            WrappedAudioClip combat = ResourceManager.instance.audioResources.backgroundAudios.Combat;
-            int combatAudioToken = AudioManager.instance.PlaySFXLoop(combat.clip, combat.volume);
-
-            planPerformer.PerformPlan(_player);
-            await planPerformer.onPerformPlanFinish.AsObservable().Take(1);
-
-            AudioManager.instance.StopSFXLoop(combatAudioToken);
-
-            // wait for game end
-            bool isWin = _level.AreAllEnemiesDead();
-
-            await UniTask.Delay(TimeSpan.FromSeconds(2));
-
-            // show end game panel
-            gameRuntimeState.SetValue(GameState.End);
-            await OnGameEnd(isWin);
-
-            AudioManager.instance.PauseMusic();
+            if ((Input.GetKeyDown(KeyCode.P) || Input.GetKeyDown(KeyCode.Escape)) &&
+                (GameState == GameState.EchoLocation || GameState == GameState.Plan))
+            {
+                if (GameManager.instance.IsPaused == false) UIManager.instance.OpenUI(AvailableUI.PausePanel);
+            }
         }
 
         private Character GeneratePlayer(Transform parent, Vector3 position)
@@ -151,21 +107,144 @@ namespace Game.Gameplay
             return playerObj.GetComponent<Character>();
         }
 
-        private async UniTask OnGameStart()
+        private void SetState(GameState state)
         {
-            GameStartPanel startPanel = await UIManager.instance.OpenUIAsync(AvailableUI.GameStartPanel) as GameStartPanel;
-            await startPanel.ShowText("Game Start", 1, DG.Tweening.Ease.InOutSine);
-            await UIManager.instance.PrevAsync();
+            if (state == gameRuntimeState.Value) return;
+            gameRuntimeState.SetValue(state);
+            switch (state)
+            {
+                case GameState.Loading:
+                    _coroutine = StartCoroutine(RunLoadingPhase());
+                    break;
+                case GameState.Start:
+                    _coroutine = StartCoroutine(RunStartPhase());
+                    break;
+                case GameState.EchoLocation:
+                    RunEcholocationPhase();
+                    break;
+                case GameState.Plan:
+                    RunPlanPhase();
+                    break;
+                case GameState.Perform:
+                    _coroutine = StartCoroutine(RunPerformPhase());
+                    break;
+                case GameState.End:
+                    _coroutine = StartCoroutine(RunEndPhase());
+                    break;
+            }
         }
 
-        private async UniTask OnGameEnd(bool isWin)
+        private IEnumerator RunLoadingPhase()
         {
+            WrappedAudioClip musicPlan = ResourceManager.instance.audioResources.backgroundAudios.musicPlan;
+            AudioManager.instance.PlayMusic(musicPlan.clip, musicPlan.volume);
+
+            // delete player from previous level
+            if (_player) Destroy(_player.gameObject);
+
+            // spawn character
+            _player = GeneratePlayer(_level.transform, _level.spawnPoint.position);
+
+            _playerDeadEventDisposable = _player.onDie.AsObservable().Subscribe(_ => SetState(GameState.End)).AddTo(this);
+
+            echoLocator.Door = _level.echolocatorPoint;
+            echoLocator.Init();
+            planController.Init(_level.doorEntrance.transform.position, _level.maxMoves, _level.maxActions);
+            planPresenter.Init(_level.maxMoves, _level.maxActions);
+
+            echoLocator.NextLevel(_level.maxRays, _level.maxBounces);
+
+            yield return _player.MoveToAsync(_level.doorFront.position).ToCoroutine();
+
+            SetState(GameState.Start);
+        }
+
+        private IEnumerator RunStartPhase()
+        {
+            // terrible code but works well
+            Task<UIPanel> openPanelTask;
+            openPanelTask = UIManager.instance.OpenUIAsync(AvailableUI.GameStartPanel).AsTask();
+
+            while (openPanelTask.IsCompleted == false)
+            {
+                yield return null;
+            }
+
+            GameStartPanel startPanel = openPanelTask.Result as GameStartPanel;
+
+            yield return startPanel.ShowText("Game Start", 1, DG.Tweening.Ease.InOutSine).ToCoroutine();
+            yield return UIManager.instance.PrevAsync();
+
+            SetState(GameState.EchoLocation);
+        }
+
+        private void RunEcholocationPhase()
+        {
+            // ninja talk
+            EventManager.Publish(
+                    EventNames.presentDialogue,
+                    new Payload() { args = new object[] { ResourceManager.instance.dialogueResources.enterEchoLocator } }
+            );
+            echoLocator.Enable();
+        }
+
+        private void RunPlanPhase()
+        {
+            echoLocator.Disable();
+
+            // ninja talk
+            EventManager.Publish(
+                    EventNames.presentDialogue,
+                    new Payload() { args = new object[] { ResourceManager.instance.dialogueResources.enterPlan } }
+            );
+            planController.StartPlanning();
+        }
+
+        private IEnumerator RunPerformPhase()
+        {
+            AudioManager.instance.PauseMusic();
+
+            _level.doorEntrance.Open();
+
+            yield return _player.MoveToAsync(_level.doorEntrance.transform.position).ToCoroutine();
+            // ninja talk
+            EventManager.Publish(
+                    EventNames.presentDialogue,
+                    new Payload() { args = new object[] { ResourceManager.instance.dialogueResources.enterPerform } }
+            );
+
+            WrappedAudioClip combat = ResourceManager.instance.audioResources.backgroundAudios.Combat;
+            _combatAudioToken = AudioManager.instance.PlaySFXLoop(combat.clip, combat.volume);
+
+            planPerformer.PerformPlan(_player);
+        }
+
+        private IEnumerator RunEndPhase()
+        {
+            AudioManager.instance.StopSFXLoop(_combatAudioToken);
+
+            bool isWin = _level.AreAllEnemiesDead();
+
+            yield return new WaitForSeconds(2);
+
             WrappedAudioClip endSFX = isWin
                 ? ResourceManager.instance.audioResources.gameplayAudios.stingWin
                 : ResourceManager.instance.audioResources.gameplayAudios.stingLose;
             AudioManager.instance.PlaySFX(endSFX.clip, endSFX.volume);
-            GameEndPanel endPanel = await UIManager.instance.OpenUIAsync(AvailableUI.GameEndPanel) as GameEndPanel;
+
+            // terrible code but works well
+            Task<UIPanel> openPanelTask;
+            openPanelTask = UIManager.instance.OpenUIAsync(AvailableUI.GameEndPanel).AsTask();
+
+            while (openPanelTask.IsCompleted == false)
+            {
+                yield return null;
+            }
+
+            GameEndPanel endPanel = openPanelTask.Result as GameEndPanel;
             endPanel.SetEndGameState(isWin);
+
+            AudioManager.instance.PauseMusic();
         }
 
         public async UniTask NavigateToMenu()
@@ -174,6 +253,54 @@ namespace Game.Gameplay
             GameManager.instance.SwitchScene(AvailableScene.Menu);
         }
 
-        public class LevelEndEvent : UnityEvent<bool> { }
+        public void PlayLevel(Level level)
+        {
+            _level = level;
+
+            SetState(GameState.Loading);
+        }
+
+        public bool HasNextLevel()
+        {
+            int levelCount = ResourceManager.instance.levelResources.levels.Length;
+            if (_currentLevelIndex == -1)
+            {
+                Debug.Log("Test level does not have next level.");
+                return false;
+            }
+            if (_currentLevelIndex + 1 >= levelCount)
+            {
+                Debug.Log($"Current level is the last level. Current: {_currentLevelIndex} Level count: {levelCount}");
+                return false;
+            }
+            return true;
+        }
+
+        public async void NextLevel()
+        {
+            if (HasNextLevel() == false) return;
+
+            OnExitLevel();
+            _currentLevelIndex += 1;
+            await levelLoader.LoadLevel(LevelOption.Levels, _currentLevelIndex);
+        }
+
+        public void RetryCurrentLevel()
+        {
+            _playerDeadEventDisposable?.Dispose();
+            if (_coroutine != null)
+            {
+                StopCoroutine(_coroutine);
+            }
+            _level.Reset();
+            SetState(GameState.Loading);
+        }
+
+        private void OnExitLevel()
+        {
+            _playerDeadEventDisposable?.Dispose();
+            _level = null;
+            _player = null;
+        }
     }
 }

@@ -16,6 +16,8 @@ namespace Game.UI
 
         [Header("References")]
         public GameEndTitle title;
+        public WDButton btnRetry;
+        public WDButton btnNextLevel;
         public WDTextButton btnMenu;
 
         private CanvasGroup _canvasGroup;
@@ -30,6 +32,18 @@ namespace Game.UI
                 .OnClickObservable
                 .ObserveOnMainThread()
                 .Subscribe(_ => GoMainMenu())
+                .AddTo(this);
+
+            btnRetry
+                .OnClickObservable
+                .ObserveOnMainThread()
+                .Subscribe(_ => Retry())
+                .AddTo(this);
+
+            btnNextLevel
+                .OnClickObservable
+                .ObserveOnMainThread()
+                .Subscribe(_ => GoNextLevel())
                 .AddTo(this);
         }
 
@@ -54,8 +68,7 @@ namespace Game.UI
         {
             GetCanvasGroup().alpha = 0;
             gameObject.SetActive(true);
-
-            await GetCanvasGroup().DOFade(1, fadeDuration).SetEase(fadeEase).SetUpdate(true).AsyncWaitForCompletion();
+            await UniTask.CompletedTask;
         }
 
         public override void Close()
@@ -76,6 +89,18 @@ namespace Game.UI
             string minutesText = minutes > 9 ? $"{minutes}" : $"0{minutes}";
             string secondsText = seconds > 9 ? $"{seconds}" : $"0{seconds}";
             return $"{minutesText}:{secondsText}";
+        }
+
+        private void Retry()
+        {
+            UIManager.instance.Prev();
+            (GameManager.instance.gameScene as MainGameScene).RetryCurrentLevel();
+        }
+
+        private void GoNextLevel()
+        {
+            UIManager.instance.Prev();
+            (GameManager.instance.gameScene as MainGameScene).NextLevel();
         }
 
         private void GoMainMenu()
@@ -100,17 +125,16 @@ namespace Game.UI
             if (isWin)
             {
                 title.PlayWinAnimation();
-                // AudioManager.instance?.PlaySFX(
-                //     ResourceManager.instance.audioResources.gameplayAudios.levelWin.clip
-                // );
+                GetCanvasGroup().DOFade(1, fadeDuration).SetEase(fadeEase).SetUpdate(true);
             }
             else
             {
                 title.PlayLoseAnimation();
-                // AudioManager.instance?.PlaySFX(
-                //     ResourceManager.instance.audioResources.gameplayAudios.levelLose.clip
-                // );
+                GetCanvasGroup().DOFade(1, fadeDuration).SetEase(fadeEase).SetUpdate(true);
             }
+
+            btnRetry.gameObject.SetActive(!isWin);
+            btnNextLevel.gameObject.SetActive(isWin && (GameManager.instance.gameScene as MainGameScene).HasNextLevel());
         }
 
         public enum EndState

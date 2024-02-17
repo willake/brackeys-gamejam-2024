@@ -121,11 +121,10 @@ namespace Game.Gameplay
             }
         }
 
-        public void Die()
+        public virtual void Die()
         {
             SetState(CharacterStates.DeadState);
             GetCharacterAnimator().TriggerDead();
-            deathVFX.Play();
 
             WrappedAudioClip audioClip =
                 ResourceManager.instance.audioResources.gameplayAudios.dead;
@@ -136,8 +135,21 @@ namespace Game.Gameplay
                 UnityEngine.Random.Range(0.6f, 1f)
             );
 
-            GetRenderer().enabled = false;
+            StartCoroutine(DeathEffect());
             onDie.Invoke();
+        }
+
+        private IEnumerator DeathEffect()
+        {
+            deathVFX.Play();
+            yield return new WaitForSeconds(1.5f);
+            gameObject.SetActive(false);
+        }
+
+        public virtual void Reset()
+        {
+            gameObject.SetActive(true);
+            SetState(CharacterStates.IdleState);
         }
 
         private void Update()

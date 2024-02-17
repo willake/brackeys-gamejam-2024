@@ -13,7 +13,7 @@ namespace Game
         public GameObject gameHUDPanel;
         public GameObject settingsPanel;
         public GameObject modalPanel;
-        public GameObject planningPanel;
+        public GameObject pausePanel;
         public GameObject gameStartPanel;
         public GameObject gameEndPanel;
     }
