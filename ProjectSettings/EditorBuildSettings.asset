@@ -14,7 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/StaticAssets/Scenes/MainGame.unity
     guid: 8f45567a417dfcd4f88aee5328e8b920
-  - enabled: 1
+  - enabled: 0
     path: Assets/StaticAssets/Scenes/Levels/Test.unity
     guid: 335dac5e12b1a8045a55f6f1d99936a1
   - enabled: 1

@@ -224,7 +224,7 @@ namespace Game.Gameplay
 
             bool isWin = _level.AreAllEnemiesDead();
 
-            yield return new WaitForSeconds(2);
+            yield return new WaitForSeconds(1.5f);
 
             // terrible code but works well
             Task<UIPanel> openPanelTask;
@@ -269,18 +269,23 @@ namespace Game.Gameplay
             return true;
         }
 
-        public async UniTask NextLevel()
+        public void NextLevel()
         {
             if (HasNextLevel() == false) return;
 
+            StartCoroutine(NextLevelCoroutine());
+        }
+
+        public IEnumerator NextLevelCoroutine()
+        {
             _level.doorExit.Open();
-            await _player.MoveToAsync(_level.exitPoint.position);
+            yield return _player.MoveToAsync(_level.exitPoint.position).ToCoroutine();
 
             OnExitLevel();
             echoLocator.Disable(true);
 
             _currentLevelIndex += 1;
-            await levelLoader.LoadLevel(LevelOption.Levels, _currentLevelIndex);
+            yield return levelLoader.LoadLevel(LevelOption.Levels, _currentLevelIndex).ToCoroutine();
         }
 
         public void RetryCurrentLevel()
