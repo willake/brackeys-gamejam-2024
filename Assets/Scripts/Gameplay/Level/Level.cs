@@ -16,6 +16,7 @@ namespace Game.Gameplay
         public Transform spawnPoint;
         public Transform doorFront;
         public Transform echolocatorPoint;
+        public Transform exitPoint;
         public int maxMoves = 3;
         public int maxActions = 3;
         public int maxRays = 3;

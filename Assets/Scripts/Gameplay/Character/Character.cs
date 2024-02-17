@@ -7,6 +7,7 @@ using Game.Events;
 using Game.RuntimeStates;
 using UniRx;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Events;
 
 namespace Game.Gameplay
@@ -25,6 +26,7 @@ namespace Game.Gameplay
         protected EventManager EventManager { get => _eventManager.Value; }
         public UnityEvent onDie = new();
 
+        private NavMeshAgent _navmeshAgent;
         private SpriteRenderer _renderer;
         private CharacterAnimator _animator;
 
@@ -58,12 +60,28 @@ namespace Game.Gameplay
             return _animator;
         }
 
+        protected NavMeshAgent GetNavMeshAgent()
+        {
+            if (_navmeshAgent == null) _navmeshAgent = GetComponent<NavMeshAgent>();
+
+            return _navmeshAgent;
+        }
+
+        protected virtual void Start()
+        {
+            GetNavMeshAgent().updateRotation = false;
+            GetNavMeshAgent().updateUpAxis = false;
+            transform.rotation = Quaternion.identity;
+        }
+
         public async UniTask MoveToAsync(Vector2 destination)
         {
             if (_state.canMove == false) return;
             SetState(CharacterStates.MoveState);
             GetCharacterAnimator().SetMoveSpeed(speed);
             _destination = destination;
+
+            GetNavMeshAgent().destination = destination;
 
             await _onArriveDestination.AsObservable().Take(1);
         }
@@ -157,15 +175,22 @@ namespace Game.Gameplay
             if (_state.isMoving)
             {
                 float step = speed * Time.deltaTime;
-                transform.position = Vector2.MoveTowards(transform.position, _destination, step);
+                // transform.position = Vector2.MoveTowards(transform.position, _destination, step);
 
-                Vector2 direction = (_destination - new Vector2(transform.position.x, transform.position.y));
-                GetCharacterAnimator().SetMoveDirection(direction.x, direction.y);
+                // Vector2 direction = (_destination - new Vector2(transform.position.x, transform.position.y));
+                GetCharacterAnimator().SetMoveDirection(GetNavMeshAgent().velocity.x, GetNavMeshAgent().velocity.y);
 
 
-                float distanceToDestination = Vector2.Distance(transform.position, _destination);
+                // float distanceToDestination = Vector2.Distance(transform.position, _destination);
 
-                if (distanceToDestination < 0.01f)
+                // if (distanceToDestination < 0.01f)
+                // {
+                //     SetState(CharacterStates.IdleState);
+                //     GetCharacterAnimator().SetMoveSpeed(0);
+                //     _onArriveDestination.Invoke();
+                // }
+
+                if (_navmeshAgent.hasPath == false)
                 {
                     SetState(CharacterStates.IdleState);
                     GetCharacterAnimator().SetMoveSpeed(0);

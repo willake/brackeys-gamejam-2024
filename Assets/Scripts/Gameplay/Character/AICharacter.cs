@@ -25,7 +25,7 @@ namespace Game.UI
             return _light2D;
         }
 
-        private void Start()
+        protected override void Start()
         {
             Vector2 direction = new Vector2(
                 Mathf.Cos(facingDirectionInDegrees * Mathf.Deg2Rad),
