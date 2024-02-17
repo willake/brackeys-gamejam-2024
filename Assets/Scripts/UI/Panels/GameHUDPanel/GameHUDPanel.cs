@@ -84,12 +84,9 @@ namespace Game.UI
 
             planRuntimeState
                 .onChangedObservable
+                .DoOnSubscribe(() => UpdatePlanInfo())
                 .ObserveOnMainThread()
-                .Subscribe(_ =>
-                {
-                    movePlansIndicator.text = $"Moves {planRuntimeState.moveplans.Count}/{planRuntimeState.maxMoves}";
-                    actionPlansIndicator.text = $"Actions {planRuntimeState.actionPlans.Count}/{planRuntimeState.maxActions}";
-                })
+                .Subscribe(_ => UpdatePlanInfo())
                 .AddTo(this);
         }
 
@@ -124,6 +121,12 @@ namespace Game.UI
         {
             Close();
             await UniTask.CompletedTask;
+        }
+
+        private void UpdatePlanInfo()
+        {
+            movePlansIndicator.text = $"Moves {planRuntimeState.moveplans.Count}/{planRuntimeState.maxMoves}";
+            actionPlansIndicator.text = $"Actions {planRuntimeState.actionPlans.Count}/{planRuntimeState.maxActions}";
         }
 
         private void OnDestroy()
