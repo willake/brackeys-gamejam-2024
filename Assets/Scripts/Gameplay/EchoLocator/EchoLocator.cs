@@ -290,7 +290,7 @@ public class EchoLocator : MonoBehaviour
     private void SpawnLight(int lightIdx, Vector2 pos)
     {
         for (int i = 0; i < _lightPoints.Length; i++)
-            if (_lightPoints[i].GetComponent<Light2D>().intensity > 0 && Vector2.Distance(_lightPoints[i].position, pos) < _lightPoints[i].GetComponent<Light2D>().pointLightOuterRadius * 0.75f)
+            if (_lightPoints[i].GetComponent<Light2D>().intensity > 0 && Vector2.Distance(_lightPoints[i].position, pos) < _lightPoints[i].GetComponent<Light2D>().pointLightOuterRadius * 0.5f)
                 return;
 
 

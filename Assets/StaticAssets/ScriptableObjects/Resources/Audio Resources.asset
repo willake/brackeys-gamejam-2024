@@ -21,7 +21,7 @@ MonoBehaviour:
       volume: 1
     dialogue:
       clip: {fileID: 8300000, guid: d87740dc187b7d7439e711a24148c20d, type: 3}
-      volume: 0.2
+      volume: 0.35
     UIOpen:
       clip: {fileID: 8300000, guid: a467577c8a0fef44da4fda831483e7f7, type: 3}
       volume: 1
@@ -37,7 +37,7 @@ MonoBehaviour:
       volume: 1
     Combat:
       clip: {fileID: 8300000, guid: 24736b1ea62783f4c8cfa42dc38ac198, type: 3}
-      volume: 0.5
+      volume: 0.35
   gameplayAudios:
     footstepsWood1:
       clip: {fileID: 8300000, guid: 1662629bc74b6a74c9bd7079cae382cf, type: 3}
@@ -59,13 +59,13 @@ MonoBehaviour:
       volume: 1
     acceptPlan1:
       clip: {fileID: 8300000, guid: 01b861b71ff75d64183a05c7b72ec9b8, type: 3}
-      volume: 1
+      volume: 0.7
     acceptPlan2:
       clip: {fileID: 8300000, guid: 9a74a8e56cab98c4880f6077c29ec59f, type: 3}
-      volume: 1
+      volume: 0.7
     acceptPlan3:
       clip: {fileID: 8300000, guid: f5edc9ea5e7f2904d9abdf62f332992d, type: 3}
-      volume: 1
+      volume: 0.7
     door:
       clip: {fileID: 8300000, guid: c094cbe0ff8e91e47808f58105c7a1f2, type: 3}
       volume: 1
@@ -95,10 +95,10 @@ MonoBehaviour:
       volume: 1
     hitWall1:
       clip: {fileID: 8300000, guid: f0567acab71c12345a02e32dadfa21fd, type: 3}
-      volume: 1
+      volume: 0.75
     hitWall2:
       clip: {fileID: 8300000, guid: 6b99af041352990459f1c1f2e7a97635, type: 3}
-      volume: 1
+      volume: 0.75
     castSpell:
       clip: {fileID: 8300000, guid: 1bf2e0a24fb51bb4794da53a283d8c93, type: 3}
       volume: 1
