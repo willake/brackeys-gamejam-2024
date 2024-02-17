@@ -72,7 +72,7 @@ MonoBehaviour:
     attack:
       clip: {fileID: 8300000, guid: 1aaae4b16d878224fafc462251a3036c, type: 3}
       volume: 1
-    dead:
+    assassinate:
       clip: {fileID: 8300000, guid: 566e580b69588914488359b6955f96f0, type: 3}
       volume: 1
     stingWin:
@@ -101,4 +101,10 @@ MonoBehaviour:
       volume: 1
     castSpell:
       clip: {fileID: 8300000, guid: 1bf2e0a24fb51bb4794da53a283d8c93, type: 3}
+      volume: 1
+    enemyDeath1:
+      clip: {fileID: 8300000, guid: cb12153ab671ebe4996df3b435096347, type: 3}
+      volume: 1
+    enemyDeath2:
+      clip: {fileID: 8300000, guid: b9201c1a1bc25bc45b5df480b2239712, type: 3}
       volume: 1

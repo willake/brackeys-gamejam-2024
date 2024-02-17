@@ -145,12 +145,22 @@ namespace Game.Gameplay
             GetCharacterAnimator().TriggerDead();
 
             WrappedAudioClip audioClip =
-                ResourceManager.instance.audioResources.gameplayAudios.dead;
+                ResourceManager.instance.audioResources.gameplayAudios.assassinate;
 
             AudioManager.instance?.PlaySFX(
                 audioClip.clip,
                 audioClip.volume,
                 UnityEngine.Random.Range(0.6f, 1f)
+            );
+
+            int random = UnityEngine.Random.Range(0, 2);
+            WrappedAudioClip deathClip = random == 0
+                ? ResourceManager.instance.audioResources.gameplayAudios.enemyDeath1
+                : ResourceManager.instance.audioResources.gameplayAudios.enemyDeath2;
+
+            AudioManager.instance?.PlaySFX(
+                deathClip.clip,
+                deathClip.volume
             );
 
             StartCoroutine(DeathEffect());
@@ -161,6 +171,7 @@ namespace Game.Gameplay
         {
             deathVFX.Play();
             yield return new WaitForSeconds(1.5f);
+
             gameObject.SetActive(false);
         }
 
@@ -174,21 +185,7 @@ namespace Game.Gameplay
         {
             if (_state.isMoving)
             {
-                float step = speed * Time.deltaTime;
-                // transform.position = Vector2.MoveTowards(transform.position, _destination, step);
-
-                // Vector2 direction = (_destination - new Vector2(transform.position.x, transform.position.y));
                 GetCharacterAnimator().SetMoveDirection(GetNavMeshAgent().velocity.x, GetNavMeshAgent().velocity.y);
-
-
-                // float distanceToDestination = Vector2.Distance(transform.position, _destination);
-
-                // if (distanceToDestination < 0.01f)
-                // {
-                //     SetState(CharacterStates.IdleState);
-                //     GetCharacterAnimator().SetMoveSpeed(0);
-                //     _onArriveDestination.Invoke();
-                // }
 
                 if (_navmeshAgent.hasPath == false)
                 {
