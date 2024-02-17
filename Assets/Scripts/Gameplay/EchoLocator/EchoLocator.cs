@@ -20,6 +20,8 @@ public class EchoLocator : MonoBehaviour
     [SerializeField]
     private float _angle = -90;
     [SerializeField]
+    private float _speed = 6.0f;
+    [SerializeField]
     private Transform _door;
     [SerializeField]
     private LineRenderer _lineRenderer;
@@ -541,7 +543,7 @@ public class EchoLocator : MonoBehaviour
 
             if (_shot)
             {
-                _tracingPos += Time.deltaTime / _pathLength * 6.0f;
+                _tracingPos += Time.deltaTime / _pathLength * _speed;
 
                 int currSegment = traceSoundRay(_tracingPos);
 

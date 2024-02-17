@@ -631,6 +631,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _angle: 0
+  _speed: 15
   _door: {fileID: 0}
   _lineRenderer: {fileID: 266925257}
   _trailPrefab: {fileID: 3609887392456957734, guid: f80fa50e7848fe14ba029acf02489570, type: 3}
