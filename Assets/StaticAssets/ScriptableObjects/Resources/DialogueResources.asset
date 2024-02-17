@@ -16,3 +16,7 @@ MonoBehaviour:
   enterPlan: Let's make a plan...
   enterPerform: OK. Let's go!
   onKillEnemy: Gotcha!
+  winAndMoreLevel: You win!
+  winAndLastLevel: Congratulations! You beat all the levels!
+  loseCuzMoreEnemies: 'You didn''t find all the enemies :( '
+  loseCuzGetKilled: You are killed :(
