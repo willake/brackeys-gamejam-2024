@@ -78,12 +78,12 @@ namespace Game.UI
                 {
                     // Perform a raycast to ensure there are no obstacles blocking the view
                     RaycastHit2D hit = Physics2D.Raycast(origin, directionToPlayer, sightDistance, playerLayermask);
-                    if (hit.collider != null && hit.collider.CompareTag("Player"))
+                    if (hit.collider != null)
                     {
                         GetLight2D().enabled = true;
 
                         Character player = hit.collider.GetComponent<Character>();
-                        if (player.State != CharacterStates.DeadState) player.Die();
+                        if (player && player.State != CharacterStates.DeadState) player.Die();
                     }
                 }
             }
