@@ -242,7 +242,7 @@ namespace Game.Gameplay
             }
 
             GameEndPanel endPanel = openPanelTask.Result as GameEndPanel;
-            endPanel.SetEndGameState(isWin);
+            endPanel.SetEndGameState(isWin, _player.State == CharacterStates.DeadState, _level.AreAllEnemiesDead(), HasNextLevel());
 
             AudioManager.instance.PauseMusic();
         }

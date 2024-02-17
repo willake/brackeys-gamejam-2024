@@ -21,9 +21,9 @@ namespace Game.UI
 
         private RectTransform _rectTransform;
 
-        public void PlayWinAnimation()
+        public void PlayWinAnimation(string text)
         {
-            txtTitle.text = "You win!";
+            txtTitle.text = text;
             txtTitle.color = winColor;
             GetRectTransform().localScale = Vector3.zero;
             GetRectTransform()
@@ -31,9 +31,9 @@ namespace Game.UI
                 .SetEase(winEase).SetUpdate(true);
         }
 
-        public void PlayLoseAnimation()
+        public void PlayLoseAnimation(string text)
         {
-            txtTitle.text = "Sorry, you lose :(";
+            txtTitle.text = text;
             txtTitle.color = loseColor;
             Vector2 originalPos = GetRectTransform().anchoredPosition;
             GetRectTransform().anchoredPosition = new Vector2(originalPos.x, originalPos.y + 200);
