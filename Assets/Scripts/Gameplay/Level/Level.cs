@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using Game.UI;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
@@ -35,6 +36,8 @@ namespace Game.Gameplay
             foreach (var enemy in enemies)
             {
                 enemy.Reset();
+                AICharacter aiCharacter = enemy.GetComponent<AICharacter>();
+                if (aiCharacter) aiCharacter.SetIsDetected(false);
             }
 
             doorEntrance.Close();

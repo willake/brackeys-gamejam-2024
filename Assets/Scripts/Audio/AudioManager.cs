@@ -179,6 +179,11 @@ namespace Game.Audios
             _musicSource.Play();
         }
 
+        public void StopMusic()
+        {
+            _musicSource.Stop();
+        }
+
         public void PauseMusic()
         {
             isMusicPaused = true;
