@@ -36,8 +36,6 @@ namespace Game.Gameplay
             foreach (var enemy in enemies)
             {
                 enemy.Reset();
-                AICharacter aiCharacter = enemy.GetComponent<AICharacter>();
-                if (aiCharacter) aiCharacter.SetIsDetected(false);
             }
 
             doorEntrance.Close();

@@ -86,11 +86,16 @@ namespace Game.Gameplay
             await _onArriveDestination.AsObservable().Take(1);
         }
 
-        private void SetState(ICharacterState state)
+        protected void SetState(ICharacterState state)
         {
             _state = state;
 
-            if (state == CharacterStates.DeadState)
+            if (state == CharacterStates.IdleState)
+            {
+
+            }
+
+            if (characterType == CharacterType.Player && state == CharacterStates.DeadState)
             {
                 GetNavMeshAgent().isStopped = true;
                 GetNavMeshAgent().SetDestination(transform.position);
@@ -130,7 +135,7 @@ namespace Game.Gameplay
                     // check if from different groups
                     if (character && character.characterType != characterType && character.State != CharacterStates.DeadState)
                     {
-                        character.Die();
+                        character.Die(direction);
                         kill = true;
                     }
                 }
@@ -145,10 +150,12 @@ namespace Game.Gameplay
             }
         }
 
-        public virtual void Die()
+        public virtual void Die(Vector2 attackDirection)
         {
             SetState(CharacterStates.DeadState);
             GetCharacterAnimator().TriggerDead();
+
+            GetCharacterAnimator().SetMoveDirection(-attackDirection.x, -attackDirection.y);
 
             if (characterType == CharacterType.Enemy)
             {
