@@ -1,11 +1,13 @@
 using DG.Tweening.Core.Easing;
 using Game;
 using Game.Audios;
+using System;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.Rendering.Universal;
 using static Obstacles;
+using Random = UnityEngine.Random;
 
 
 public class EchoLocator : MonoBehaviour
@@ -14,10 +16,6 @@ public class EchoLocator : MonoBehaviour
     // private values should with a prefix _
     private Vector2 _direction = Vector2.up;
 
-    [SerializeField]
-    private int _maxBounce;
-    [SerializeField]
-    private int _shotNumber;
     [SerializeField]
     private float _angle = -90;
     [SerializeField]
@@ -52,8 +50,10 @@ public class EchoLocator : MonoBehaviour
     private bool _isEnable = false;
     private bool _isInitiated = false;
     private bool _hitLast = false;
-
     private bool _done;
+
+    private int _maxBounce;
+    private int _shotNumber;
     private int _currentShot;
     private int _segmentTraced;
     private float[] _distances;
@@ -175,7 +175,7 @@ public class EchoLocator : MonoBehaviour
             else
                 break;
         }
-
+        PlayShootSound();
         _shot = true;
     }
 
@@ -278,10 +278,10 @@ public class EchoLocator : MonoBehaviour
         _lineRenderer.SetPosition(segmentID + 1, pos);
 
         for (int i = 0; i < segmentID; i++)
-            SpawnLight(_currentShot * (_maxBounce + 2) + segmentID, _bouncePoints[i]);
+            SpawnLight(_currentShot * (_maxBounce + 1) + segmentID, _bouncePoints[i]);
 
         if (t > 1.0f)
-            SpawnLight(_currentShot * (_maxBounce + 2) + _maxBounce + 1, _bouncePoints[_maxBounce]);
+            SpawnLight(_currentShot * (_maxBounce + 1) + _maxBounce + 1, _bouncePoints[_maxBounce]);
 
 
         return segmentID;
@@ -312,112 +312,77 @@ public class EchoLocator : MonoBehaviour
     // Start is called before the first frame update
     public void Init()
     {
+        if (_isInitiated) return;
         _shot = false;
         _done = false;
+        _maxBounce = 0;
+        _shotNumber = 0;
+
         _currentShot = 0;
         _pathLength = 0.0f;
         _tracingPos = 0.0f;
 
-        _trailRenderer = new LineRenderer[_shotNumber];
-        for (int i = 0; i < _shotNumber; i++)
-        {
-            _trailRenderer[i] = Instantiate(_trailPrefab, transform).GetComponent<LineRenderer>();
-            _trailRenderer[i].GetComponent<Renderer>().material.color = Color.red;
-        }
-
-        _lightPoints = new Transform[(_maxBounce + 2) * _shotNumber];
-        _bouncePoints = new Vector2[_maxBounce + 1];
-        _obstaclesType = new ObstacleType[_maxBounce + 1];
-        _distances = new float[_maxBounce + 1];
-
-        for (int i = 0; i < (_maxBounce + 2) * _shotNumber; i++)
-        {
-            _lightPoints[i] = Instantiate(_pointLightPrefab, _pointLightParent.transform).transform;
-            _lightPoints[i].position = rayOrigin();
-            _lightPoints[i].GetComponent<Light2D>().intensity = 0;
-        }
-
-        if (_designMode)
-        {
-            _designLights = new Transform[_designRayNB * (_maxBounce + 1)];
-            for (int i = 0; i < _designRayNB * (_maxBounce + 1); i++)
-            {
-                _designLights[i] = Instantiate(_pointLightPrefab, _pointLightParent.transform).transform;
-                _designLights[i].position = rayOrigin();
-                _designLights[i].GetComponent<Light2D>().intensity = 0;
-                _designLights[i].GetComponent<Light2D>().color = Color.magenta;
-            }
-
-            _designRays = new LineRenderer[_designRayNB];
-            for (int i = 0; i < _designRayNB; i++)
-            {
-                _designRays[i] = Instantiate(_trailPrefab, transform).GetComponent<LineRenderer>();
-                _designRays[i].name = $"Design Ray {i}";
-            }
-        }
+        _trailRenderer = new LineRenderer[0];
+        _designLights = new Transform[0];
+        _lightPoints = new Transform[1];
+        _lightPoints[0] = Instantiate(_pointLightPrefab, _pointLightParent.transform).transform;
 
         _isInitiated = true;
     }
 
-    public void Enable()
+    public void Enable(int rayNb, int bounceNb)
     {
         _shot = false;
         _done = false;
         _hitLast = false;
+        _maxBounce = 0;
+        _shotNumber = 0;
+
         _currentShot = 0;
         _pathLength = 0.0f;
         _tracingPos = 0.0f;
 
-        if (!_designMode)
+        _lineRenderer.positionCount = 2;
+        _lineRenderer.SetPosition(0, rayOrigin());
+        _lineRenderer.SetPosition(1, rayOrigin() + _direction.normalized * 2);
+
+        for (int i = rayNb; i < _shotNumber; i++)
+            Destroy(_trailRenderer[i].gameObject);
+
+        Array.Resize(ref _trailRenderer, rayNb);
+
+        for (int i = _shotNumber; i < rayNb; i++)
         {
-            _trailRenderer[0].positionCount = 1;
-            _trailRenderer[0].SetPosition(0, rayOrigin());
-
-            _lightPoints[0].position = new Vector3(rayOrigin().x, rayOrigin().y, -1.5f);
-            _lightPoints[0].GetComponent<Light2D>().intensity = 1;
-
-            _lineRenderer.positionCount = 2;
-            _lineRenderer.SetPosition(0, rayOrigin());
-            _lineRenderer.SetPosition(1, rayOrigin() + _direction.normalized * 2);
+            _trailRenderer[i] = Instantiate(_trailPrefab, transform).GetComponent<LineRenderer>();
+            _trailRenderer[i].positionCount = 1;
+            _trailRenderer[i].SetPosition(0, rayOrigin());
         }
 
-        _isEnable = true;
-    }
+        for (int i = (bounceNb + 1) * rayNb + 1; i < (_maxBounce + 1) * _shotNumber + 1; i++)
+            Destroy(_lightPoints[i].gameObject);
 
-    public void Disable()
-    {
-        for (int i = 0; i < _shotNumber; i++)
-            _trailRenderer[i].positionCount = 0;
+        Array.Resize(ref _lightPoints, (bounceNb + 1) * rayNb + 1);
 
-        _isEnable = false;
-    }
-
-    public void NextLevel(int rayNb, int bounceNb)
-    {
-        _shotNumber = rayNb;
-        _maxBounce = bounceNb;
-
-        _trailRenderer = new LineRenderer[_shotNumber];
-        for (int i = 0; i < _shotNumber; i++)
-            _trailRenderer[i] = Instantiate(_trailPrefab, transform).GetComponent<LineRenderer>();
-
-        _lightPoints = new Transform[(_maxBounce + 2) * _shotNumber];
-
-        for (int i = 0; i < (_maxBounce + 2) * _shotNumber; i++)
+        _lightPoints[0].position = new Vector3(rayOrigin().x, rayOrigin().y, -1.5f);
+        _lightPoints[0].GetComponent<Light2D>().intensity = 1;
+        for (int i = (_maxBounce + 1) * _shotNumber + 1; i < (bounceNb + 1) * rayNb + 1; i++)
         {
             _lightPoints[i] = Instantiate(_pointLightPrefab, _pointLightParent.transform).transform;
             _lightPoints[i].position = rayOrigin();
             _lightPoints[i].GetComponent<Light2D>().intensity = 0;
         }
 
-        _bouncePoints = new Vector2[_maxBounce + 1];
-        _distances = new float[_maxBounce + 1];
-        _obstaclesType = new ObstacleType[_maxBounce + 1];
+        _bouncePoints = new Vector2[bounceNb + 1];
+        _distances = new float[bounceNb + 1];
+        _obstaclesType = new ObstacleType[bounceNb + 1];
 
         if (_designMode)
         {
-            _designLights = new Transform[_designRayNB * (_maxBounce + 1)];
-            for (int i = 0; i < _designRayNB * (_maxBounce + 1); i++)
+            for (int i = (bounceNb + 1) * _designRayNB ; i < (_maxBounce + 1) * _designRayNB; i++)
+                Destroy(_designLights[i].gameObject);
+
+            Array.Resize(ref _designLights, (bounceNb + 1) * _designRayNB);
+            for (int i = (_maxBounce + 1)  *_designRayNB ; i < (bounceNb + 1) * _designRayNB; i++)
             {
                 _designLights[i] = Instantiate(_pointLightPrefab, _pointLightParent.transform).transform;
                 _designLights[i].position = rayOrigin();
@@ -425,6 +390,48 @@ public class EchoLocator : MonoBehaviour
                 _designLights[i].GetComponent<Light2D>().color = Color.magenta;
             }
         }
+
+        _shotNumber = rayNb;
+        _maxBounce = bounceNb;
+
+        _isEnable = true;
+    }
+
+    public void Disable(bool disableLight = false)
+    {
+        if (disableLight)
+        {
+            for (int i = 0; i < _lightPoints.Length; i++)
+            {
+                _lightPoints[i].position = rayOrigin();
+                _lightPoints[i].GetComponent<Light2D>().intensity = 0;
+            }
+        }
+
+        if (_designMode)
+        {
+            for (int i = 0; i < _designLights.Length; i++)
+            {
+                _designLights[i].position = rayOrigin();
+                _designLights[i].GetComponent<Light2D>().intensity = 0;
+                _designLights[i].GetComponent<Light2D>().color = Color.magenta;
+            }
+        }
+        else if (!_designMode)
+        {
+            for (int i = 0; i < _shotNumber; i++)
+                _trailRenderer[i].positionCount = 0;
+
+            for (int i = 0; i < _trailRenderer.Length; i++)
+            {
+                _trailRenderer[i].positionCount = 1;
+                _trailRenderer[i].SetPosition(0, rayOrigin());
+            }
+
+            _lineRenderer.positionCount = 0;
+        }
+
+        _isEnable = false;
     }
 
     void nextShot()
@@ -451,7 +458,7 @@ public class EchoLocator : MonoBehaviour
         }
     }
 
-    void PlaySound(int i)
+    void PlayObstaclesSound(int i)
     {
         int rand = Random.Range(0, 2);
         WrappedAudioClip sound = ResourceManager.instance.audioResources.gameplayAudios.hitWall1;
@@ -470,6 +477,13 @@ public class EchoLocator : MonoBehaviour
                 Debug.LogWarning("Collided obstacles don't have an obstacles componenent and type attached");
                 return;
         }
+        AudioManager.instance.PlaySFX(sound.clip, sound.volume);
+    }
+
+    void PlayShootSound()
+    {
+        int rand = Random.Range(0, 2);
+        WrappedAudioClip sound = ResourceManager.instance.audioResources.gameplayAudios.castSpell;
         AudioManager.instance.PlaySFX(sound.clip, sound.volume);
     }
 
@@ -496,7 +510,6 @@ public class EchoLocator : MonoBehaviour
                 updateAngle(Camera.main.ScreenToWorldPoint(Input.mousePosition));
                 updateDir();
                 _lineRenderer.SetPosition(1, rayOrigin() + _direction.normalized * 2);
-                // EventSystem.current.IsPointerOverGameObject() check if click on UI
                 if (Input.GetMouseButton(0) && EventSystem.current.IsPointerOverGameObject() == false)
                     Shoot();
             }
@@ -509,13 +522,13 @@ public class EchoLocator : MonoBehaviour
 
                 if (currSegment > _segmentTraced)
                 {
-                    PlaySound(_segmentTraced);
+                    PlayObstaclesSound(_segmentTraced);
                     _segmentTraced = currSegment;
                 }
 
                 if (_tracingPos > 1.0f && !_hitLast)
                 {
-                    PlaySound(_segmentTraced);
+                    PlayObstaclesSound(_segmentTraced);
                     _hitLast = true;
                 }
 

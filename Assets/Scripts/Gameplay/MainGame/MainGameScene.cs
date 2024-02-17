@@ -152,8 +152,6 @@ namespace Game.Gameplay
             planController.Init(_level.doorEntrance.transform.position, _level.maxMoves, _level.maxActions);
             planPresenter.Init(_level.maxMoves, _level.maxActions);
 
-            echoLocator.NextLevel(_level.maxRays, _level.maxBounces);
-
             yield return _player.MoveToAsync(_level.doorFront.position).ToCoroutine();
 
             SetState(GameState.Start);
@@ -185,7 +183,7 @@ namespace Game.Gameplay
                     EventNames.presentDialogue,
                     new Payload() { args = new object[] { ResourceManager.instance.dialogueResources.enterEchoLocator } }
             );
-            echoLocator.Enable();
+            echoLocator.Enable(_level.maxRays, _level.maxBounces);
         }
 
         private void RunPlanPhase()
@@ -297,6 +295,7 @@ namespace Game.Gameplay
                 StopCoroutine(_coroutine);
             }
             _level.Reset();
+            echoLocator.Disable(true);
             SetState(GameState.Loading);
         }
 
