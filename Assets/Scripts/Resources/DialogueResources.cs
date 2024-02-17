@@ -14,5 +14,11 @@ namespace Game
         public string enterPlan;
         public string enterPerform;
         public string onKillEnemy;
+
+        [Header("End Game Texts")]
+        public string winAndMoreLevel;
+        public string winAndLastLevel;
+        public string loseCuzMoreEnemies;
+        public string loseCuzGetKilled;
     }
 }

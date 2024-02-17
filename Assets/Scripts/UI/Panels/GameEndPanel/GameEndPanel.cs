@@ -120,21 +120,27 @@ namespace Game.UI
             return _canvasGroup;
         }
 
-        public void SetEndGameState(bool isWin)
+        public void SetEndGameState(bool isWin, bool isPlayerDead, bool areEnemiesKilled, bool hasNextLevel)
         {
             if (isWin)
             {
-                title.PlayWinAnimation();
+                string winText = hasNextLevel
+                    ? ResourceManager.instance.dialogueResources.winAndMoreLevel
+                    : ResourceManager.instance.dialogueResources.winAndLastLevel;
+                title.PlayWinAnimation(winText);
                 GetCanvasGroup().DOFade(1, fadeDuration).SetEase(fadeEase).SetUpdate(true);
             }
             else
             {
-                title.PlayLoseAnimation();
+                string loseText = isPlayerDead
+                    ? ResourceManager.instance.dialogueResources.loseCuzGetKilled
+                    : ResourceManager.instance.dialogueResources.loseCuzMoreEnemies;
+                title.PlayLoseAnimation(loseText);
                 GetCanvasGroup().DOFade(1, fadeDuration).SetEase(fadeEase).SetUpdate(true);
             }
 
             btnRetry.gameObject.SetActive(!isWin);
-            btnNextLevel.gameObject.SetActive(isWin && (GameManager.instance.gameScene as MainGameScene).HasNextLevel());
+            btnNextLevel.gameObject.SetActive(isWin && hasNextLevel);
         }
 
         public enum EndState
