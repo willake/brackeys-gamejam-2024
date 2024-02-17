@@ -29,6 +29,17 @@ namespace Game.Gameplay
             gameScene.PlayLevel(this);
         }
 
+        public void Reset()
+        {
+            foreach (var enemy in enemies)
+            {
+                enemy.Reset();
+            }
+
+            doorEntrance.Close();
+            doorExit.Close();
+        }
+
         public bool AreAllEnemiesDead()
         {
             foreach (var enemy in enemies)

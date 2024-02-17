@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Game.Gameplay;
 using UniRx;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 namespace Game.UI
 {
@@ -14,6 +15,15 @@ namespace Game.UI
         public float sightRangeInDegree = 30f;
         public float sightDistance = 1.5f;
         public LayerMask playerLayermask;
+
+        private Light2D _light2D;
+
+        private Light2D GetLight2D()
+        {
+            if (_light2D == null) _light2D = GetComponent<Light2D>();
+
+            return _light2D;
+        }
 
         private void Start()
         {
@@ -29,6 +39,20 @@ namespace Game.UI
                 .ObserveOnMainThread()
                 .Subscribe(pos => AttackIfDetected(pos))
                 .AddTo(this);
+        }
+
+        public override void Reset()
+        {
+            base.Reset();
+
+            GetLight2D().enabled = false;
+        }
+
+        public override void Die()
+        {
+            GetLight2D().enabled = true;
+
+            base.Die();
         }
 
         private void AttackIfDetected(Vector2 playerPosition)
@@ -56,6 +80,8 @@ namespace Game.UI
                     RaycastHit2D hit = Physics2D.Raycast(origin, directionToPlayer, sightDistance, playerLayermask);
                     if (hit.collider != null && hit.collider.CompareTag("Player"))
                     {
+                        GetLight2D().enabled = true;
+
                         Character player = hit.collider.GetComponent<Character>();
                         if (player.State != CharacterStates.DeadState) player.Die();
                     }

@@ -292,6 +292,7 @@ namespace Game.Gameplay
             {
                 StopCoroutine(_coroutine);
             }
+            _level.Reset();
             SetState(GameState.Loading);
         }
 
