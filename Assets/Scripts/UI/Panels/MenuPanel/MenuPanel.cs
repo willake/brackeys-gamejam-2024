@@ -10,6 +10,7 @@ namespace Game.UI
 
         [Header("References")]
         public WDTextButton btnPlay;
+        public WDTextButton btnHowToPlay;
         public WDTextButton btnSettings;
         public WDTextButton btnExit;
         public WDText txtVersion;
@@ -22,6 +23,16 @@ namespace Game.UI
                 .Subscribe(_ =>
                 {
                     GameManager.instance.SwitchScene(AvailableScene.MainGame);
+                })
+                .AddTo(this);
+
+            btnHowToPlay
+                .OnClickObservable
+                .ObserveOnMainThread()
+                .Subscribe(_ =>
+                {
+                    UIManager.instance.Prev();
+                    UIManager.instance.OpenUI(AvailableUI.HowToPlayPanel);
                 })
                 .AddTo(this);
 
