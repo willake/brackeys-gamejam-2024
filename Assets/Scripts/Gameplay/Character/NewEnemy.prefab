@@ -285,10 +285,10 @@ GameObject:
   - component: {fileID: -5600338530605369090}
   - component: {fileID: 7599342188618719823}
   - component: {fileID: 110508062358036892}
-  - component: {fileID: 1354515025008671857}
   - component: {fileID: 2181873252784923247}
   - component: {fileID: 6094985899132707087}
   - component: {fileID: 5895590335502928061}
+  - component: {fileID: 5669717087916305224}
   m_Layer: 7
   m_Name: NewEnemy
   m_TagString: Untagged
@@ -390,9 +390,6 @@ MonoBehaviour:
   footstepsInterval: 0.2
   sightStartRenderer: {fileID: 1001578183458271953}
   sightEndRenderer: {fileID: 8761780873776524283}
-  facingDirectionInDegrees: 0
-  sightRangeInDegree: 80
-  sightDistance: 2
   playerLayermask:
     serializedVersion: 2
     m_Bits: 64
@@ -437,71 +434,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!60 &1354515025008671857
-PolygonCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6725298337196015624}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 2, y: 2}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Points:
-    m_Paths:
-    - - {x: 0.421875, y: -0.109375}
-      - {x: 0.34375, y: 0.03125}
-      - {x: 0.421875, y: 0.109375}
-      - {x: 0.421875, y: 0.234375}
-      - {x: 0.390625, y: 0.34375}
-      - {x: 0.296875, y: 0.421875}
-      - {x: 0.25, y: 0.46875}
-      - {x: -0.125, y: 0.46875}
-      - {x: -0.359375, y: 0.3125}
-      - {x: -0.359375, y: 0.109375}
-      - {x: -0.40625, y: 0.1875}
-      - {x: -0.453125, y: 0.171875}
-      - {x: -0.46875, y: 0.125}
-      - {x: -0.46875, y: 0.046875}
-      - {x: -0.4375, y: -0.21875}
-      - {x: -0.28125, y: -0.34375}
-      - {x: -0.1875, y: -0.390625}
-      - {x: 0.15625, y: -0.390625}
-      - {x: 0.296875, y: -0.28125}
-      - {x: 0.421875, y: -0.234375}
-  m_UseDelaunayMesh: 0
 --- !u!114 &2181873252784923247
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -533,7 +465,7 @@ MonoBehaviour:
   - {x: 0.13987517, y: -0.18205208, z: 0}
   m_ShapePathHash: -1190619109
   m_Mesh: {fileID: 0}
-  m_InstanceId: 89418
+  m_InstanceId: 125266
   m_LocalBounds:
     m_Center: {x: -0.001689434, y: 0.07760212, z: 0}
     m_Extent: {x: 0.25468278, y: 0.2661429, z: 0}
@@ -600,6 +532,41 @@ MonoBehaviour:
   - {x: 0.5, y: -0.5, z: 0}
   - {x: 0.5, y: 0.5, z: 0}
   - {x: -0.5, y: 0.5, z: 0}
+--- !u!58 &5669717087916305224
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6725298337196015624}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.45
 --- !u!1001 &3277593459396595942
 PrefabInstance:
   m_ObjectHideFlags: 0

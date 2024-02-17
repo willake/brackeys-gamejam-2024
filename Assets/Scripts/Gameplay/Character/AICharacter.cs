@@ -18,6 +18,8 @@ namespace Game.UI
         public LayerMask playerLayermask;
 
         private Light2D _light2D;
+        private bool _isDetected = false;
+        public bool IsDetected { get => _isDetected; }
 
         private Light2D GetLight2D()
         {
@@ -79,6 +81,7 @@ namespace Game.UI
 
         public void SetIsDetected(bool isDetected)
         {
+            _isDetected = isDetected;
             sightStartRenderer.gameObject.SetActive(isDetected);
             sightEndRenderer.gameObject.SetActive(isDetected);
         }
