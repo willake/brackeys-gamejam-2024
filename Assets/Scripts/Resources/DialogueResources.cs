@@ -13,7 +13,9 @@ namespace Game
         public string enterEchoLocator;
         public string enterPlan;
         public string enterPerform;
-        public string onKillEnemy;
+        public string attackFail;
+        public string attackSuccess;
+
 
         [Header("End Game Texts")]
         public string winAndMoreLevel;

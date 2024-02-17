@@ -143,8 +143,19 @@ namespace Game.Gameplay
             {
                 EventManager.Publish(
                     EventNames.presentDialogue,
-                    new Payload() { args = new object[] { ResourceManager.instance.dialogueResources.onKillEnemy } }
-            );
+                    new Payload() { args = new object[] { ResourceManager.instance.dialogueResources.attackSuccess } }
+                );
+            }
+            else if (!kill && characterType == CharacterType.Player)
+            {
+                float r = UnityEngine.Random.value;
+                if (r > 0.6f)
+                {
+                    EventManager.Publish(
+                        EventNames.presentDialogue,
+                        new Payload() { args = new object[] { ResourceManager.instance.dialogueResources.attackFail } }
+                    );
+                }
             }
         }
 
