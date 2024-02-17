@@ -1687,6 +1687,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3158981193412843973, guid: b50aaedd10520cb47921ffa2914b29c1, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4262391229032546031, guid: b50aaedd10520cb47921ffa2914b29c1, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1711,6 +1715,18 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4819916542595391555, guid: b50aaedd10520cb47921ffa2914b29c1, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5266999071180112335, guid: b50aaedd10520cb47921ffa2914b29c1, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6142389436048811006, guid: b50aaedd10520cb47921ffa2914b29c1, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6252990133990811122, guid: b50aaedd10520cb47921ffa2914b29c1, type: 3}
       propertyPath: m_fontSize
       value: 10
@@ -1724,6 +1740,10 @@ PrefabInstance:
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 6252990133990811122, guid: b50aaedd10520cb47921ffa2914b29c1, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6252990133990811122, guid: b50aaedd10520cb47921ffa2914b29c1, type: 3}
       propertyPath: m_sharedMaterial
       value: 
       objectReference: {fileID: 8562685510193022153, guid: 0e630ee7c3df41549a5a2ecc70c849c8, type: 2}
@@ -1735,9 +1755,17 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -50
       objectReference: {fileID: 0}
+    - target: {fileID: 7725695254983186254, guid: b50aaedd10520cb47921ffa2914b29c1, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7801865975717866615, guid: b50aaedd10520cb47921ffa2914b29c1, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -15
+      objectReference: {fileID: 0}
+    - target: {fileID: 8811197218693237002, guid: b50aaedd10520cb47921ffa2914b29c1, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8908453533362545193, guid: b50aaedd10520cb47921ffa2914b29c1, type: 3}
       propertyPath: m_Name
