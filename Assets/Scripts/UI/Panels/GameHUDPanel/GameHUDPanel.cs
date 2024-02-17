@@ -23,8 +23,10 @@ namespace Game.UI
         protected EventManager EventManager { get => _eventManager.Value; }
 
         [Header("References")]
+        public EcholocationRuntimeState echolocationRuntimeState;
         public PlanRuntimeState planRuntimeState;
         public GameRuntimeState gameRuntimeState;
+        public WDText echoIndicator;
         public WDText movePlansIndicator;
         public WDText actionPlansIndicator;
         public Dialogue dialogue;
@@ -75,6 +77,7 @@ namespace Game.UI
                         GetCanvasGroup().alpha = 0;
                     }
 
+                    echoIndicator.gameObject.SetActive(state == GameState.EchoLocation);
                     movePlansIndicator.gameObject.SetActive(state == GameState.Plan);
                     actionPlansIndicator.gameObject.SetActive(state == GameState.Plan);
 
@@ -84,12 +87,16 @@ namespace Game.UI
 
             planRuntimeState
                 .onChangedObservable
+                .DoOnSubscribe(() => UpdatePlanInfo())
                 .ObserveOnMainThread()
-                .Subscribe(_ =>
-                {
-                    movePlansIndicator.text = $"Moves {planRuntimeState.moveplans.Count}/{planRuntimeState.maxMoves}";
-                    actionPlansIndicator.text = $"Actions {planRuntimeState.actionPlans.Count}/{planRuntimeState.maxActions}";
-                })
+                .Subscribe(_ => UpdatePlanInfo())
+                .AddTo(this);
+
+            echolocationRuntimeState
+                .OnShotRaysChanged
+                .DoOnSubscribe(() => UpdateEcholocationInfo())
+                .ObserveOnMainThread()
+                .Subscribe(_ => UpdateEcholocationInfo())
                 .AddTo(this);
         }
 
@@ -124,6 +131,17 @@ namespace Game.UI
         {
             Close();
             await UniTask.CompletedTask;
+        }
+
+        private void UpdateEcholocationInfo()
+        {
+            echoIndicator.text = $"Rays {echolocationRuntimeState.ShotRays}/{echolocationRuntimeState.maxRays}";
+        }
+
+        private void UpdatePlanInfo()
+        {
+            movePlansIndicator.text = $"Moves {planRuntimeState.moveplans.Count}/{planRuntimeState.maxMoves}";
+            actionPlansIndicator.text = $"Actions {planRuntimeState.actionPlans.Count}/{planRuntimeState.maxActions}";
         }
 
         private void OnDestroy()
