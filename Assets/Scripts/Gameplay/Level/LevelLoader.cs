@@ -5,11 +5,14 @@ using UnityEngine.SceneManagement;
 using WillakeD.ScenePropertyDrawler;
 using System;
 using UnityEngine.Events;
+using Game.UI;
 
 namespace Game.Gameplay
 {
     public class LevelLoader : MonoBehaviour
     {
+        [Header("References")]
+        public TransitionPanel transitionPanel;
         private string _currentLevel = string.Empty;
 
         public OnLoadLevelEvent onLoadLevel = new OnLoadLevelEvent();
@@ -49,6 +52,12 @@ namespace Game.Gameplay
 
         private async UniTask LoadLevel(string levelName)
         {
+            bool transitionOpened = false;
+            if (_currentLevel != string.Empty)
+            {
+                await transitionPanel.OpenAsync();
+                transitionOpened = true;
+            }
             AsyncOperation loadSceneOperation =
                 SceneManager.LoadSceneAsync(levelName, LoadSceneMode.Additive);
 
@@ -68,6 +77,8 @@ namespace Game.Gameplay
             loadSceneOperation.allowSceneActivation = true;
 
             _currentLevel = levelName;
+
+            if (transitionOpened) await transitionPanel.CloseAsync();
         }
 
         public async UniTask UnloadCurrentLevel()
