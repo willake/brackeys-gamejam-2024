@@ -122,6 +122,11 @@ namespace Game.UI
 
         public void SetEndGameState(bool isWin, bool isPlayerDead, bool areEnemiesKilled, bool hasNextLevel)
         {
+            WrappedAudioClip endSFX = isWin
+                ? ResourceManager.instance.audioResources.gameplayAudios.stingWin
+                : ResourceManager.instance.audioResources.gameplayAudios.stingLose;
+            AudioManager.instance.PlayUI(endSFX.clip, endSFX.volume);
+
             if (isWin)
             {
                 string winText = hasNextLevel

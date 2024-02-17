@@ -226,11 +226,6 @@ namespace Game.Gameplay
 
             yield return new WaitForSeconds(2);
 
-            WrappedAudioClip endSFX = isWin
-                ? ResourceManager.instance.audioResources.gameplayAudios.stingWin
-                : ResourceManager.instance.audioResources.gameplayAudios.stingLose;
-            AudioManager.instance.PlaySFX(endSFX.clip, endSFX.volume);
-
             // terrible code but works well
             Task<UIPanel> openPanelTask;
             openPanelTask = UIManager.instance.OpenUIAsync(AvailableUI.GameEndPanel).AsTask();
