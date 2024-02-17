@@ -8,5 +8,6 @@ namespace Game
     [CreateAssetMenu(menuName = "MyGame/Resources/GameplayResources")]
     public class GameplayResources : ScriptableObject
     {
+        public GameObject enemyPrefab;
     }
 }

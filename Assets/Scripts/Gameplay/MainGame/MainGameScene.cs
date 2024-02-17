@@ -297,7 +297,7 @@ namespace Game.Gameplay
             }
             AudioManager.instance.StopSFXLoop(_combatAudioToken);
             _combatAudioToken = -1;
-            _level.Reset();
+            _level.Init();
             echoLocator.Disable(true);
             SetState(GameState.Loading);
         }
