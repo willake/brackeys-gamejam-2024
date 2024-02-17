@@ -81,7 +81,7 @@ namespace Game.UI
             gameObject.SetActive(true);
             GameManager.instance.PauseGame();
             WrappedAudioClip audioClip = ResourceManager.instance.audioResources.uiAudios.UIOpen;
-            AudioManager.instance.PlaySFX(audioClip.clip, audioClip.volume);
+            AudioManager.instance.PlayUI(audioClip.clip, audioClip.volume);
         }
 
         public override async UniTask OpenAsync()
@@ -91,7 +91,7 @@ namespace Game.UI
             GetCanvasGroup().alpha = 0;
 
             WrappedAudioClip audioClip = ResourceManager.instance.audioResources.uiAudios.UIOpen;
-            AudioManager.instance.PlaySFX(audioClip.clip, audioClip.volume);
+            AudioManager.instance.PlayUI(audioClip.clip, audioClip.volume);
 
             await GetCanvasGroup()
                 .DOFade(1, fadeDuration)
