@@ -254,7 +254,7 @@ namespace Game.Gameplay
         public void PlayLevel(Level level)
         {
             _level = level;
-
+            echoLocator.Disable(true);
             SetState(GameState.Loading);
         }
 
