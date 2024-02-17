@@ -61,6 +61,12 @@ namespace Game.Gameplay
             _damageCoroutine = StartCoroutine(CountdownDamageAnimation());
         }
 
+        // usually for revive
+        public void TriggerIdle()
+        {
+            GetAnimator().SetTrigger("Idle");
+        }
+
         public void TriggerDead()
         {
             GetAnimator().SetTrigger("Dead");
