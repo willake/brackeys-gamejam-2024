@@ -12,10 +12,9 @@ namespace Game.UI
         public LineRenderer sightStartRenderer;
         public LineRenderer sightEndRenderer;
 
-        [Header("AI Settings")]
-        public float facingDirectionInDegrees = 0f;
-        public float sightRangeInDegree = 30f;
-        public float sightDistance = 1.5f;
+        private float _facingDirection = 0f;
+        private float _sightRange = 30f;
+        private float _sightDistance = 1.5f;
         public LayerMask playerLayermask;
 
         private Light2D _light2D;
@@ -29,15 +28,30 @@ namespace Game.UI
 
         protected override void Start()
         {
+            playerPositionState
+                .OnValueChanged
+                .Where(_ => State != CharacterStates.DeadState)
+                .ObserveOnMainThread()
+                .Subscribe(pos => AttackIfDetected(pos))
+                .AddTo(this);
+        }
+
+        public void Init()
+        {
+            Init(_facingDirection, _sightRange, _sightDistance);
+        }
+
+        public void Init(float facingDirection, float sightRange, float sightDistance)
+        {
             Vector2 direction = new Vector2(
-                Mathf.Cos(facingDirectionInDegrees * Mathf.Deg2Rad),
-                Mathf.Sin(facingDirectionInDegrees * Mathf.Deg2Rad)
+                Mathf.Cos(facingDirection * Mathf.Deg2Rad),
+                Mathf.Sin(facingDirection * Mathf.Deg2Rad)
             );
             GetCharacterAnimator().SetMoveDirection(direction.x, direction.y);
 
             Vector2 origin = transform.position;
-            float minAngle = facingDirectionInDegrees - (sightRangeInDegree / 2);
-            float maxAngle = facingDirectionInDegrees + (sightRangeInDegree / 2);
+            float minAngle = facingDirection - (sightRange / 2);
+            float maxAngle = facingDirection + (sightRange / 2);
 
             Vector2 minDirection = new Vector3(
                 Mathf.Cos(minAngle * Mathf.Deg2Rad),
@@ -58,12 +72,9 @@ namespace Game.UI
             sightStartRenderer.gameObject.SetActive(false);
             sightEndRenderer.gameObject.SetActive(false);
 
-            playerPositionState
-                .OnValueChanged
-                .Where(_ => State != CharacterStates.DeadState)
-                .ObserveOnMainThread()
-                .Subscribe(pos => AttackIfDetected(pos))
-                .AddTo(this);
+            _facingDirection = facingDirection;
+            _sightRange = sightRange;
+            _sightDistance = sightDistance;
         }
 
         public void SetIsDetected(bool isDetected)
@@ -77,8 +88,8 @@ namespace Game.UI
             base.Reset();
 
             Vector2 direction = new Vector2(
-                Mathf.Cos(facingDirectionInDegrees * Mathf.Deg2Rad),
-                Mathf.Sin(facingDirectionInDegrees * Mathf.Deg2Rad)
+                Mathf.Cos(_facingDirection * Mathf.Deg2Rad),
+                Mathf.Sin(_facingDirection * Mathf.Deg2Rad)
             );
             GetCharacterAnimator().SetMoveDirection(direction.x, direction.y);
 
@@ -101,22 +112,22 @@ namespace Game.UI
             Vector2 directionToPlayer = playerPosition - origin;
 
             Vector3 facingDirection = new Vector3(
-                Mathf.Cos(facingDirectionInDegrees * Mathf.Deg2Rad),
-                Mathf.Sin(facingDirectionInDegrees * Mathf.Deg2Rad),
+                Mathf.Cos(_facingDirection * Mathf.Deg2Rad),
+                Mathf.Sin(_facingDirection * Mathf.Deg2Rad),
                 0
             );
 
             // Check if player is within sight distance
-            if (directionToPlayer.magnitude < sightDistance)
+            if (directionToPlayer.magnitude < _sightDistance)
             {
                 // Calculate angle between forward vector of enemy and direction to player
                 float angleToPlayer = Vector2.Angle(facingDirection, directionToPlayer);
 
                 // Check if angle is within sight angle
-                if (angleToPlayer <= sightRangeInDegree * 0.5f)
+                if (angleToPlayer <= _sightRange * 0.5f)
                 {
                     // Perform a raycast to ensure there are no obstacles blocking the view
-                    RaycastHit2D hit = Physics2D.Raycast(origin, directionToPlayer, sightDistance, playerLayermask);
+                    RaycastHit2D hit = Physics2D.Raycast(origin, directionToPlayer, _sightDistance, playerLayermask);
                     if (hit.collider != null)
                     {
                         GetLight2D().enabled = true;
@@ -137,36 +148,36 @@ namespace Game.UI
             }
         }
 
-        private void OnDrawGizmos()
-        {
-            Vector3 origin = transform.position;
-            origin.z = -1;
-            Vector3 direction = new Vector3(
-                Mathf.Cos(facingDirectionInDegrees * Mathf.Deg2Rad),
-                Mathf.Sin(facingDirectionInDegrees * Mathf.Deg2Rad),
-                0
-            );
-            Gizmos.color = Color.red;
-            Gizmos.DrawLine(origin, origin + direction * 1.5f);
+        // private void OnDrawGizmos()
+        // {
+        //     Vector3 origin = transform.position;
+        //     origin.z = -1;
+        //     Vector3 direction = new Vector3(
+        //         Mathf.Cos(_facingDirection * Mathf.Deg2Rad),
+        //         Mathf.Sin(_facingDirection * Mathf.Deg2Rad),
+        //         0
+        //     );
+        //     Gizmos.color = Color.red;
+        //     Gizmos.DrawLine(origin, origin + direction * 1.5f);
 
-            // green for sight range
-            Gizmos.color = Color.green;
-            float minAngle = facingDirectionInDegrees - (sightRangeInDegree / 2);
-            float maxAngle = facingDirectionInDegrees + (sightRangeInDegree / 2);
+        //     // green for sight range
+        //     Gizmos.color = Color.green;
+        //     float minAngle = _facingDirection - (_sightRange / 2);
+        //     float maxAngle = _facingDirection + (_sightRange / 2);
 
-            Vector3 minDirection = new Vector3(
-                Mathf.Cos(minAngle * Mathf.Deg2Rad),
-                Mathf.Sin(minAngle * Mathf.Deg2Rad),
-                0
-            );
-            Vector3 maxDirection = new Vector3(
-                Mathf.Cos(maxAngle * Mathf.Deg2Rad),
-                Mathf.Sin(maxAngle * Mathf.Deg2Rad),
-                0
-            );
+        //     Vector3 minDirection = new Vector3(
+        //         Mathf.Cos(minAngle * Mathf.Deg2Rad),
+        //         Mathf.Sin(minAngle * Mathf.Deg2Rad),
+        //         0
+        //     );
+        //     Vector3 maxDirection = new Vector3(
+        //         Mathf.Cos(maxAngle * Mathf.Deg2Rad),
+        //         Mathf.Sin(maxAngle * Mathf.Deg2Rad),
+        //         0
+        //     );
 
-            Gizmos.DrawLine(origin, origin + minDirection * sightDistance);
-            Gizmos.DrawLine(origin, origin + maxDirection * sightDistance);
-        }
+        //     Gizmos.DrawLine(origin, origin + minDirection * _sightDistance);
+        //     Gizmos.DrawLine(origin, origin + maxDirection * _sightDistance);
+        // }
     }
 }
