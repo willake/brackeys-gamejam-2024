@@ -1,6 +1,6 @@
-using DG.Tweening.Core.Easing;
 using Game;
 using Game.Audios;
+using Game.RuntimeStates;
 using System;
 using UnityEngine;
 using UnityEngine.Events;
@@ -36,6 +36,8 @@ public class EchoLocator : MonoBehaviour
     private bool _designMode = false;
     [SerializeField]
     private int _designRayNB = 36;
+    [SerializeField]
+    private EcholocationRuntimeState echolocationRuntimeState;
 
     private LineRenderer[] _trailRenderer;
     private Transform[] _lightPoints;
@@ -176,6 +178,7 @@ public class EchoLocator : MonoBehaviour
                 break;
         }
         PlayShootSound();
+        echolocationRuntimeState.SetShotRays( _currentShot + 1);
         _shot = true;
     }
 
@@ -393,6 +396,9 @@ public class EchoLocator : MonoBehaviour
 
         _shotNumber = rayNb;
         _maxBounce = bounceNb;
+
+        echolocationRuntimeState.maxRays = _shotNumber;
+        echolocationRuntimeState.SetShotRays(_currentShot);
 
         _isEnable = true;
     }

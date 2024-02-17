@@ -630,8 +630,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 814e44208690e0e4fb1758658f1826d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxBounce: 4
-  _shotNumber: 5
   _angle: 0
   _door: {fileID: 0}
   _lineRenderer: {fileID: 266925257}
@@ -644,6 +642,7 @@ MonoBehaviour:
     m_Bits: 640
   _designMode: 0
   _designRayNB: 36
+  echolocationRuntimeState: {fileID: 11400000, guid: 9a5078c32fdf28246a6b65fca5fe79a7, type: 2}
   LocationEndEvent:
     m_PersistentCalls:
       m_Calls: []
