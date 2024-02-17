@@ -483,7 +483,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Pick action location
 
-    And angle
+    and angle
 
 '
   m_isRightToLeft: 0
@@ -1001,7 +1001,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Pick Direction
+  m_text: Pick direction
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 0e630ee7c3df41549a5a2ecc70c849c8, type: 2}
   m_sharedMaterial: {fileID: 8562685510193022153, guid: 0e630ee7c3df41549a5a2ecc70c849c8, type: 2}
@@ -1580,7 +1580,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Find out whats behind the door and take out all the enemys
+  m_text: 'Find out what''s behind the door and take out all the enemies
 
     inside
     without being seen. Stay out of their sight.'
