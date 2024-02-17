@@ -39,7 +39,6 @@ namespace Game.Gameplay
         public float attackRadius = 1;
         public float attackDetectionRadius = 1;
         public float footstepsInterval = 0.2f;
-        private Vector2 _destination = Vector2.zero;
         private UnityEvent _onArriveDestination = new();
         private float _lastFootstepsTime = 0;
         private ICharacterState _state = CharacterStates.IdleState;
@@ -79,7 +78,6 @@ namespace Game.Gameplay
             if (_state.canMove == false) return;
             SetState(CharacterStates.MoveState);
             GetCharacterAnimator().SetMoveSpeed(speed);
-            _destination = destination;
 
             GetNavMeshAgent().destination = destination;
 

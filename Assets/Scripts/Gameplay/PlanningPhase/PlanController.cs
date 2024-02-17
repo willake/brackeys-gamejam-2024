@@ -35,7 +35,7 @@ namespace Game.Gameplay
 
 
         [Header("Settings")]
-        public LayerMask groundMask;
+        public LayerMask unclickableMask;
         public bool canPlan = false;
         private int _maxMoves = 3;
         private int _maxActions = 3;
@@ -85,14 +85,14 @@ namespace Game.Gameplay
         private bool IsInRoom(Vector2 mouseWorldPos)
         {
             Debug.DrawCircle(mouseWorldPos, 0.1f, 36, Color.red);
-            RaycastHit2D[] hits = Physics2D.CircleCastAll(mouseWorldPos, 0.1f, Vector2.zero, Mathf.Infinity, groundMask);
+            RaycastHit2D[] hits = Physics2D.CircleCastAll(mouseWorldPos, 0.1f, Vector2.zero, Mathf.Infinity, unclickableMask);
 
             if (hits.Length > 0)
             {
-                return true;
+                return false;
             }
 
-            return false;
+            return true;
         }
 
         private void PlayClickSound()
