@@ -200,7 +200,7 @@ namespace Game.Gameplay
 
         private IEnumerator RunPerformPhase()
         {
-            AudioManager.instance.PauseMusic();
+            AudioManager.instance.StopMusic();
 
             _level.doorEntrance.Open();
 
@@ -220,6 +220,7 @@ namespace Game.Gameplay
         private IEnumerator RunEndPhase()
         {
             AudioManager.instance.StopSFXLoop(_combatAudioToken);
+            _combatAudioToken = -1;
 
             bool isWin = _level.AreAllEnemiesDead();
 
@@ -242,7 +243,7 @@ namespace Game.Gameplay
             GameEndPanel endPanel = openPanelTask.Result as GameEndPanel;
             endPanel.SetEndGameState(isWin, _player.State == CharacterStates.DeadState, _level.AreAllEnemiesDead(), HasNextLevel());
 
-            AudioManager.instance.PauseMusic();
+            AudioManager.instance.StopMusic();
         }
 
         public async UniTask NavigateToMenu()
@@ -294,6 +295,8 @@ namespace Game.Gameplay
             {
                 StopCoroutine(_coroutine);
             }
+            AudioManager.instance.StopSFXLoop(_combatAudioToken);
+            _combatAudioToken = -1;
             _level.Reset();
             echoLocator.Disable(true);
             SetState(GameState.Loading);
