@@ -112,7 +112,7 @@ namespace Game.Gameplay
 
             Vector2 attackTip = new Vector2(transform.position.x, transform.position.y) + direction * attackRadius;
             Debug.DrawCircle(new Vector3(attackTip.x, attackTip.y, -1), attackDetectionRadius, 32, Color.red);
-            RaycastHit2D[] hits = Physics2D.CircleCastAll(attackTip, attackDetectionRadius, direction);
+            RaycastHit2D[] hits = Physics2D.CircleCastAll(attackTip, attackDetectionRadius, Vector2.zero);
 
             bool kill = false;
 
