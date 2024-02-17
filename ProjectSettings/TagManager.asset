@@ -14,9 +14,9 @@ TagManager:
   - Player
   - Enemy
   - Projectiles
-  - 
-  - 
-  - 
+  - Obstacles
+  - Door
+  - Ground
   - 
   - 
   - 
@@ -40,4 +40,22 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Ground
+    uniqueID: 2601610309
+    locked: 0
+  - name: Object
+    uniqueID: 871894429
+    locked: 0
+  - name: Unlighten Objects
+    uniqueID: 2837629799
+    locked: 0
+  - name: Ground Indicator
+    uniqueID: 4117200453
+    locked: 0
+  - name: Object Indicator
+    uniqueID: 3445952807
+    locked: 0
+  - name: Player
+    uniqueID: 3562265901
     locked: 0

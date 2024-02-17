@@ -17,8 +17,13 @@ namespace Game.Audios
         public AudioMixer masterMixerGroup;
         private AudioMixerGroup _musicMixerGroup;
         private AudioMixerGroup _sfxMixerGroup;
+        private AudioMixerGroup _dialogueMixerGroup;
+        private AudioMixerGroup _uiMixerGroup;
         public const string PARAM_NAME_MUSIC_VOLUME = "MusicVolume";
         public const string PARAM_NAME_SFX_VOLUME = "SFXVolume";
+        public const string PARAM_NAME_DIALOGUE_VOLUME = "DialogueVolume";
+        public const string PARAM_NAME_UI_VOLUME = "UIVolume";
+        // Daigloue and UI are part of sfx, will adjusted and muted the volume all together
 
         public bool isSfxMuted { get; private set; } = false;
         public bool isMusicMuted { get; private set; } = false;
@@ -42,6 +47,8 @@ namespace Game.Audios
         {
             _musicMixerGroup = masterMixerGroup.FindMatchingGroups("Music")[0];
             _sfxMixerGroup = masterMixerGroup.FindMatchingGroups("SFX")[0];
+            _dialogueMixerGroup = masterMixerGroup.FindMatchingGroups("Dialogue")[0];
+            _uiMixerGroup = masterMixerGroup.FindMatchingGroups("UI")[0];
 
             GameObject musicGo = new GameObject();
             musicGo.name = "music";
@@ -111,6 +118,8 @@ namespace Game.Audios
             if (isSfxMuted == false)
             {
                 masterMixerGroup.SetFloat(PARAM_NAME_SFX_VOLUME, volume);
+                masterMixerGroup.SetFloat(PARAM_NAME_DIALOGUE_VOLUME, volume);
+                masterMixerGroup.SetFloat(PARAM_NAME_UI_VOLUME, volume);
             }
             _cachedSFXVolume = volume;
         }
@@ -122,6 +131,8 @@ namespace Game.Audios
             float volume = -60 + (60 * percentage);
 
             masterMixerGroup.SetFloat(PARAM_NAME_SFX_VOLUME, volume);
+            masterMixerGroup.SetFloat(PARAM_NAME_DIALOGUE_VOLUME, volume);
+            masterMixerGroup.SetFloat(PARAM_NAME_UI_VOLUME, volume);
 
             _cachedSFXVolume = volume;
         }
@@ -132,10 +143,35 @@ namespace Game.Audios
             SetSFXVolume(maxVolume);
         }
 
+        public AudioSource BorrowSFXSource()
+        {
+            return _sfxSourcePool.Dequeue();
+        }
+
+        public void ReturnSFXSource(AudioSource source)
+        {
+            source.outputAudioMixerGroup = _sfxMixerGroup;
+            _sfxSourcePool.Enqueue(source);
+        }
+
         public void PlaySFX(AudioClip clip, float volume = 1, float pitch = 1f)
         {
             if (isSfxMuted) return;
             AudioSource source = _sfxSourcePool.Dequeue();
+            source.outputAudioMixerGroup = _sfxMixerGroup;
+            source.volume = volume;
+            source.pitch = pitch;
+            source.panStereo = 0f;
+            source.PlayOneShot(clip);
+
+            _sfxSourcePool.Enqueue(source);
+        }
+
+        public void PlayUI(AudioClip clip, float volume = 1, float pitch = 1f)
+        {
+            if (isSfxMuted) return;
+            AudioSource source = _sfxSourcePool.Dequeue();
+            source.outputAudioMixerGroup = _uiMixerGroup;
             source.volume = volume;
             source.pitch = pitch;
             source.panStereo = 0f;
@@ -148,6 +184,7 @@ namespace Game.Audios
         {
             if (isSfxMuted) return;
             AudioSource source = _sfxSourcePool.Dequeue();
+            source.outputAudioMixerGroup = _sfxMixerGroup;
             source.volume = volume;
             source.pitch = pitch;
             source.panStereo =
@@ -168,6 +205,11 @@ namespace Game.Audios
             _musicSource.Play();
         }
 
+        public void StopMusic()
+        {
+            _musicSource.Stop();
+        }
+
         public void PauseMusic()
         {
             isMusicPaused = true;
@@ -186,6 +228,7 @@ namespace Game.Audios
         {
             if (isSfxMuted) return -1;
             AudioSource source = _sfxSourcePool.Dequeue();
+            source.outputAudioMixerGroup = _sfxMixerGroup;
             source.volume = volume;
             source.pitch = pitch;
             source.panStereo = 0f;

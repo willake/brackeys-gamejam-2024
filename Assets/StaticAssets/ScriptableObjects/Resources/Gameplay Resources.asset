@@ -12,5 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfcff4abe40b746428404f8def40981b, type: 3}
   m_Name: Gameplay Resources
   m_EditorClassIdentifier: 
-  playerCharacter: {fileID: 2619225314589898786, guid: 428192129b684004ba070643cde19b88, type: 3}
-  weaponPistol: {fileID: 0}
+  enemyPrefab: {fileID: 6725298337196015624, guid: 8e5c803b6dc1890488ab005216acd67d, type: 3}

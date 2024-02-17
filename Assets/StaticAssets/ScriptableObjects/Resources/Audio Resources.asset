@@ -14,52 +14,103 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uiAudios:
     buttonClick:
-      clip: {fileID: 8300000, guid: 851f1bad1863f0b4ba9c5bdd1ae6ec35, type: 3}
+      clip: {fileID: 8300000, guid: dd95bd075a7dcb84894ce05b49175898, type: 3}
       volume: 1
     buttonConfirm:
-      clip: {fileID: 8300000, guid: 00cbb81606f76974984b5bf6652ad536, type: 3}
+      clip: {fileID: 8300000, guid: dd95bd075a7dcb84894ce05b49175898, type: 3}
+      volume: 1
+    dialogue:
+      clip: {fileID: 8300000, guid: d87740dc187b7d7439e711a24148c20d, type: 3}
+      volume: 0.35
+    UIOpen:
+      clip: {fileID: 8300000, guid: a467577c8a0fef44da4fda831483e7f7, type: 3}
+      volume: 1
+    UIClose:
+      clip: {fileID: 8300000, guid: 329c9c8bc52ef7b4da51f56779186412, type: 3}
       volume: 1
   backgroundAudios:
-    ambienceWind:
-      clip: {fileID: 8300000, guid: ede3ea62d8f31c14ab1285cbbeac66aa, type: 3}
-      volume: 0.5
+    musicMainTheme:
+      clip: {fileID: 8300000, guid: 33abc2e556075254db932f155b02052a, type: 3}
+      volume: 1
+    musicPlan:
+      clip: {fileID: 8300000, guid: 67e8721f57570f04cbcba6f0a458c444, type: 3}
+      volume: 1
+    Combat:
+      clip: {fileID: 8300000, guid: 24736b1ea62783f4c8cfa42dc38ac198, type: 3}
+      volume: 0.35
   gameplayAudios:
-    levelWin:
-      clip: {fileID: 8300000, guid: 3346a7f6eab633847bb845f76a31ea40, type: 3}
-      volume: 0.8
-    levelLose:
-      clip: {fileID: 8300000, guid: ad75698d155c81c4cb83f800fe5714f4, type: 3}
-      volume: 0.8
-    levelStart:
-      clip: {fileID: 8300000, guid: 83649b73213442c4696a4bbd2d640791, type: 3}
-      volume: 0.4
-    footStep1:
-      clip: {fileID: 8300000, guid: 20cad1860046bcc40aed59c8674f726b, type: 3}
-      volume: 0.05
-    footStep2:
-      clip: {fileID: 8300000, guid: 20cad1860046bcc40aed59c8674f726b, type: 3}
-      volume: 0.05
-    snowballThrow:
-      clip: {fileID: 8300000, guid: 034b81e5071913a48a93213926cbad7d, type: 3}
+    footstepsWood1:
+      clip: {fileID: 8300000, guid: 1662629bc74b6a74c9bd7079cae382cf, type: 3}
       volume: 1
-    snowballNotHit:
-      clip: {fileID: 8300000, guid: d2a3674aaac91044096de5c7b71ffe58, type: 3}
-      volume: 0.4
-    snowballHit:
-      clip: {fileID: 8300000, guid: 6af35136c4354b6438d8c50a9f40b3ad, type: 3}
+    footstepsWood2:
+      clip: {fileID: 8300000, guid: 44456584ddecbff4e9077a047e30335c, type: 3}
       volume: 1
-    snowballHitHard:
-      clip: {fileID: 8300000, guid: 69be47b30f0384e4998e18680362621d, type: 3}
+    footstepsWood3:
+      clip: {fileID: 8300000, guid: fbc36682d2928e645ad69e88c5255198, type: 3}
       volume: 1
-    playerDamaged:
-      clip: {fileID: 8300000, guid: 0a1f33bbafbb3a549bf08afce0ddec09, type: 3}
+    clickPath1:
+      clip: {fileID: 8300000, guid: a775a9e8337c4b240a704ca929954d4f, type: 3}
       volume: 1
-    enemyDamaged:
-      clip: {fileID: 0}
+    clickPath2:
+      clip: {fileID: 8300000, guid: b8d6052ed21e0fb4280caec110c8ad03, type: 3}
       volume: 1
-    reload:
-      clip: {fileID: 8300000, guid: 134c7bcf80747d949926ec9f102740f3, type: 3}
-      volume: 0.2
-    criticalCharge:
-      clip: {fileID: 8300000, guid: b0400996705ccfa48924d240ace5cc8a, type: 3}
+    clickPath3:
+      clip: {fileID: 8300000, guid: bf0c61eefb53c4044a37f9dda9d5e0fc, type: 3}
+      volume: 1
+    acceptPlan1:
+      clip: {fileID: 8300000, guid: 01b861b71ff75d64183a05c7b72ec9b8, type: 3}
+      volume: 0.7
+    acceptPlan2:
+      clip: {fileID: 8300000, guid: 9a74a8e56cab98c4880f6077c29ec59f, type: 3}
+      volume: 0.7
+    acceptPlan3:
+      clip: {fileID: 8300000, guid: f5edc9ea5e7f2904d9abdf62f332992d, type: 3}
+      volume: 0.7
+    door:
+      clip: {fileID: 8300000, guid: c094cbe0ff8e91e47808f58105c7a1f2, type: 3}
+      volume: 1
+    attack:
+      clip: {fileID: 8300000, guid: 1aaae4b16d878224fafc462251a3036c, type: 3}
+      volume: 1
+    assassinate:
+      clip: {fileID: 8300000, guid: 566e580b69588914488359b6955f96f0, type: 3}
+      volume: 1
+    stingWin:
+      clip: {fileID: 8300000, guid: 3ae308bff22836e4086cdf0f52350151, type: 3}
+      volume: 1
+    stingLose:
+      clip: {fileID: 8300000, guid: 2074f502cdbf35d48a4b48c6bcc48dea, type: 3}
+      volume: 1
+    hitCupboard1:
+      clip: {fileID: 8300000, guid: a3325edde7e89644dabc40d84a6244ea, type: 3}
+      volume: 1
+    hitCupboard2:
+      clip: {fileID: 8300000, guid: ea533dc7a811e694d91f4f714988c646, type: 3}
+      volume: 1
+    hitEnnemy1:
+      clip: {fileID: 8300000, guid: c8c8f53388ebed74ba0e7c6791436428, type: 3}
+      volume: 1
+    hitEnnemy2:
+      clip: {fileID: 8300000, guid: 43697898652c0df4ab26092fe8c857c3, type: 3}
+      volume: 1
+    hitWall1:
+      clip: {fileID: 8300000, guid: f0567acab71c12345a02e32dadfa21fd, type: 3}
+      volume: 0.75
+    hitWall2:
+      clip: {fileID: 8300000, guid: 6b99af041352990459f1c1f2e7a97635, type: 3}
+      volume: 0.75
+    castSpell:
+      clip: {fileID: 8300000, guid: 1bf2e0a24fb51bb4794da53a283d8c93, type: 3}
+      volume: 1
+    enemyDeath1:
+      clip: {fileID: 8300000, guid: cb12153ab671ebe4996df3b435096347, type: 3}
+      volume: 1
+    enemyDeath2:
+      clip: {fileID: 8300000, guid: b9201c1a1bc25bc45b5df480b2239712, type: 3}
+      volume: 1
+    pistol1:
+      clip: {fileID: 8300000, guid: 79a0b1e0d1116e34581795951d7fcf9b, type: 3}
+      volume: 1
+    pistol2:
+      clip: {fileID: 8300000, guid: 4a76f5613b41790468ae08d3f245108c, type: 3}
       volume: 1

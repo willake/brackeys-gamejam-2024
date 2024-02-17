@@ -1,0 +1,127 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: TileMap
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 0
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings:
+    - serializedVersion: 3
+      m_BuildTarget: DefaultTexturePlatform
+      m_MaxTextureSize: 2048
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: -1
+      m_TextureCompression: 0
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_IgnorePlatformSupport: 0
+      m_AndroidETC2FallbackOverride: 0
+      m_ForceMaximumCompressionQuality_BC6H_BC7: 0
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 1
+      enableTightPacking: 1
+      enableAlphaDilation: 0
+    secondaryTextureSettings: {}
+    variantMultiplier: 1
+    packables:
+    - {fileID: 2800000, guid: 0f4cc7e1ffad56f4f950b49657ab0e49, type: 3}
+    bindAsDefault: 1
+    isAtlasV2: 0
+    cachedData: {fileID: 0}
+    packedSpriteRenderDataKeys:
+    - 0f4cc7e1ffad56f4f950b49657ab0e49: -1018177050
+    - 0f4cc7e1ffad56f4f950b49657ab0e49: -966210694
+    - 0f4cc7e1ffad56f4f950b49657ab0e49: -670368508
+    - 0f4cc7e1ffad56f4f950b49657ab0e49: -1774280941
+    - 0f4cc7e1ffad56f4f950b49657ab0e49: -1412193132
+    - 0f4cc7e1ffad56f4f950b49657ab0e49: 2140438085
+    - 0f4cc7e1ffad56f4f950b49657ab0e49: -1879737359
+    - 0f4cc7e1ffad56f4f950b49657ab0e49: -26753606
+    - 0f4cc7e1ffad56f4f950b49657ab0e49: -538894832
+    - 0f4cc7e1ffad56f4f950b49657ab0e49: 272983895
+    - 0f4cc7e1ffad56f4f950b49657ab0e49: -1778848298
+    - 0f4cc7e1ffad56f4f950b49657ab0e49: -1075597869
+    - 0f4cc7e1ffad56f4f950b49657ab0e49: -1527957506
+    - 0f4cc7e1ffad56f4f950b49657ab0e49: -1026717504
+    - 0f4cc7e1ffad56f4f950b49657ab0e49: -1772547264
+    - 0f4cc7e1ffad56f4f950b49657ab0e49: 1454080040
+    - 0f4cc7e1ffad56f4f950b49657ab0e49: -683642371
+    - 0f4cc7e1ffad56f4f950b49657ab0e49: -1749289623
+    - 0f4cc7e1ffad56f4f950b49657ab0e49: -1431443494
+    - 0f4cc7e1ffad56f4f950b49657ab0e49: 1353359750
+    - 0f4cc7e1ffad56f4f950b49657ab0e49: 84519388
+    - 0f4cc7e1ffad56f4f950b49657ab0e49: -837459728
+    - 0f4cc7e1ffad56f4f950b49657ab0e49: 1788153648
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: -1018177050, guid: 0f4cc7e1ffad56f4f950b49657ab0e49, type: 3}
+  - {fileID: -966210694, guid: 0f4cc7e1ffad56f4f950b49657ab0e49, type: 3}
+  - {fileID: -670368508, guid: 0f4cc7e1ffad56f4f950b49657ab0e49, type: 3}
+  - {fileID: -1774280941, guid: 0f4cc7e1ffad56f4f950b49657ab0e49, type: 3}
+  - {fileID: -1412193132, guid: 0f4cc7e1ffad56f4f950b49657ab0e49, type: 3}
+  - {fileID: 2140438085, guid: 0f4cc7e1ffad56f4f950b49657ab0e49, type: 3}
+  - {fileID: -1879737359, guid: 0f4cc7e1ffad56f4f950b49657ab0e49, type: 3}
+  - {fileID: -26753606, guid: 0f4cc7e1ffad56f4f950b49657ab0e49, type: 3}
+  - {fileID: -538894832, guid: 0f4cc7e1ffad56f4f950b49657ab0e49, type: 3}
+  - {fileID: 272983895, guid: 0f4cc7e1ffad56f4f950b49657ab0e49, type: 3}
+  - {fileID: -1778848298, guid: 0f4cc7e1ffad56f4f950b49657ab0e49, type: 3}
+  - {fileID: -1075597869, guid: 0f4cc7e1ffad56f4f950b49657ab0e49, type: 3}
+  - {fileID: -1527957506, guid: 0f4cc7e1ffad56f4f950b49657ab0e49, type: 3}
+  - {fileID: -1026717504, guid: 0f4cc7e1ffad56f4f950b49657ab0e49, type: 3}
+  - {fileID: -1772547264, guid: 0f4cc7e1ffad56f4f950b49657ab0e49, type: 3}
+  - {fileID: 1454080040, guid: 0f4cc7e1ffad56f4f950b49657ab0e49, type: 3}
+  - {fileID: -683642371, guid: 0f4cc7e1ffad56f4f950b49657ab0e49, type: 3}
+  - {fileID: -1749289623, guid: 0f4cc7e1ffad56f4f950b49657ab0e49, type: 3}
+  - {fileID: -1431443494, guid: 0f4cc7e1ffad56f4f950b49657ab0e49, type: 3}
+  - {fileID: 1353359750, guid: 0f4cc7e1ffad56f4f950b49657ab0e49, type: 3}
+  - {fileID: 84519388, guid: 0f4cc7e1ffad56f4f950b49657ab0e49, type: 3}
+  - {fileID: -837459728, guid: 0f4cc7e1ffad56f4f950b49657ab0e49, type: 3}
+  - {fileID: 1788153648, guid: 0f4cc7e1ffad56f4f950b49657ab0e49, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - T_Tilemap_18
+  - T_Tilemap_19
+  - T_Tilemap_16
+  - T_Tilemap_17
+  - T_Tilemap_14
+  - T_Tilemap_15
+  - T_Tilemap_12
+  - T_Tilemap_13
+  - T_Tilemap_10
+  - T_Tilemap_11
+  - T_Tilemap_9
+  - T_Tilemap_8
+  - T_Tilemap_3
+  - T_Tilemap_2
+  - T_Tilemap_1
+  - T_Tilemap_0
+  - T_Tilemap_7
+  - T_Tilemap_6
+  - T_Tilemap_5
+  - T_Tilemap_4
+  - T_Tilemap_22
+  - T_Tilemap_21
+  - T_Tilemap_20
+  m_RenderDataMap: {}
+  m_Tag: TileMap
+  m_IsVariant: 0

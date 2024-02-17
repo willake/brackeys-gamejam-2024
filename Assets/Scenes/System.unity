@@ -568,6 +568,8 @@ MonoBehaviour:
   sceneResources: {fileID: 11400000, guid: 7f7b33e8f9625b54b9622008bded8138, type: 2}
   uiPanelResources: {fileID: 11400000, guid: c7d7aa699cfa51a41a8687a49c0bf718, type: 2}
   gameplayResources: {fileID: 11400000, guid: 60ca2fad60679cb4dbac926c033bc93d, type: 2}
+  levelResources: {fileID: 11400000, guid: 3caa4dbeaa071584fa2bce29df48b697, type: 2}
+  dialogueResources: {fileID: 11400000, guid: afae4b2909446f34fa9dbb4868e8037c, type: 2}
 --- !u!223 &1394699990 stripped
 Canvas:
   m_CorrespondingSourceObject: {fileID: 5442759027055832217, guid: bbf9c5379f74902418a447cf49d21de4, type: 3}
@@ -621,7 +623,9 @@ MonoBehaviour:
   _isPersistant: 0
   gameScene: {fileID: 0}
   sceneLoader: {fileID: 276261630}
-  cursorTexture: {fileID: 2800000, guid: eea0f9ec61e55b6469307c4da3e22cea, type: 3}
+  levelOption: 1
+  levelIndex: 0
+  cursorTexture: {fileID: 2800000, guid: a29a9817a8aa38a4eb6e92f5647b0e56, type: 3}
 --- !u!1 &1700998227
 GameObject:
   m_ObjectHideFlags: 0
@@ -1000,6 +1004,10 @@ PrefabInstance:
     - target: {fileID: 5442759027055832220, guid: bbf9c5379f74902418a447cf49d21de4, type: 3}
       propertyPath: m_Name
       value: UICanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 6508007759845839429, guid: bbf9c5379f74902418a447cf49d21de4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
