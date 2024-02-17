@@ -57,6 +57,8 @@ namespace Game.UI
 
             sightStartRenderer.SetPositions(new Vector3[] { origin, sightStartTip });
             sightEndRenderer.SetPositions(new Vector3[] { origin, sightEndTip });
+            sightStartRenderer.gameObject.SetActive(false);
+            sightEndRenderer.gameObject.SetActive(false);
 
             playerPositionState
                 .OnValueChanged

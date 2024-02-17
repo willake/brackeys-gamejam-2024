@@ -71,8 +71,8 @@ LineRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -1457337497
-  m_SortingLayer: 3
+  m_SortingLayerID: -1693356987
+  m_SortingLayer: 1
   m_SortingOrder: 0
   m_Positions:
   - {x: 0, y: 0, z: 0}
@@ -207,8 +207,8 @@ LineRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -1457337497
-  m_SortingLayer: 3
+  m_SortingLayerID: -1693356987
+  m_SortingLayer: 1
   m_SortingOrder: 0
   m_Positions:
   - {x: 0, y: 0, z: 0}
@@ -533,7 +533,7 @@ MonoBehaviour:
   - {x: 0.13987517, y: -0.18205208, z: 0}
   m_ShapePathHash: -1190619109
   m_Mesh: {fileID: 0}
-  m_InstanceId: 86610
+  m_InstanceId: 89418
   m_LocalBounds:
     m_Center: {x: -0.001689434, y: 0.07760212, z: 0}
     m_Extent: {x: 0.25468278, y: 0.2661429, z: 0}
