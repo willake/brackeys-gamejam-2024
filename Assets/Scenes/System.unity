@@ -623,7 +623,7 @@ MonoBehaviour:
   _isPersistant: 0
   gameScene: {fileID: 0}
   sceneLoader: {fileID: 276261630}
-  levelOption: 0
+  levelOption: 1
   levelIndex: 0
 --- !u!1 &1700998227
 GameObject:

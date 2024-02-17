@@ -841,6 +841,10 @@ PrefabInstance:
       propertyPath: gameRuntimeState
       value: 
       objectReference: {fileID: 11400000, guid: e6bfdf1c08792504fb423868a5f05987, type: 2}
+    - target: {fileID: 8616061218480581829, guid: 16a2100f8b6002847bb3789277da215c, type: 3}
+      propertyPath: groundMask.m_Bits
+      value: 2048
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
