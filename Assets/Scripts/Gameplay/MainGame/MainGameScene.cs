@@ -260,19 +260,25 @@ namespace Game.Gameplay
             SetState(GameState.Loading);
         }
 
-        public async void NextLevel()
+        public bool HasNextLevel()
         {
             int levelCount = ResourceManager.instance.levelResources.levels.Length;
             if (_currentLevelIndex == -1)
             {
                 Debug.Log("Test level does not have next level.");
-                return;
+                return false;
             }
-            if (_currentLevelIndex + 1 < levelCount)
+            if (_currentLevelIndex + 1 >= levelCount)
             {
-                Debug.Log("Current level is the last level.");
-                return;
+                Debug.Log($"Current level is the last level. Current: {_currentLevelIndex} Level count: {levelCount}");
+                return false;
             }
+            return true;
+        }
+
+        public async void NextLevel()
+        {
+            if (HasNextLevel() == false) return;
 
             OnExitLevel();
             _currentLevelIndex += 1;
