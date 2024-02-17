@@ -89,6 +89,12 @@ namespace Game.Gameplay
         private void SetState(ICharacterState state)
         {
             _state = state;
+
+            if (state == CharacterStates.DeadState)
+            {
+                GetNavMeshAgent().isStopped = true;
+                GetNavMeshAgent().SetDestination(transform.position);
+            }
         }
 
         public async UniTask AttackAsync(Vector2 direction)
@@ -144,14 +150,17 @@ namespace Game.Gameplay
             SetState(CharacterStates.DeadState);
             GetCharacterAnimator().TriggerDead();
 
-            WrappedAudioClip audioClip =
-                ResourceManager.instance.audioResources.gameplayAudios.assassinate;
+            if (characterType == CharacterType.Enemy)
+            {
+                WrappedAudioClip audioClip =
+                    ResourceManager.instance.audioResources.gameplayAudios.assassinate;
 
-            AudioManager.instance?.PlaySFX(
-                audioClip.clip,
-                audioClip.volume,
-                UnityEngine.Random.Range(0.6f, 1f)
-            );
+                AudioManager.instance?.PlaySFX(
+                    audioClip.clip,
+                    audioClip.volume,
+                    UnityEngine.Random.Range(0.6f, 1f)
+                );
+            }
 
             int random = UnityEngine.Random.Range(0, 2);
             WrappedAudioClip deathClip = random == 0

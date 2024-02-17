@@ -1,6 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
+using Game.Audios;
 using Game.Gameplay;
 using UniRx;
 using UnityEngine;
@@ -114,6 +112,15 @@ namespace Game.UI
                     if (hit.collider != null)
                     {
                         GetLight2D().enabled = true;
+
+                        GetCharacterAnimator().SetMoveDirection(directionToPlayer.x, directionToPlayer.y);
+
+                        int random = Random.Range(0, 1);
+                        WrappedAudioClip audioClip = random == 0
+                            ? ResourceManager.instance.audioResources.gameplayAudios.pistol1
+                            : ResourceManager.instance.audioResources.gameplayAudios.pistol2;
+
+                        AudioManager.instance.PlaySFX(audioClip.clip, audioClip.volume, Random.Range(0.8f, 1.2f));
 
                         Character player = hit.collider.GetComponent<Character>();
                         if (player && player.State != CharacterStates.DeadState) player.Die();
