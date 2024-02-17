@@ -495,7 +495,8 @@ public class EchoLocator : MonoBehaviour
                 Debug.LogWarning("Collided obstacles don't have an obstacles componenent and type attached");
                 return;
         }
-        AudioManager.instance.PlaySFX(sound.clip, sound.volume);
+        if (_collidedCharacter[i] == null || !_collidedCharacter[i].IsDetected)
+            AudioManager.instance.PlaySFX(sound.clip, sound.volume);
     }
 
     void PlayShootSound()
