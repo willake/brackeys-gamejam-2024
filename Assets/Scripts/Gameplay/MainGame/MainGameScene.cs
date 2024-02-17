@@ -280,7 +280,11 @@ namespace Game.Gameplay
         {
             if (HasNextLevel() == false) return;
 
+            _level.doorExit.Open();
+            await _player.MoveToAsync(_level.exitPoint.position);
+
             OnExitLevel();
+
             _currentLevelIndex += 1;
             await levelLoader.LoadLevel(LevelOption.Levels, _currentLevelIndex);
         }
