@@ -44,7 +44,7 @@ namespace Game.UI
                     break;
             }
 
-            AudioManager.instance.PlaySFX(
+            AudioManager.instance.PlayUI(
                 wrappedClip.clip,
                 wrappedClip.volume
             );
