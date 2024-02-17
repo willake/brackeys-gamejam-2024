@@ -9,6 +9,7 @@ namespace Game.UI
         ModalPanel,
         GameStartPanel,
         GameEndPanel,
-        PausePanel
+        PausePanel,
+        HowToPlayPanel
     }
 }

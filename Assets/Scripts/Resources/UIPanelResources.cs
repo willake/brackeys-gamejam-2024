@@ -16,5 +16,6 @@ namespace Game
         public GameObject pausePanel;
         public GameObject gameStartPanel;
         public GameObject gameEndPanel;
+        public GameObject howToPlayPanel;
     }
 }
