@@ -6326,7 +6326,7 @@ MonoBehaviour:
   doorFront: {fileID: 1451888056}
   echolocatorPoint: {fileID: 547549945}
   exitPoint: {fileID: 1429505846}
-  enemyCount: 4
+  enemyCount: 5
   maxMoves: 4
   maxActions: 5
   maxRays: 5

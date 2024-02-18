@@ -16,6 +16,11 @@ namespace Game
         public string attackFail;
         public string attackSuccess;
 
+        [Header("Game HUD")]
+        public string titleEcholocationPhase;
+        public string titlePlanPhase;
+        public string titlePerformPhase;
+
 
         [Header("End Game Texts")]
         public string winAndMoreLevel;

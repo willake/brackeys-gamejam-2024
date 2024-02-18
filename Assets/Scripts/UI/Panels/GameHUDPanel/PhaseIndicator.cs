@@ -22,9 +22,9 @@ namespace Game.UI
             indicators[1].color = state == GameState.Plan ? enabledColor : disabledColor;
             indicators[2].color = state == GameState.Perform ? enabledColor : disabledColor;
 
-            if (state == GameState.EchoLocation) textTitle.text = "Echolocation Phase";
-            else if (state == GameState.Plan) textTitle.text = "Plan Phase";
-            else if (state == GameState.Perform) textTitle.text = "Peform Phase";
+            if (state == GameState.EchoLocation) textTitle.text = ResourceManager.instance.dialogueResources.titleEcholocationPhase;
+            else if (state == GameState.Plan) textTitle.text = ResourceManager.instance.dialogueResources.titlePlanPhase;
+            else if (state == GameState.Perform) textTitle.text = ResourceManager.instance.dialogueResources.titlePerformPhase;
         }
     }
 }
