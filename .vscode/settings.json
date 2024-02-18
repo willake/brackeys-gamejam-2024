@@ -51,5 +51,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "brackeys-gamejam-2024-webgl.sln"
+    "dotnet.defaultSolution": "brackeys-gamejam-2024.sln"
 }
