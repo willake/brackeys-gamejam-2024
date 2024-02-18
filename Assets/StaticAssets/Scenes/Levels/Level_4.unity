@@ -6327,7 +6327,7 @@ MonoBehaviour:
   echolocatorPoint: {fileID: 547549945}
   exitPoint: {fileID: 1429505846}
   enemyCount: 4
-  maxMoves: 5
+  maxMoves: 4
   maxActions: 5
   maxRays: 5
   maxBounces: 8
