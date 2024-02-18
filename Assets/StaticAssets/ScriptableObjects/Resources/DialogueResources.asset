@@ -17,6 +17,9 @@ MonoBehaviour:
   enterPerform: OK. Let's go!
   attackFail: Oops
   attackSuccess: Gotcha!
+  titleEcholocationPhase: Echolocation Phase
+  titlePlanPhase: Plan Phase
+  titlePerformPhase: Perform Phase
   winAndMoreLevel: You win!
   winAndLastLevel: Congratulations! You beat all the levels!
   loseCuzMoreEnemies: 'You didn''t kill all the enemies :( '

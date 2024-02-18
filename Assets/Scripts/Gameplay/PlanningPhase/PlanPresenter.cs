@@ -76,15 +76,23 @@ namespace Game.Gameplay
 
         private void Clear()
         {
-            for (int i = 0; i < _maxMoves; i++)
+            for (int i = 0; i < _moveDestinations.Count; i++)
             {
                 Destroy(_moveDestinations[i]);
+            }
+
+            for (int i = 0; i < _movePaths.Count; i++)
+            {
                 Destroy(_movePaths[i].gameObject);
             }
 
-            for (int i = 0; i < _maxActions; i++)
+            for (int i = 0; i < _attackPositions.Count; i++)
             {
                 Destroy(_attackPositions[i]);
+            }
+
+            for (int i = 0; i < _attackDirections.Count; i++)
+            {
                 Destroy(_attackDirections[i].gameObject);
             }
 
