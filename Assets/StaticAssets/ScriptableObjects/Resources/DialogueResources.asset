@@ -19,5 +19,5 @@ MonoBehaviour:
   attackSuccess: Gotcha!
   winAndMoreLevel: You win!
   winAndLastLevel: Congratulations! You beat all the levels!
-  loseCuzMoreEnemies: 'You didn''t find all the enemies :( '
+  loseCuzMoreEnemies: 'You didn''t kill all the enemies :( '
   loseCuzGetKilled: You are killed :(

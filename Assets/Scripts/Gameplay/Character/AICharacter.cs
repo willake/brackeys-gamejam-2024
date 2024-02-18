@@ -110,6 +110,7 @@ namespace Game.UI
 
         private void AttackIfDetected(Vector2 playerPosition)
         {
+            if (State.canAttack == false) return;
             // Calculate direction from enemy to player
             Vector2 origin = transform.position;
             Vector2 directionToPlayer = playerPosition - origin;

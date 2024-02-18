@@ -79,7 +79,8 @@ namespace Game.Gameplay
             SetState(CharacterStates.MoveState);
             GetCharacterAnimator().SetMoveSpeed(speed);
 
-            GetNavMeshAgent().destination = destination;
+            GetNavMeshAgent().isStopped = false;
+            GetNavMeshAgent().SetDestination(destination);
 
             await _onArriveDestination.AsObservable().Take(1);
         }
@@ -157,6 +158,8 @@ namespace Game.Gameplay
                     );
                 }
             }
+
+            SetState(CharacterStates.IdleState);
         }
 
         public virtual void Die(Vector2 attackDirection)
@@ -212,7 +215,7 @@ namespace Game.Gameplay
             {
                 GetCharacterAnimator().SetMoveDirection(GetNavMeshAgent().velocity.x, GetNavMeshAgent().velocity.y);
 
-                if (_navmeshAgent.hasPath == false)
+                if (GetNavMeshAgent().hasPath == false && !GetNavMeshAgent().pathPending)
                 {
                     SetState(CharacterStates.IdleState);
                     GetCharacterAnimator().SetMoveSpeed(0);
