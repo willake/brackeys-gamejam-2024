@@ -139,9 +139,6 @@ namespace Game.Gameplay
             WrappedAudioClip musicPlan = ResourceManager.instance.audioResources.backgroundAudios.musicPlan;
             AudioManager.instance.PlayMusic(musicPlan.clip, musicPlan.volume);
 
-            // delete player from previous level
-            if (_player) Destroy(_player.gameObject);
-
             // spawn character
             _player = GeneratePlayer(_level.transform, _level.spawnPoint.position);
 
@@ -297,6 +294,10 @@ namespace Game.Gameplay
             }
             AudioManager.instance.StopSFXLoop(_combatAudioToken);
             _combatAudioToken = -1;
+
+            // delete player from last try
+            if (_player) Destroy(_player.gameObject);
+
             _level.Init();
             echoLocator.Disable(true);
             SetState(GameState.Loading);
@@ -304,6 +305,9 @@ namespace Game.Gameplay
 
         private void OnExitLevel()
         {
+            // delete player from previous level
+            if (_player) Destroy(_player.gameObject);
+
             _playerDeadEventDisposable?.Dispose();
             _level = null;
             _player = null;
