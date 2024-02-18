@@ -45,7 +45,11 @@ namespace Game.Gameplay
             ClearEnemies();
 
             EnemySpawnPoint[] shuffledSpawnPoints = new EnemySpawnPoint[enemySpawnPoints.Length];
-            enemySpawnPoints.CopyTo(shuffledSpawnPoints, 0);
+
+            for (int i = 0; i < enemySpawnPoints.Length; i++)
+            {
+                shuffledSpawnPoints[i] = enemySpawnPoints[i];
+            }
 
             System.Random random = new();
             random.Shuffle(shuffledSpawnPoints);

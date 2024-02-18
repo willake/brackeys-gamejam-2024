@@ -34,9 +34,9 @@ namespace Game.UI
             btnResume
                 .OnClickObservable
                 .ObserveOnMainThread()
-                .Subscribe(async _ =>
+                .Subscribe(_ =>
                 {
-                    await UIManager.instance.PrevAsync();
+                    UIManager.instance.Prev();
                     GameManager.instance.ResumeGame();
                 })
                 .AddTo(this);
@@ -44,12 +44,11 @@ namespace Game.UI
             btnRetry
                 .OnClickObservable
                 .ObserveOnMainThread()
-                .Subscribe(async _ =>
+                .Subscribe(_ =>
                 {
-                    GameManager.instance.ResumeGame();
+                    UIManager.instance.Prev();
                     MainGameScene mainGameScene = GameManager.instance.gameScene as MainGameScene;
                     mainGameScene.RetryCurrentLevel();
-                    await UIManager.instance.PrevAsync();
                 })
                 .AddTo(this);
 
